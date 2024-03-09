@@ -1,60 +1,48 @@
+import pandas as pd
+
 class User:
 
-    def init(self, name, mail, password):
+    def __init__(self, name, login, mail, password):
         self.name = name
+        self.login = login
         self.mail = mail
-        self.password = password
+        self.__password = password
 
-    def __str(self):
-        return f"Пользователь {self.name} с электронной почтой {self.mail}."
-
-
-class UsersBase:
-
-    def init(self):
-        self.users = []
-        self.names = []
-        self.mails = []
+    def __str__(self):
+        return f"Пользователь {self.login} с электронной почтой {self.mail}."
 
 
-    def add_user(self, user):
-        if isinstance(user, User):
-            self.users.append(user)
-            self.names.append(user.name)
-            self.mails.append(user.mail)
-
-
-    def getitem(self, item):
-        return self.users[item]
-
-
-def CheckNameAndMail(user) -> bool:
-    if user.name in users_base.names:
-        print("Это имя уже занято.")
+def CheckLoginAndMail(user) -> bool:
+    if user.login in DataBase["login"].to_list():
+        print("Этот логин уже занят.")
         return False
-    elif user.mail in users_base.mails:
+    elif user.mail in DataBase["mail"].to_list():
         print("Аккаунт с такой электронной почтой уже существует.")
         return False
     return True
 
+
 def Initializing() -> User:
+    print("Введите ФИО")
     name = input()
+    print("Введите логин")
+    login = input()
+    print("Введите электронную почту")
     mail = input()
+    print("Введите пароль")
     password = input()
-    return User(name, mail, password)
+    return User(name, login, mail, password)
 
-
-users_base = UsersBase()
 
 user = Initializing()
 
-while not CheckNameAndMail(user):
+DataBase = pd.read_csv("data.csv")
+while not CheckLoginAndMail(user):
+    print("Введите данные заново!")
     del user
     user = Initializing()
 else:
     print("Регистрация завершена!")
-    users_base.add_user(user)
+    DataBase.loc[len(DataBase.index)] = [user.name, user.login, user.mail, user._User__password]
 
-
-for item in users_base.users:
-    print(item)
+DataBase.to_csv("data.csv", index=False)
