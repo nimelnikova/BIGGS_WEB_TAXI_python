@@ -21,7 +21,7 @@ components:
           type: string
         time:
           type: string
-          format: 2024-03-24T15:00:00+01
+          format: "date-time"  # Я предположил, что это формат даты и времени
 
     History:
       type: array
@@ -38,7 +38,8 @@ components:
         fname:
           type: string
         history:
-          type: object
+          $ref: "#/components/schemas/History"  # Здесь исправлено на ссылку на схему History
+
   parameters:
     lname:
       name: lname
@@ -47,13 +48,11 @@ components:
       schema:
         type: string
     history:
-      name: trip
+      name: history  # Исправлено на history
       in: path
       required: true
       schema:
         type: string
-
-
 
 paths:
   /people:
@@ -111,7 +110,7 @@ paths:
         '200':
           description: Successfully updated a person
     delete:
-      summary: Delete a person by last name
+      summary: Удалить человека по фамилии
       tags:
         - People
       operationId: people.delete_person
@@ -119,15 +118,16 @@ paths:
         - $ref: '#/components/parameters/lname'
       responses:
         '204':
-          description: Successfully deleted a person
+          description: Успешно удалён человек
+
   /people/{lname}/history:
     get:
-      summary: Get all trips this people
+      summary: Получить все поездки для данного человека
       tags:
         - Trip
       operationId: people.get_all_trips
       parameters:
-        - $ref: '#/components/parameters/lname'
+        - $ref: '#/components/schemas/History'  # Исправлено на schemas
       responses:
         '204':
-          description: You have hurriedly taken away all the trains and passengers
+          description: Вы поспешили и унесли все поезда и пассажиров
