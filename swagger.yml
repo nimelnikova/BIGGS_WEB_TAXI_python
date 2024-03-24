@@ -22,10 +22,12 @@ components:
         time:
           type: string
           format: 2024-03-24T15:00:00+01
+
     History:
       type: array
       items:
         $ref: "#/components/schemas/Trip"
+
     Person:
       type: object
       required:
@@ -35,6 +37,8 @@ components:
           type: string
         fname:
           type: string
+        history:
+          type: object
   parameters:
     lname:
       name: lname
@@ -42,14 +46,13 @@ components:
       required: true
       schema:
         type: string
-    History:
-      name: history
+    history:
+      name: trip
       in: path
       required: true
       schema:
         type: string
-      items:
-        type: array
+
 
 
 paths:
@@ -117,7 +120,7 @@ paths:
       responses:
         '204':
           description: Successfully deleted a person
-  /people/{lname}/trips:
+  /people/{lname}/history:
     get:
       summary: Get all trips this people
       tags:
@@ -128,19 +131,3 @@ paths:
       responses:
         '204':
           description: You have hurriedly taken away all the trains and passengers
-
-    post:
-      summary: Create a new trip
-      tags:
-        - Trip
-      operationId: people.create_trip
-      requestBody:
-        description: creating a trip
-        required: true
-        content:
-          application/json:
-            schema:
-              - $ref: '#/components/sсhames/History'
-      responses:
-        '201':
-          description: Successfully created a new trip
