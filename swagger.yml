@@ -1,14 +1,31 @@
 openapi: 3.0.0
 info:
-  title: My API
+  title: My api
   version: 1.0.0
   description: My API description
 
 servers:
- - url: /api
+  - url: /api
 
 components:
   schemas:
+    Trip:
+      type: object
+      required:
+        - number
+        - time
+      properties:
+        trip_id:
+          type: string
+        number:
+          type: string
+        time:
+          type: string
+          format: 2024-03-24T15:00:00+01
+    History:
+      type: array
+      items:
+        $ref: "#/components/schemas/Trip"
     Person:
       type: object
       required:
@@ -18,8 +35,6 @@ components:
           type: string
         fname:
           type: string
-        history:
-          type:
   parameters:
     lname:
       name: lname
@@ -27,6 +42,15 @@ components:
       required: true
       schema:
         type: string
+    History:
+      name: history
+      in: path
+      required: true
+      schema:
+        type: string
+      items:
+        type: array
+
 
 paths:
   /people:
@@ -93,10 +117,30 @@ paths:
       responses:
         '204':
           description: Successfully deleted a person
-  /trips/{lname}:
+  /people/{lname}/trips:
     get:
       summary: Get all trips this people
       tags:
         - Trip
       operationId: people.get_all_trips
+      parameters:
+        - $ref: '#/components/parameters/lname'
+      responses:
+        '204':
+          description: You have hurriedly taken away all the trains and passengers
 
+    post:
+      summary: Create a new trip
+      tags:
+        - Trip
+      operationId: people.create_trip
+      requestBody:
+        description: creating a trip
+        required: true
+        content:
+          application/json:
+            schema:
+              - $ref: '#/components/sсhames/History'
+      responses:
+        '201':
+          description: Successfully created a new trip
