@@ -1,37 +1,69 @@
-import datetime
-from geopy.geocoders import Nominatim
+import requests
+from datetime import datetime
 
-class TaxiTrip:
 
-    @property
-    def __current_time(self):
-        self._current_time = datetime.datetime.now()
-        return self._current_time
+class TripForm:
+    def __init__(self, start_location, end_location, start_time, end_time):
+        self.start_location = start_location
+        self.end_location = end_location
+        self.start_time = start_time
+        self.end_time = end_time
 
-    def __get_coordinates(self, city_name):
-        geolocator = Nominatim(user_agent="geoapiExercises")
-        location = geolocator.geocode(city_name)
-        if location:
-            return location.latitude, location.longitude
-        else:
-            return None
-
-    @staticmethod
-    def calculate_duration(start_time, end_time):
-        duration = end_time - start_time
-        return duration
-
-    def __init__(self, place_start, place_finish, time_begin, time_end):
-        self.place_start = place_start
-        self.place_finish = place_finish
-        self.time_begin = time_begin
-        self.time_end = time_end
-
-    def time_duration(self):
-        return self.calculate_duration(self.time_begin, self.time_end)
+    def geocode_location(self, location_name):
+        url = f"https://nominatim.openstreetmap.org/search?format=json&q={location_name}"
+        try:
+            response = requests.get(url)
+            data = response.json()
+            if data:
+                return float(data[0]['lat']), float(data[0]['lon'])
+            else:
+                return None, None
+        except Exception as e:
+            print(f"Ошибка при получении координат: {str(e)}")
+            return None, None
 
     def calculate_distance(self):
-        coords_start = self.__get_coordinates(self.place_start)
-        coords_finish = self.__get_coordinates(self.place_finish)
-        # вычислить расстояние при помощи яндекс карт и ключа к ним
+        start_lat, start_lon = self.geocode_location(self.start_location)
+        end_lat, end_lon = self.geocode_location(self.end_location)
 
+        if start_lat is None or end_lat is None:
+            return "Не удалось найти координаты для одного из мест", None
+
+        url = f"http://router.project-osrm.org/route/v1/driving/{start_lon},{start_lat};{end_lon},{end_lat}?overview=false"
+        try:
+            response = requests.get(url)
+            data = response.json()
+
+            if 'routes' in data and data['routes']:
+                distance = data['routes'][0]['distance']
+                duration = data['routes'][0]['duration']
+                distance_text = f"{distance / 1000:.2f} km"
+                duration_text = f"{int(duration / 60)} min"
+                return distance_text, duration_text
+            else:
+                return "Ошибка при получении данных о маршруте", None
+        except Exception as e:
+            return f"Ошибка: {str(e)}", None
+
+
+# Пример использования
+if __name__ == "__main__":
+    start_location_name = input("Введите название места отправления: ")
+    end_location_name = input("Введите название места назначения: ")
+
+    start_time = datetime.strptime(input("Введите время начала поездки (в формате ГГГГ-ММ-ДД ЧЧ:ММ): "),
+                                   "%Y-%m-%d %H:%M")
+    end_time = datetime.strptime(input("Введите время окончания поездки (в формате ГГГГ-ММ-ДД ЧЧ:ММ): "),
+                                 "%Y-%m-%d %H:%M")
+
+    trip = TripForm(start_location_name, end_location_name, start_time, end_time)
+    distance_text, duration_text = trip.calculate_distance()
+
+    if distance_text is not None:
+        print(f"Расстояние от {start_location_name} до {end_location_name}: {distance_text}")
+        print(f"Примерная длительность поездки: {duration_text}")
+        print(f"Время начала поездки: {start_time.strftime('%Y-%m-%d %H:%M')}")
+        print(f"Время окончания поездки: {end_time.strftime('%Y-%m-%d %H:%M')}")
+    else:
+        print(
+            "Не удалось рассчитать расстояние. Пожалуйста, проверьте введенные данные и ваше подключение к интернету.")
