@@ -19,7 +19,7 @@ components:
         fname:
           type: string
         history:
-          type: dict
+          type:
   parameters:
     lname:
       name: lname
@@ -93,6 +93,10 @@ paths:
       responses:
         '204':
           description: Successfully deleted a person
-  /trips/lname:
+  /trips/{lname}:
     get:
-      summary: Get all
+      summary: Get all trips this people
+      tags:
+        - Trip
+      operationId: people.get_all_trips
+
