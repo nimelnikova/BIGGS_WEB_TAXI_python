@@ -8,4 +8,4 @@
 
 # Запуск проекта 
 
-- Просто запустить ./start_window/index.html
+- Просто запустить open ./start_window/index.html
