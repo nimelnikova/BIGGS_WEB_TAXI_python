@@ -1,13 +1,20 @@
 from flask import abort
+import hashlib
+
+class Order(People):
+    def __init__(self, ):
+
 
 # Словарь PEOPLE, содержащий информацию о людях
-
-
+# словарь {"login": {"login": People, "history": {id_order: Order}}}
+# People содержит почту логин пароль имя фамилия
+# Order
+ # пользователи хранятся в словаре вида {"lname": {"lname": "", "fname": "", "email": "", password: "", history: [{id_oders: [""]}]}
 PEOPLE = {
-    "Sirakov": {"lname": "Sirakov", "fname": "Dmitry", 1: ['место отбытия', "место прибытия", "время"]},
-    "Ivanov": {"lname": "Ivanov", "fname": "Ivan"},
-    "Petrov": {"lname": "Petrov", "fname": "Petr"},
-    "Sidorov": {"lname": "Sidorov", "fname": "Sidor"},
+    "Sirakov": {"lname": "Sirakov", "fname": "Dmitry"},
+"Ivanov": {"lname": "Ivanov", "fname": "Ivan"},
+"Petrov": {"lname": "Petrov", "fname": "Petr"},
+"Sidorov": {"lname": "Sidorov", "fname": "Sidor"},
 }
 
 def get_all_people():
@@ -90,8 +97,23 @@ def delete_person(lname):
     return abort(404, f"Person with last name {lname} not found")
 
 
+def hash_order_id(order_id):
+    order_id_bytes = str(order_id).encode('utf-8')
+
+    hasher = hashlib.sha256()
+
+    hasher.update(order_id_bytes)
+
+    hashed_order_id = hasher.hexdigest()
+
+    return hashed_order_id
+
+def create_order(order):
+
+
+
+
 def get_all_trips(lname):
     if lname and lname in PEOPLE and len(PEOPLE[lname]) > 2:
         for i in range(2, len(PEOPLE[lname])):
             yield PEOPLE[lname][i].value
-
