@@ -9,24 +9,24 @@ servers:
 
 components:
   schemas:
-    Trip:
+    Order:
       type: object
-      required:
-        - number
-        - time
       properties:
-        trip_id:
+        order_id:
+          type: integer
+          description: ID заказа
+        customer_id:
+          type: integer
+          description: ID клиента, разместившего заказ
+        pickup_location:
           type: string
-        number:
+          description: Местоположение, откуда нужно забрать клиента
+        destination:
           type: string
-        time:
+          description: Пункт назначения для поездки
+        status:
           type: string
-          format: "date-time"  # Я предположил, что это формат даты и времени
-
-    History:
-      type: array
-      items:
-        $ref: "#/components/schemas/Trip"
+          description: Статус заказа (например, ожидание, в процессе, завершен)
 
     Person:
       type: object
@@ -37,18 +37,9 @@ components:
           type: string
         fname:
           type: string
-        history:
-          $ref: "#/components/schemas/History"  # Здесь исправлено на ссылку на схему History
-
   parameters:
     lname:
       name: lname
-      in: path
-      required: true
-      schema:
-        type: string
-    history:
-      name: history  # Исправлено на history
       in: path
       required: true
       schema:
@@ -120,14 +111,50 @@ paths:
         '204':
           description: Успешно удалён человек
 
-  /people/{lname}/history:
-    get:
-      summary: Получить все поездки для данного человека
-      tags:
-        - Trip
-      operationId: people.get_all_trips
-      parameters:
-        - $ref: '#/components/schemas/History'  # Исправлено на schemas
+  /orders/{lname}:
+    post:
+      summary: Создание нового заказа такси
+      description: Позволяет клиентам создавать новые заказы такси
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                customer_id:
+                  type: integer
+                  description: ID клиента, разместившего заказ
+                pickup_location:
+                  type: string
+                  description: Местоположение, откуда нужно забрать клиента
+                destination:
+                  type: string
+                  description: Пункт назначения для поездки
       responses:
-        '204':
-          description: Вы поспешили и унесли все поезда и пассажиров
+        '201':
+          description: Заказ успешно создан
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  order_id:
+                    type: integer
+                    description: ID созданного заказа
+        '400':
+          description: Некорректный запрос
+    get:
+      summary: Получение списка всех заказов
+      description: Возвращает список всех существующих заказов такси
+      responses:
+        '200':
+          description: Список всех заказов
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Order'
+        '404':
+          description: Заказов не найдено
