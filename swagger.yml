@@ -26,7 +26,6 @@ components:
           description: Пункт назначения для поездки
         status:
           type: string
-          description: Статус заказа (например, ожидание, в процессе, завершен)
 
     Person:
       type: object

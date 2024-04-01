@@ -1,15 +1,11 @@
 from flask import abort
 import hashlib
 
-class Order(People):
-    def __init__(self, ):
-
-
 # Словарь PEOPLE, содержащий информацию о людях
 # словарь {"login": {"login": People, "history": {id_order: Order}}}
 # People содержит почту логин пароль имя фамилия
 # Order
- # пользователи хранятся в словаре вида {"lname": {"lname": "", "fname": "", "email": "", password: "", history: [{id_oders: [""]}]}
+ # пользователи хранятся в словаре вида {"lname": {"lname": "", "fname": "", "email": "", password: "", history: [{id_customer: [""]}]}
 PEOPLE = {
     "Sirakov": {"lname": "Sirakov", "fname": "Dmitry"},
 "Ivanov": {"lname": "Ivanov", "fname": "Ivan"},
