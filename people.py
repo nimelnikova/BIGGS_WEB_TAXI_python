@@ -1,11 +1,8 @@
 from flask import abort
-import hashlib
 
 # Словарь PEOPLE, содержащий информацию о людях
-# словарь {"login": {"login": People, "history": {id_order: Order}}}
-# People содержит почту логин пароль имя фамилия
-# Order
- # пользователи хранятся в словаре вида {"lname": {"lname": "", "fname": "", "email": "", password: "", history: [{id_customer: [""]}]}
+
+
 PEOPLE = {
     "Sirakov": {"lname": "Sirakov", "fname": "Dmitry"},
 "Ivanov": {"lname": "Ivanov", "fname": "Ivan"},
