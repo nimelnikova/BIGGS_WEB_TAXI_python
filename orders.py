@@ -1,6 +1,6 @@
 import pandas as pd
-from typing import List, Dict
 from models import Order
+import json
 
 
 def create_order(order):
@@ -27,7 +27,7 @@ def create_order(order):
     return new_order.get_order_details(), 201
 
 
-def get_all_person(id_person: str) -> List[dict]:
+def get_all_person(id_person: str) -> str:
     data_person = pd.read_csv("./data_base_orders.csv")
     trips = []
     filtered_df = data_person[data_person['customer_id'] == id_person]
@@ -36,7 +36,7 @@ def get_all_person(id_person: str) -> List[dict]:
                       row['car_category'], row['order_amount'], row['start_time'], row['end_time'],
                       row['total_ride_time'])
         trips.append(order.get_order_details())
-    return trips
+    return json.dumps(trips)
 
 
 def get_all():
