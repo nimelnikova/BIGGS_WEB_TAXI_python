@@ -8,7 +8,7 @@ class User:
         self.logemail = logemail
         self.__logpass = logpass
 
-    def get_password(self):
+    def get_logpass(self):
         return self.__logpass
 
     def __str__(self):

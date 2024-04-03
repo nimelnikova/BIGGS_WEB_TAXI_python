@@ -1,0 +1,89 @@
+openapi: 3.0.0
+info:
+  title: "BIGGS_TAXI"
+  description: "An API about BIGGS taxi app."
+  version: "1.0.0"
+
+servers:
+  - url: "/api"
+
+components:
+  schemas:
+    CreateUser: 
+      type: "object"
+      required:
+        - logname
+        - login
+        - logemail
+        - logpass
+      properties:
+        logname:
+          type: "string"
+        login:
+          type: "string"
+        logemail:
+          type: "string"
+        logpass:
+          type: "string"
+    EnterUser:
+      type: "object"
+      required:
+        - logemail
+        - logpass
+      properties:
+        logemail:
+          type: "string"
+        logpass:
+          type: "string"
+
+
+paths:
+  /:
+    get:
+      operationId: "main.index"
+      tags:
+        - "Start window"
+      summary: "Opens the start window."
+      responses:
+        "200":
+          description: "Start window was opened successfully."
+
+  /registration:
+    post:
+      operationId: "main.registration"
+      tags:
+        - "Register"
+      summary: "Register a new user."
+      requestBody:
+          description: "User to register"
+          required: True
+          content:
+            application/json:
+              schema:
+                x-body-name: "user"
+                $ref: "#/components/schemas/CreateUser"
+      responses:
+        "201":
+          description: "User was successfully registered."
+        "400":
+          description: "Mistake in login or logemail."
+
+  /entrance:
+    post:
+      operationId: "main.entrance"
+      tags:
+        - "Enter"
+      summary: "User enters with their logemail and logpass."
+      requestBody:
+          description: "User enters"
+          required: True
+          content:
+            application/json:
+              schema:
+                x-body-name: "user"
+                $ref: "#/components/schemas/EnterUser"
+      responses:
+        "200":
+          description: "User successfully entered."
+        "400":
+          description: "Wrong logpass."
