@@ -11,13 +11,6 @@ components:
   schemas:
     Order:
       type: object
-      parameters:
-        id_person:
-          name: id_person  # Изменено на "id_person"
-          in: path
-          required: true
-          schema:
-            type: string
       properties:
         customer_id:
           type: integer
@@ -46,6 +39,10 @@ components:
         - start_time
         - end_time
         - total_ride_time
+
+
+
+
 
 
 
@@ -81,10 +78,22 @@ paths:
       operationId: "orders.get_all_person"
       tags:
         - "Orders"
-      summary: "get all the trips of a certain user"
+      summary: "Get orders by person ID"
+      parameters:
+        - name: id_person
+          in: path
+          required: true
+          schema:
+            type: string
       responses:
         "200":
-          description: "trips have been successfully received"
+          description: "Successful operation"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Order"
 
 
 
