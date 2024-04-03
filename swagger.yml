@@ -147,10 +147,21 @@ paths:
         "201":
           description: "The order data has been successfully received"
 
+
   /orders/{id}:
     get:
-      operationId: "orders.get_all_person"
+      summary: Получение всех заказов определенного пользователя
       tags:
-        - "Orders"
-      summary: "Получение всех заказов определенного пользователя"
+        - Orders
+      operationId: orders.get_all_person
+      description: Get a person by last name
+      parameters:
+        - $ref: ''
+      responses:
+        '200':
+          description: Successfully read a person
+
+
+
+
 
