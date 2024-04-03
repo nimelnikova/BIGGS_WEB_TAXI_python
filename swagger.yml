@@ -43,9 +43,6 @@ components:
 
 
 
-
-
-
 paths:
 
   /orders:
@@ -101,6 +98,8 @@ paths:
       summary: "Удалить поездку по ее идентификатору"
       description: "Удаляет поездку из CSV файла по ее идентификатору."
       operationId: "orders.delete_trip_by_id"
+      tags:
+        - "Orders"
       parameters:
         - name: trip_id
           in: path
