@@ -96,6 +96,26 @@ paths:
                   $ref: "#/components/schemas/Order"
 
 
+  /trips/{trip_id}:
+    delete:
+      summary: Удалить поездку по ее идентификатору
+      description: Удаляет поездку из CSV файла по ее идентификатору.
+      operationId: order.delete_trip_by_id
+      parameters:
+        - name: trip_id
+          in: path
+          required: true
+          description: Идентификатор поездки для удаления
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Поездка успешно удалена
+        "404":
+          description: Поездка с указанным идентификатором не найдена
+
+
+
 
 
 

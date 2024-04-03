@@ -1,3 +1,4 @@
+from typing import Any
 import pandas as pd
 from models import Order
 import json
@@ -37,6 +38,18 @@ def get_all_person(id_person: str) -> str:
                       row['total_ride_time'])
         trips.append(order.get_order_details())
     return json.dumps(trips)
+
+
+def delete_trip_by_id(trip_id: Any) -> None:
+    # Чтение данных из CSV файла
+    data_base = pd.read_csv('trips.csv')
+
+    # Поиск строки с указанным trip_id и удаление ее из DataFrame
+    data_base = data_base[data_base['trip_id'] != trip_id]
+
+    # Запись обновленных данных обратно в CSV файл
+    data_base.to_csv('trips.csv', index=False)
+
 
 
 def get_all():
