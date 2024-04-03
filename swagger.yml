@@ -81,45 +81,6 @@ paths:
         "200":
           description: "Start window was opened successfully."
 
-  /registration:
-    post:
-      operationId: "main.registration"
-      tags:
-        - "Register"
-      summary: "Register a new user."
-      requestBody:
-        description: "User to register"
-        required: True
-        content:
-          application/json:
-            schema:
-              x-body-name: "user"
-              $ref: "#/components/schemas/CreateUser"
-      responses:
-        "201":
-          description: "User was successfully registered."
-        "400":
-          description: "Mistake in login or logemail."
-
-  /entrance:
-    post:
-      operationId: "main.entrance"
-      tags:
-        - "Enter"
-      summary: "User enters with their logemail and logpass."
-      requestBody:
-        description: "User enters"
-        required: True
-        content:
-          application/json:
-            schema:
-              x-body-name: "user"
-              $ref: "#/components/schemas/EnterUser"
-      responses:
-        "200":
-          description: "User successfully entered."
-        "400":
-          description: "Wrong logpass."
 
   /orders:
     get:
@@ -141,25 +102,13 @@ paths:
         content:
           application/json:
             schema:
-              x-body-name: "order"
               $ref: "#/components/schemas/Order"
       responses:
         "201":
           description: "The order data has been successfully received"
 
 
-  /orders/{id}:
-    get:
-      summary: Получение всех заказов определенного пользователя
-      tags:
-        - Orders
-      operationId: orders.get_all_person
-      description: Get a person by last name
-      parameters:
-        - $ref: ''
-      responses:
-        '200':
-          description: Successfully read a person
+
 
 
 

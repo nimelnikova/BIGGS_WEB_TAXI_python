@@ -14,12 +14,12 @@ def create_order(order):
 
         # нужно будет потом сделать поиск водителей и тд в классе как я понимаю, поэтому пока только черновой вариант
         #путь надо будет поменять у data_base
-        data_base = pd.read_csv("C:/Users/surov/rab/venv/data_base_orders.csv")
+        data_base = pd.read_csv("./data_base_orders.csv")
         new_order = Order(data_base.shape[0], customer_id, pickup_location, desstination, distance, car_category, 
                           start_time, end_time, total_ride_time, order_amount)
         data_base.loc[data_base.shape[0]] = [data_base.shape[0], new_order.customer_id, new_order.pickup_location, new_order.desstination, new_order.distance, 
                                              new_order.car_category, new_order.start_time, new_order.end_time, new_order.total_ride_time, new_order.order_amount]
-        data_base.to_csv("C:/Users/surov/rab/venv/data_base_orders.csv", index=False)
+        data_base.to_csv("./data_base_orders.csv", index=False)
         return new_order.get_order_details(), 201
 
 
