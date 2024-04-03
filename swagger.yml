@@ -1,159 +1,70 @@
 openapi: 3.0.0
 info:
-  title: My api
+  title: My API
   version: 1.0.0
   description: My API description
 
 servers:
-  - url: /api
+ - url: /api
 
 components:
   schemas:
     Order:
       type: object
       properties:
-        order_id:
-          type: integer
-          description: ID заказа
         customer_id:
           type: integer
-          description: ID клиента, разместившего заказ
         pickup_location:
           type: string
-          description: Местоположение, откуда нужно забрать клиента
         destination:
           type: string
-          description: Пункт назначения для поездки
-        status:
+        distance:
+          type: number
+        car_category:
           type: string
-
-    Person:
-      type: object
+        order_amount:
+          type: string
+        start_time:
+          type: string
+        end_time:
+          type: string
+        total_ride_time:
+          type: integer
+        order_amount:
+          type: integer
       required:
-        - lname
-      properties:
-        lname:
-          type: string
-        fname:
-          type: string
-  parameters:
-    lname:
-      name: lname
-      in: path
-      required: true
-      schema:
-        type: string
+        - customer_id
+        - pickup_location
+        - destination
+        - car_category
+        - order_amount
+        - start_time
+        - end_time
+        - total_ride_time
 
 paths:
-  /people:
+  /orders:
     get:
-      summary: Get lisf of all people
+      operationId: "orders.get_all"
       tags:
-        - People
-      operationId: people.get_all_people
+        - "Orders"
+      summary: "Read the list of people"
       responses:
-        '200':
-          description: Successfully read all people
+        "200":
+          description: "Successfully read people list"
     post:
-      summary: Create a new person
+      operationId: "orders.create_order"
       tags:
-        - People
-      operationId: people.create_person
+        - "Orders"
+      summary: "Getting order information"
       requestBody:
-        description: Person to add
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Person'
-      responses:
-        '201':
-          description: Successfully created a new person
-
-  /people/{lname}:
-    get:
-      summary: Get a person by last name
-      tags:
-        - People
-      operationId: people.get_person
-      description: Get a person by last name
-      parameters:
-        - $ref: '#/components/parameters/lname'
-      responses:
-        '200':
-          description: Successfully read a person
-    put:
-      summary: Update a person by last name
-      tags:
-        - People
-      operationId: people.update_person
-      parameters:
-        - $ref: '#/components/parameters/lname'
-      requestBody:
-        description: Person to update
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Person'
-      responses:
-        '200':
-          description: Successfully updated a person
-    delete:
-      summary: Удалить человека по фамилии
-      tags:
-        - People
-      operationId: people.delete_person
-      parameters:
-        - $ref: '#/components/parameters/lname'
-      responses:
-        '204':
-          description: Успешно удалён человек
-
-  /orders/{lname}:
-    post:
-      summary: Создание нового заказа такси
-      description: Позволяет клиентам создавать новые заказы такси
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                customer_id:
-                  type: integer
-                  description: ID клиента, разместившего заказ
-                pickup_location:
-                  type: string
-                  description: Местоположение, откуда нужно забрать клиента
-                destination:
-                  type: string
-                  description: Пункт назначения для поездки
-      responses:
-        '201':
-          description: Заказ успешно создан
+          description: "Order to create"
+          required: True
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  order_id:
-                    type: integer
-                    description: ID созданного заказа
-        '400':
-          description: Некорректный запрос
-    get:
-      summary: Получение списка всех заказов
-      description: Возвращает список всех существующих заказов такси
+                x-body-name: "order"
+                $ref: "#/components/schemas/Order"
       responses:
-        '200':
-          description: Список всех заказов
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Order'
-        '404':
-          description: Заказов не найдено
+        "201":
+          description: "The order data has been successfully received"
