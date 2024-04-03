@@ -71,16 +71,6 @@ components:
 
 
 paths:
-  /:
-    get:
-      operationId: "main.index"
-      tags:
-        - "Start window"
-      summary: "Opens the start window."
-      responses:
-        "200":
-          description: "Start window was opened successfully."
-
 
   /orders:
     get:
