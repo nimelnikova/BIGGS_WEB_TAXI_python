@@ -9,9 +9,15 @@ servers:
 
 components:
   schemas:
-
     Order:
       type: object
+      parameters:
+        id_person:
+          name: id_person  # Изменено на "id_person"
+          in: path
+          required: true
+          schema:
+            type: string
       properties:
         customer_id:
           type: integer
@@ -42,6 +48,7 @@ components:
         - total_ride_time
 
 
+
 paths:
 
   /orders:
@@ -69,7 +76,7 @@ paths:
         "201":
           description: "The order data has been successfully received"
 
-  /orders/{id}:
+  /orders/{id_person}:
     get:
       operationId: "orders.get_all_person"
       tags:
