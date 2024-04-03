@@ -9,35 +9,6 @@ servers:
 
 components:
   schemas:
-    CreateUser:
-      type: "object"
-      required:
-        - logname
-        - login
-        - logemail
-        - logpass
-      properties:
-        logname:
-          type: "string"
-        login:
-          type: "string"
-        logemail:
-          type: "string"
-        logpass:
-          type: "string"
-    EnterUser:
-      type: "object"
-      required:
-        - logemail
-        - logpass
-        - -id
-      properties:
-        logemail:
-          type: "string"
-        logpass:
-          type: "string"
-        id:
-          type: "integer"
     Order:
       type: object
       properties:
@@ -97,6 +68,15 @@ paths:
         "201":
           description: "The order data has been successfully received"
 
+  /orders/{id}:
+    get:
+      operationId: "orders.get_all_person"
+      tags:
+        - "Orders"
+      summary: "get all the trips of a certain user"
+      responses:
+        "200":
+          description: "trips have been successfully received"
 
 
 
