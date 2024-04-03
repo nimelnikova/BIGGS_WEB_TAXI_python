@@ -14,7 +14,7 @@ app.add_api("swagger.yml")
 def home():
 
 
-    return render_template("./2_main_window/index.html")
+    return render_template("./")
 
 
 # Если файл app.py запускается напрямую, запускаем приложение на локальном сервере
