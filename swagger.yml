@@ -1,14 +1,43 @@
 openapi: 3.0.0
 info:
-  title: My API
-  version: 1.0.0
-  description: My API description
+  title: "BIGGS_TAXI"
+  description: "An API about BIGGS taxi app."
+  version: "1.0.0"
 
 servers:
- - url: /api
+  - url: "/api"
 
 components:
   schemas:
+    CreateUser:
+      type: "object"
+      required:
+        - logname
+        - login
+        - logemail
+        - logpass
+      properties:
+        logname:
+          type: "string"
+        login:
+          type: "string"
+        logemail:
+          type: "string"
+        logpass:
+          type: "string"
+    EnterUser:
+      type: "object"
+      required:
+        - logemail
+        - logpass
+        - -id
+      properties:
+        logemail:
+          type: "string"
+        logpass:
+          type: "string"
+        id:
+          type: "integer"
     Order:
       type: object
       properties:
@@ -21,8 +50,6 @@ components:
         distance:
           type: number
         car_category:
-          type: string
-        order_amount:
           type: string
         start_time:
           type: string
@@ -42,7 +69,58 @@ components:
         - end_time
         - total_ride_time
 
+
 paths:
+  /:
+    get:
+      operationId: "main.index"
+      tags:
+        - "Start window"
+      summary: "Opens the start window."
+      responses:
+        "200":
+          description: "Start window was opened successfully."
+
+  /registration:
+    post:
+      operationId: "main.registration"
+      tags:
+        - "Register"
+      summary: "Register a new user."
+      requestBody:
+        description: "User to register"
+        required: True
+        content:
+          application/json:
+            schema:
+              x-body-name: "user"
+              $ref: "#/components/schemas/CreateUser"
+      responses:
+        "201":
+          description: "User was successfully registered."
+        "400":
+          description: "Mistake in login or logemail."
+
+  /entrance:
+    post:
+      operationId: "main.entrance"
+      tags:
+        - "Enter"
+      summary: "User enters with their logemail and logpass."
+      requestBody:
+        description: "User enters"
+        required: True
+        content:
+          application/json:
+            schema:
+              x-body-name: "user"
+              $ref: "#/components/schemas/EnterUser"
+      responses:
+        "200":
+          description: "User successfully entered."
+        "400":
+          description: "Wrong logpass."
+
   /orders:
     get:
       operationId: "orders.get_all"
@@ -58,13 +136,21 @@ paths:
         - "Orders"
       summary: "Getting order information"
       requestBody:
-          description: "Order to create"
-          required: True
-          content:
-            application/json:
-              schema:
-                x-body-name: "order"
-                $ref: "#/components/schemas/Order"
+        description: "Order to create"
+        required: True
+        content:
+          application/json:
+            schema:
+              x-body-name: "order"
+              $ref: "#/components/schemas/Order"
       responses:
         "201":
           description: "The order data has been successfully received"
+
+  /orders/{id}:
+    get:
+      operationId: "orders.get_all_person"
+      tags:
+        - "Orders"
+      summary: "Получение всех заказов определенного пользователя"
+

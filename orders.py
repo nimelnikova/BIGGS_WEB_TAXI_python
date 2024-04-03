@@ -22,6 +22,9 @@ def create_order(order):
         data_base.to_csv("C:/Users/surov/rab/venv/data_base_orders.csv", index=False)
         return new_order.get_order_details(), 201
 
+
+
+
 def get_all():
         return pd.read_csv("C:/Users/surov/rab/venv/data_base_orders.csv").to_json(orient="records")
 
