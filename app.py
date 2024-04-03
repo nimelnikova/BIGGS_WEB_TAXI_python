@@ -12,8 +12,6 @@ app.add_api("swagger.yml")
 # Обработчик маршрута для домашней страницы
 @app.route("/")
 def home():
-
-
     return render_template("./")
 
 
