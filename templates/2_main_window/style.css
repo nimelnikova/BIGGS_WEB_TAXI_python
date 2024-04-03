@@ -1,0 +1,751 @@
+/* @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800&display=swap'); */
+/* @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@200;300;400;500;600;700;800&family=Roboto:wght@100;300;400&display=swap'); */
+
+:root {
+    --primary-color: #00aeff;
+    --primary-dark: #1F252E;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: 'Outfit', sans-serif;
+    background: #ffffff;
+    height: 100vh;
+    color: #000;
+}
+
+.container {
+    padding: 0 8.4rem;
+}
+
+.img-w {
+    width: 100%;
+    height: auto;
+}
+
+header {
+    box-shadow: 0 4px 17px rgba(0, 0, 0, .1);
+    background: #fff;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 0;
+}
+
+.logo {
+    font-size: 1.5rem;
+    font-weight: 800;
+    opacity: 0;
+    animation: PrimeCarLogo 1s ease forwards;
+}
+
+.logo a {
+    color: #000;
+    text-decoration: none;
+}
+
+ul {
+    display: flex;
+    gap: .6rem;
+    list-style-type: none;
+    background-color: transparent;
+    overflow: visible;
+}
+
+li a {
+    display: inline-block;
+    padding: .8rem 1.5rem;
+    color: #000;
+    text-decoration: none;
+    font-size: 1.15rem;
+    font-weight: 600;
+    letter-spacing: .7px;
+    border-radius: 36px;
+    line-height: 2;
+    transition: .3s;
+    opacity: 0;
+    animation: navani .3s ease forwards;
+    animation-delay: calc(.15s * var(--navAni));
+}
+
+li a.active,
+li a:hover {
+    color: var(--primary-color);
+}
+
+#click {
+    display: none;
+}
+
+.menu {
+    display: none;
+}
+
+.mode i {
+    font-size: 1.4rem;
+    cursor: pointer;
+    color: var(--primary-color);
+    opacity: 0;
+    animation: rightSideAni 1.5s ease forwards;
+}
+
+.main {
+    padding: 6rem 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    row-gap: 2rem;
+    column-gap: 6rem;
+    align-items: center;
+}
+
+
+/* Стили для выпадающего списка */
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+/* Скрываем содержимое выпадающего списка */
+.dropdown-content {
+    top: 100%;
+    /* Устанавливаем только если .dropdown имеет position: relative; */
+    left: 0;
+    display: none;
+    position: absolute;
+    background-color: #ffffff;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.7);
+    z-index: 15;
+    border-radius: 12px;
+
+}
+
+/* Стилизация ссылок внутри выпадающего списка */
+.dropdown-content a {
+    color: black;
+    padding: 17px 60px;
+    z-index: 15;
+    text-decoration: none;
+    display: block;
+}
+
+/* Показываем выпадающий список при наведении */
+.dropdown:hover .dropdown-content {
+    z-index: 1000;
+    display: inline;
+}
+
+
+/* все для темной темы */
+.dark-mode {
+    background-color: var(--primary-dark);
+    color: #ffffff;
+}
+
+.mode input {
+    display: none;
+}
+
+.dark-mode .logo a,
+.dark-mode ul li a,
+.dark-mode .main h3,
+.dark-mode .main h1 {
+    color: #fff;
+}
+
+.dark-mode ul li a.active,
+.dark-mode ul li a:hover {
+    color: var(--primary-color);
+}
+
+.dark-mode .images {
+    background: linear-gradient(145deg, #1f252e, #2e3239);
+    box-shadow: 10px 10px 19px #1c1e22, -10px -10px 19px #1b1f27;
+    border-top: 2px solid var(--primary-color);
+    border-bottom-left-radius: 60px;
+    border-bottom-right-radius: 60px;
+    margin: auto;
+    overflow: hidden;
+}
+
+.dark-mode header {
+    box-shadow: 0 4px 17px rgb(80 80 80 / 31%);
+    background: var(--primary-dark);
+}
+
+/* Стили для темного режима */
+.dark-mode .address-form {
+    background: var(--primary-dark);
+    /* Фон для темного режима */
+    color: #ffffff;
+    /* Цвет текста для темного режима */
+}
+
+.dark-mode .address-form input {
+    background: #2c2f33;
+    /* Фон для полей ввода в темном режиме */
+    color: #ffffff;
+    /* Цвет текста для полей ввода в темном режиме */
+    border: 1px solid #555;
+    /* Границы полей ввода в темном режиме */
+}
+
+.dark-mode .address-form button {
+    background-color: #2160a9;
+    /* Фон для кнопки в темном режиме */
+    color: #ffffff;
+    /* Цвет текста для кнопки в темном режиме */
+}
+
+/* темный режим кнопок масштабирования */
+.dark-mode .zoom-control button {
+    background: #2c2f33;
+    /* Темный фон для кнопок */
+    color: #fff;
+    /* Светлый цвет текста для кнопок */
+    box-shadow: 0 12px 5px rgb(94, 196, 243);
+    /* Светлая тень для контраста */
+}
+
+/* темный режим кнопки геолокации */
+.dark-mode .geolocation-control button {
+    background: #2c2f33;
+    /* Темный фон для кнопки */
+    color: #fff;
+    /* Светлый цвет текста для кнопки */
+    box-shadow: 0 4px 5px rgb(94, 196, 243);
+}
+
+/* ----------------------------------- */
+
+.dark-mode .tariff-selection {
+    background-color: var(--primary-dark);
+    color: #fff;
+}
+
+
+.dark-mode .tariff {
+    background-color: var(--primary-dark);
+    color: #fff;
+    position: relative;
+    /* Для позиционирования псевдоэлемента */
+    overflow: hidden;
+}
+
+/* Псевдоэлемент, который создает перелив */
+.dark-mode .tariff::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -200%;
+    /* начинаем с левого края */
+    height: 100%;
+    width: 200%;
+    /* ширина в два раза больше, чтобы покрыть всю кнопку */
+    background: linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.2) 50%, rgba(255, 255, 255, 0) 100%);
+    /* Прозрачность увеличивается до 0.2 в середине и уменьшается обратно до 0 по краям */
+    z-index: 0;
+    transition: all 0.7s ease-in-out;
+}
+
+.dark-mode .tariff:hover::before {
+    left: 100%;
+}
+
+.dark-mode .tariff:hover,
+.dark-mode .tariff.active {
+    background-color: #2160a9;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+}
+
+.dark-mode .tariff-price {
+    color: #ffffff;
+    font-size: 1.0rem;
+}
+
+.dark-mode .tariff-info h3 {
+    color: #ffffff;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+/* Проверяем, подходит ли пользовательский интерфейс для темного режима, и если да, то используем светлые цвета для текста и иконок */
+@media (prefers-color-scheme: dark) {
+    .dark-mode .tariff-icon {
+        filter: invert(0%) sepia(0%) saturate(0%) hue-rotate(93deg) brightness(103%) contrast(103%);
+    }
+}
+
+/* ------------------------------------ */
+
+.dark-mode .ymaps-2-1-79-ground-pane {
+    filter: contrast(100%) invert(95%) saturate(20%);
+}
+
+.dark-mode .dropdown-content {
+    background-color: var(--primary-dark);
+    /* фон для выпадающего списка */
+}
+
+/* выпадающее окно */
+.dark-mode .dropdown-content a {
+    color: #ffffff;
+}
+
+/* конец темной темы */
+
+#map {
+    width: 100%;
+    height: 100vh;
+    position: relative;
+    z-index: 1;
+}
+
+.address-form {
+    position: absolute;
+    top: 105px;
+    left: 50px;
+    /* Отступ слева */
+    background: #fff;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 5px 8px rgba(0, 0, 0, 0.3);
+    z-index: 2;
+    width: 400px;
+    /* Ширина формы */
+    font-family: "Futura", sans-serif;
+    font-weight: 700;
+    font-size: 20px;
+}
+
+body,
+input,
+button {
+    font-family: 'Futura', sans-serif;
+    font-weight: 700;
+    font-size: 16px;
+}
+
+
+.address-form input,
+.address-form button {
+    width: 100%;
+    padding: 20px;
+    margin-bottom: 10px;
+    border: 1.5px solid #ccc;
+    border-radius: 6px;
+    box-sizing: border-box;
+    background-color: #eeeeee;
+}
+
+.address-form input::placeholder {
+    color: #aaa;
+}
+
+/* Стиль поля ввода при фокусировке */
+.address-form input:focus {
+    border-color: #152086;
+    outline: none;
+}
+
+.tariff-selection {
+    display: flex;
+    justify-content: center;
+    /* Центрируем тарифы */
+    align-items: stretch;
+    /* Вертикально центрируем содержимое */
+    flex-direction: row;
+    /* Располагаем элементы в строку */
+    gap: 10px;
+    /* Расстояние между элементами */
+    position: absolute;
+    top: 390px;
+    /* Отступ сверху */
+    left: 50px;
+    width: 400px;
+    /* Автоматическая ширина */
+    padding: 30px;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 5px 9px rgba(0, 0, 0, 0.5);
+    z-index: 2;
+    margin-top: 15px;
+}
+
+/* это кнопочки тарифов */
+.tariff {
+    cursor: pointer;
+    transition: box-shadow 0.3s, transform 0.3s;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 10px;
+    margin: 1px;
+    box-sizing: border-box;
+    border-radius: 20px;
+    background: #ffffff;
+    position: relative;
+    overflow: hidden;
+    min-height: 100px;
+}
+
+/* Анимация градиента при наведении */
+.tariff::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -200%;
+    width: 200%;
+    /* Для полного покрытия при анимации */
+    height: 100%;
+    background: linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.4) 50%, rgba(255, 255, 255, 0) 100%);
+    transition: all 0.9s ease-in-out;
+    z-index: 0;
+}
+
+.tariff:hover::before {
+    left: 100%;
+    /* Смещение градиента */
+}
+
+/* Акцентирование кнопки при наведении */
+.tariff:hover,
+.tariff.active {
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+    transform: translateY(-3px);
+    background: #ededed;
+}
+
+/* Медиа-запрос для мобильных устройств, если требуется */
+@media (max-width: 768px) {
+    .tariff {
+        flex: 1 1 100%;
+        /* На маленьких экранах каждый тариф будет занимать всю доступную ширину */
+    }
+}
+
+.tariff-info h3 {
+    margin-bottom: 5px;
+    font-size: 1.1rem;
+    color: #000000;
+    margin-top: auto;
+    /* Размер шрифта для названия тарифа */
+}
+
+.tariff-price {
+    font-weight: bold;
+    color: #000000;
+    justify-content: center;
+    font-size: 1.0rem;
+}
+
+.tariff-icon {
+    width: 120px;
+    /* или любой другой размер, который вам подходит */
+    height: auto;
+    margin-bottom: auto;
+    /* для сохранения пропорций изображения */
+}
+
+/* кнопки масштабирования */
+.zoom-control {
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    top: 500px;
+    /* Регулируйте положение кнопок */
+    right: 30px;
+    /* Регулируйте положение кнопок */
+    z-index: 2;
+}
+
+.zoom-control:before {
+    display: block;
+    content: '';
+    position: absolute;
+    top: 12px;
+    right: 0;
+    bottom: -12px;
+    left: 0;
+    border-radius: 8px;
+    background: rgba(21, 10, 10, 0.5);
+}
+
+.zoom-control button {
+    color: #000;
+    font-weight: bold;
+    border: none;
+    border-bottom: 0px solid #000;
+    outline: none;
+    position: relative;
+    top: 0;
+    padding: 10px 23px;
+    margin: 2px 0;
+    font-size: 35px;
+    z-index: 10;
+    transition: top 140ms linear;
+    background: #f3f3f3;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.8);
+    cursor: pointer;
+}
+
+.zoom-control button:first-child {
+    border-radius: 8px 8px 8px 8px;
+}
+
+.zoom-control button:last-child {
+    border-radius: 8px 8px 8px 8px;
+    border-bottom: none;
+}
+
+.zoom-control button:before {
+    content: '';
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 1px;
+    right: 1px;
+    bottom: -12px;
+    z-index: 10;
+    box-shadow: 0 0 0 2px #000;
+    transition: bottom 140ms linear;
+}
+
+.zoom-control button:first-child:before {
+    border-radius: 8px 8px 8px 8px;
+}
+
+.zoom-control button:last-child:before {
+    border-radius: 8px 8px 8px 8px;
+}
+
+.zoom-control button:hover {
+    top: 4px;
+}
+
+.zoom-control button:hover:before {
+    bottom: -8px;
+}
+
+.zoom-control button:active {
+    top: 12px;
+}
+
+.zoom-control button:active:before {
+    bottom: -12px;
+}
+
+/* кнопка геолокации */
+.geolocation-control {
+    display: flex;
+    justify-content: center;
+    /* Центрируем содержимое по горизонтали */
+    align-items: center;
+    /* Центрируем содержимое по вертикали */
+    position: absolute;
+    top: 415px;
+    /* Регулируйте положение кнопки */
+    right: 30px;
+    /* Регулируйте положение кнопки */
+    z-index: 2;
+    background: rgba(21, 10, 10, 0.5);
+    border-radius: 50%;
+    /* Сделайте углы полностью закруглёнными */
+    padding: 4px;
+    /* Регулируйте размер паддинга для изменения размера кнопки */
+}
+
+.geolocation-control button {
+    color: #000;
+    font-weight: bold;
+    border: none;
+    outline: none;
+    width: 70px;
+    /* Установите ширину */
+    height: 70px;
+    /* Установите высоту, равную ширине для создания круга */
+    font-size: 30px;
+    /* Регулируйте размер шрифта значка */
+    z-index: 10;
+    transition: transform 140ms linear;
+    background: #f3f3f3;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.9);
+    /* Сделайте тень более естественной */
+    cursor: pointer;
+    border-radius: 50%;
+    /* Сделайте углы полностью закруглёнными */
+    display: flex;
+    /* Для центровки содержимого внутри кнопки */
+    justify-content: center;
+    /* Центрируем содержимое по горизонтали */
+    align-items: center;
+    /* Центрируем содержимое по вертикали */
+}
+
+.geolocation-control button:hover {
+    transform: translateY(5px);
+}
+
+.geolocation-control button:active {
+    transform: translateY(-2px);
+}
+
+.content {
+    position: relative;
+    z-index: 10;
+}
+
+.ymaps-2-1-79-balloon {
+    font-family: 'Outfit', sans-serif;
+    /* Или любой другой шрифт на ваш выбор */
+    background: #fff;
+    /* Белый фон */
+    color: #333;
+    /* Цвет текста */
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 16px;
+    max-width: 320px;
+    font-size: 14px;
+    /* Размер текста */
+}
+
+/* Стиль для заголовка и текста внутри балуна */
+.ymaps-2-1-79-balloon .ymaps-2-1-79-balloon__title,
+.ymaps-2-1-79-balloon .ymaps-2-1-79-balloon__content {
+    font-family: 'Poppins', sans-serif;
+    /* Шрифт Poppins для текстовых элементов */
+    font-weight: 600;
+    /* Жирность шрифта */
+}
+
+/* Изменим стиль кнопки "Подробнее" */
+.ymaps-2-1-79-balloon .ymaps-2-1-79-balloon__button {
+    background-color: #122241 !important;
+    /* Тёмно-синий фон с принудительным приоритетом */
+    color: #fff !important;
+    /* Белый текст */
+    /* Белый текст на кнопке */
+    border: none;
+    padding: 10px 20px;
+    margin-top: 10px;
+    border-radius: 4px;
+    text-transform: uppercase;
+    font-weight: bold;
+    text-align: center;
+    display: block;
+    text-decoration: none;
+    transition: background-color 0.3s;
+}
+
+/* Стиль кнопки при наведении */
+.ymaps-2-1-79-balloon .ymaps-2-1-79-balloon__button:hover {
+    background-color: darken(var(--primary-dark), 10%);
+    /* Немного затемним кнопку при наведении */
+}
+
+/* Animation */
+@keyframes PrimeCarLogo {
+    0% {
+        transform: translateX(-100px);
+        opacity: 0;
+    }
+
+    100% {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes navani {
+    0% {
+        transform: translateY(100px);
+        opacity: 0;
+    }
+
+    100% {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+@keyframes rightSideAni {
+    0% {
+        transform: translateX(100px);
+        opacity: 0;
+    }
+
+    100% {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@media screen and (max-width:600px) {
+    body {
+        height: auto;
+    }
+
+    header {
+        height: auto;
+    }
+
+    ul {
+        background: #fff;
+        width: 100%;
+        height: 100vh;
+        position: absolute;
+        display: flex;
+        flex-direction: column;
+        text-align: center;
+        top: 3.4rem;
+        left: -100%;
+        z-index: 111111;
+    }
+
+    .menu {
+        display: block;
+        font-size: 1.5rem;
+        font-weight: bold;
+        color: var(--primary-color);
+    }
+
+    #click:checked~ul {
+        left: 0%;
+        transition: all 0.3s ease;
+    }
+
+    .dark-mode .menu {
+        color: var(--primary-color);
+    }
+
+    .dark-mode ul {
+        background: var(--primary-dark);
+    }
+
+    .mode {
+        position: absolute;
+        right: 4rem;
+    }
+
+    .images {
+        width: 100%;
+        margin: auto;
+    }
+
+    .main {
+        margin-top: 2rem;
+    }
+}

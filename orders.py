@@ -23,6 +23,9 @@ def create_order(order):
         return new_order.get_order_details(), 201
 
 
+def get_all_person(id_person: int) -> :
+        data_person = pd.read_csv("./data_base_orders.csv")
+
 
 
 def get_all():

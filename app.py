@@ -12,19 +12,9 @@ app.add_api("swagger.yml")
 # Обработчик маршрута для домашней страницы
 @app.route("/")
 def home():
-    # Отправляем GET-запрос к локальному серверу на порт 8086 для получения данных о людях
-    response = requests.get("http://127.0.0.1:8086/api/people", timeout=5)
 
-    # Проверяем успешность запроса
-    if response.status_code == 200:
-        # Если запрос успешен, получаем данные в формате JSON
-        people_data = response.json()
-    else:
-        # Если произошла ошибка, устанавливаем пустой список
-        people_data = []
 
-    # Рендерим шаблон home.html, передавая данные о людях для отображения
-    return render_template("home.html", data=people_data)
+    return render_template("./2_main_window/index.html")
 
 
 # Если файл app.py запускается напрямую, запускаем приложение на локальном сервере
