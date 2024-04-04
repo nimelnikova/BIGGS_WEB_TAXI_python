@@ -50,7 +50,7 @@ paths:
 
   /registration:
     post:
-      operationId: "main.registration"
+      operationId: "registration_and_entrance.registration"
       tags:
         - "Register"
       summary: "Register a new user."
@@ -70,7 +70,7 @@ paths:
 
   /entrance:
     post:
-      operationId: "main.entrance"
+      operationId: "registration_and_entrance.entrance"
       tags:
         - "Enter"
       summary: "User enters with their logemail and logpass."

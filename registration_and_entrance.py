@@ -1,22 +1,15 @@
-from flask import request, render_template, Response
+from models import User
+from hashlib import sha256
 import json
 import pandas as pd
-from modelsUser import User
+from flask import request, Response
 from http import HTTPStatus
-from hashlib import sha256
-import connexion
 
-app = connexion.App(__name__, specification_dir='./')
-app.add_api("swagger.yml")
 
-@app.route("/")
-def index():
-    return Response(render_template("/index.html"), HTTPStatus.OK) # главное окно с формой
 
-@app.route("/registration")
 def registration():
 
-    DataBase = pd.read_csv("/BIGGS_WEB_TAXI_python/data.csv") # считываем имеющуюся базу данных
+    DataBase = pd.read_csv("/home/admin/Second-Semester/ProjectTaxi/BIGGS_WEB_TAXI_python/dataUsers.csv") # считываем имеющуюся базу данных
 
     data = request.get_json() # получаем данные формы пост запросом
 
@@ -43,14 +36,13 @@ def registration():
     }
 
     DataBase.loc[len(DataBase.index)] = [user.user_id, user.logname, user.login, user.logemail, user._User__logpass]
-    DataBase.to_csv("/BIGGS_WEB_TAXI_python/data.csv", index=False)
+    DataBase.to_csv("/home/admin/Second-Semester/ProjectTaxi/BIGGS_WEB_TAXI_python/dataUsers.csv", index=False)
 
     return Response(json.dumps(body), HTTPStatus.OK, mimetype="application/json")
 
-@app.route("/entrance")
 def entrance():
 
-    DataBase = pd.read_csv("/BIGGS_WEB_TAXI_python/data.csv")
+    DataBase = pd.read_csv("/home/admin/Second-Semester/ProjectTaxi/BIGGS_WEB_TAXI_python/dataUsers.csv")
     data = request.get_json()
 
     hashed_cur_log = sha256() # хэширование полученных данных для сравнения
@@ -82,7 +74,3 @@ def entrance():
         return Response(json.dumps(body), HTTPStatus.OK, mimetype="application/json")
 
     return Response("Неверный адрес электронной почты или логин.", HTTPStatus.BAD_REQUEST)
-
-if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=8000)
-
