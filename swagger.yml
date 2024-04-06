@@ -12,28 +12,28 @@ components:
     CreateUser: 
       type: "object"
       required:
-        - logname
-        - login
-        - logemail
-        - logpass
+        - fullname
+        - username
+        - email
+        - password
       properties:
-        logname:
+        fullname:
           type: "string"
-        login:
+        username:
           type: "string"
-        logemail:
+        email:
           type: "string"
-        logpass:
+        password:
           type: "string"
     EnterUser:
       type: "object"
       required:
-        - logemail
-        - logpass
+        - login_or_email
+        - password
       properties:
-        logemail:
+        login_or_email:
           type: "string"
-        logpass:
+        password:
           type: "string"
 
 
@@ -66,14 +66,14 @@ paths:
         "201":
           description: "User was successfully registered."
         "400":
-          description: "Mistake in login or logemail."
+          description: "Mistake in username or email."
 
   /entrance:
     post:
       operationId: "registration_and_entrance.entrance"
       tags:
         - "Enter"
-      summary: "User enters with their logemail and logpass."
+      summary: "User enters with their email and password."
       requestBody:
           description: "User enters"
           required: True
@@ -86,4 +86,4 @@ paths:
         "200":
           description: "User successfully entered."
         "400":
-          description: "Wrong logpass."
+          description: "Wrong password."
