@@ -60,6 +60,7 @@ function onLoginClick(event) {
         })
         .catch(error => {
             loginError.textContent = error.message; // Показываем сообщение об ошибке от сервера
+            document.getElementById('login-password').value = '';
         });
 }
 
@@ -100,9 +101,78 @@ function onRegisterClick(event) {
 }
 
 document.addEventListener('DOMContentLoaded', function () {
-    const loginButton = document.querySelector('.card-front .btn');
-    loginButton.addEventListener('click', onLoginClick);
+    // Получаем элементы для входа и регистрации
+    const loginLabel = document.querySelector('.login-spacing');
+    const registrationLabel = document.querySelector('.registration-spacing');
 
+    // Функция переключения на форму входа
+    const toggleToLogin = () => {
+        document.getElementById('reg-log').checked = false;
+    };
+
+    // Функция переключения на форму регистрации
+    const toggleToRegistration = () => {
+        document.getElementById('reg-log').checked = true;
+    };
+
+    // Добавляем обработчики событий для переключения форм
+    loginLabel.addEventListener('click', toggleToLogin);
+    registrationLabel.addEventListener('click', toggleToRegistration);
+
+    const loginButton = document.querySelector('.card-front .btn');
     const registerButton = document.querySelector('.card-back .btn');
+
+    loginButton.addEventListener('click', onLoginClick);
     registerButton.addEventListener('click', onRegisterClick);
+
+    // Обработчик событий для полей формы входа
+    const loginInputFields = document.querySelectorAll('.card-front input');
+    loginInputFields.forEach((field, index) => {
+        field.addEventListener('keydown', function (event) {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                if (index < loginInputFields.length - 1) {
+                    loginInputFields[index + 1].focus();
+                } else {
+                    // Имитация клика на кнопку входа, если все поля заполнены
+                    if (document.getElementById('login-or-email').value && document.getElementById('login-password').value) {
+                        onLoginClick(event);
+                    }
+                }
+            }
+        });
+    });
+
+    // Обработчик событий для полей формы регистрации
+    const registerInputFields = document.querySelectorAll('.card-back input');
+    registerInputFields.forEach((field, index) => {
+        field.addEventListener('keydown', function (event) {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                if (index < registerInputFields.length - 1) {
+                    registerInputFields[index + 1].focus();
+                } else {
+                    // Имитация клика на кнопку регистрации, если все поля заполнены
+                    if (document.getElementById('register-name').value &&
+                        document.getElementById('register-login').value &&
+                        document.getElementById('register-email').value &&
+                        document.getElementById('register-password').value) {
+                        onRegisterClick(event);
+                    }
+                }
+            }
+        });
+    });
+    document.querySelectorAll('.toggle-password').forEach(function (toggleIcon) {
+        toggleIcon.addEventListener('click', function () {
+            const passwordInput = document.querySelector(this.getAttribute('toggle'));
+            if (passwordInput.getAttribute('type') === 'password') {
+                passwordInput.setAttribute('type', 'text');
+                this.classList.replace('uil-eye-slash', 'uil-eye');
+            } else {
+                passwordInput.setAttribute('type', 'password');
+                this.classList.replace('uil-eye', 'uil-eye-slash');
+            }
+        });
+    });
 });
