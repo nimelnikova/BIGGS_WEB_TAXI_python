@@ -16,8 +16,14 @@
             <div class="row full-height justify-content-center">
                 <div class="col-12 text-center align-self-center py-5">
                     <div class="section pb-5 pt-5 pt-sm-2 text-center">
-                        <h6 class="mb-0 pb-3"><span class="login-spacing">ВХОД</span><span class="registration-spacing">
-                                РЕГИСТРАЦИЯ</span></h6>
+                        <h6 class="mb-0 pb-3">
+                            <div class="toggle-text">
+                                <span class="login-spacing">ВХОД</span>
+                            </div>
+                            <div class="toggle-text">
+                                <span class="registration-spacing">РЕГИСТРАЦИЯ</span>
+                            </div>
+                        </h6>
                         <input class="checkbox" type="checkbox" id="reg-log" name="reg-log" />
                         <label for="reg-log"></label>
                         <div class="card-3d-wrap mx-auto">
@@ -66,6 +72,8 @@
                                                 <input type="password" name="registerpassword" class="form-style"
                                                     placeholder="Пароль" id="register-password" autocomplete="off">
                                                 <i class="input-icon uil uil-lock-alt"></i>
+                                                <i toggle="#register-password"
+                                                    class="uil uil-eye-slash field-icon toggle-password"></i>
                                             </div>
                                             <!-- Добавлены элементы для сообщений об ошибках -->
                                             <div id="register-error" class="error-message"></div>
