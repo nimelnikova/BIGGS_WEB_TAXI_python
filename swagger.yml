@@ -1,7 +1,7 @@
 openapi: 3.0.0
 info:
   title: "BIGGS_TAXI"
-  description: "An API about BIGGS taxi app."
+  description: "An API about BIGGS taxi app, covering both user registration/authentication and order management."
   version: "1.0.0"
 
 servers:
@@ -35,7 +35,67 @@ components:
           type: "string"
         password:
           type: "string"
-
+    Order:
+      type: "object"
+      required:
+        - customer_id
+        - pickup_location
+        - destination
+        - car_category
+        - order_amount
+        - start_time
+        - end_time
+        - total_ride_time
+      properties:
+        customer_id:
+          type: "integer"
+        pickup_location:
+          type: "string"
+        destination:
+          type: "string"
+        distance:
+          type: "number"
+        car_category:
+          type: "string"
+        start_time:
+          type: "string"
+        end_time:
+          type: "string"
+        total_ride_time:
+          type: "integer"
+        order_amount:
+          type: "integer"
+  responses:
+    BadRequest:
+      description: "Invalid request parameters"
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    NotFound:
+      description: "Resource not found"
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Error:
+      type: "object"
+      properties:
+        message:
+          type: "string"
+  parameters:
+    userIdParam:
+      name: "id_person"
+      in: "path"
+      required: true
+      schema:
+        type: "string"
+    tripIdParam:
+      name: "trip_id"
+      in: "path"
+      required: true
+      schema:
+        type: "string"
 
 paths:
   /:
@@ -47,43 +107,101 @@ paths:
       responses:
         "200":
           description: "Start window was opened successfully."
-
+  
   /registration:
     post:
-      operationId: "registration_and_entrance.registration"
+      operationId: "controllers.login_controller.registration"
       tags:
         - "Register"
       summary: "Register a new user."
       requestBody:
-          description: "User to register"
-          required: True
-          content:
-            application/json:
-              schema:
-                x-body-name: "user"
-                $ref: "#/components/schemas/CreateUser"
+        description: "User to register"
+        required: True
+        content:
+          application/json:
+            schema:
+              x-body-name: "user"
+              $ref: "#/components/schemas/CreateUser"
       responses:
         "201":
           description: "User was successfully registered."
         "400":
-          description: "Mistake in username or email."
-
+          $ref: "#/components/responses/BadRequest"
+  
   /entrance:
     post:
-      operationId: "registration_and_entrance.entrance"
+      operationId: "controllers.login_controller.entrance"
       tags:
         - "Enter"
       summary: "User enters with their email and password."
       requestBody:
-          description: "User enters"
-          required: True
-          content:
-            application/json:
-              schema:
-                x-body-name: "user"
-                $ref: "#/components/schemas/EnterUser"
+        description: "User enters"
+        required: True
+        content:
+          application/json:
+            schema:
+              x-body-name: "user"
+              $ref: "#/components/schemas/EnterUser"
       responses:
         "200":
           description: "User successfully entered."
         "400":
-          description: "Wrong password."
+          $ref: "#/components/responses/BadRequest"
+
+  /orders:
+    get:
+      operationId: "orders.get_all"
+      tags:
+        - "Orders"
+      summary: "Read the list of people"
+      responses:
+        "200":
+          description: "Successfully read people list"
+    post:
+      operationId: "orders.create_order"
+      tags:
+        - "Orders"
+      summary: "Getting order information"
+      requestBody:
+        description: "Order to create"
+        required: True
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Order"
+      responses:
+        "201":
+          description: "The order data has been successfully received"
+
+  /orders/{id_person}:
+    get:
+      operationId: "orders.get_all_person"
+      tags:
+        - "Orders"
+      summary: "Get orders by person ID"
+      parameters:
+        - $ref: "#/components/parameters/userIdParam"
+      responses:
+        "200":
+          description: "Successful operation"
+          content:
+            application/json:
+              schema:
+                type: "array"
+                items:
+                  $ref: "#/components/schemas/Order"
+
+  /trips/{trip_id}:
+    delete:
+      summary: "Delete trip by its identifier"
+      description: "Deletes a trip from the CSV file by its identifier."
+      operationId: "orders.delete_trip_by_id"
+      tags:
+        - "Orders"
+      parameters:
+        - $ref: "#/components/parameters/tripIdParam"
+      responses:
+        "200":
+          description: "Trip successfully deleted"
+        "404":
+          $ref: "#/components/responses/NotFound"

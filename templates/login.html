@@ -5,7 +5,8 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <!-- <link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}"> -->
+    <link rel="stylesheet" href="../static/css/login.css"> <!-- ЗАМЕНИТЬ -->
     <title>Страница входа/регистрации</title>
 </head>
 
@@ -35,12 +36,13 @@
                                             <div class="form-group">
                                                 <input type="email" name="loginoremail" class="form-style"
                                                     placeholder="Логин или Почта" id="login-or-email"
-                                                    autocomplete="off">
+                                                    autocomplete="username">
                                                 <i class="input-icon uil uil-user"></i>
                                             </div>
                                             <div class="form-group mt-2">
                                                 <input type="password" name="loginpassword" class="form-style"
-                                                    placeholder="Пароль" id="login-password" autocomplete="off">
+                                                    placeholder="Пароль" id="login-password"
+                                                    autocomplete="current-password">
                                                 <i class="input-icon uil uil-lock-alt"></i>
                                             </div>
                                             <!-- Добавлены элементы для сообщений об ошибках -->
@@ -88,7 +90,8 @@
             </div>
         </div>
     </div>
-    <script src="{{ url_for('static', filename='script.js') }}"></script>
+    <!-- <script src="{{ url_for('static', filename='login.js') }}"></script> -->
+    <script src="../static/js/login.js"></script> <!-- ЗАМЕНИТЬ -->
 </body>
 
 </html>

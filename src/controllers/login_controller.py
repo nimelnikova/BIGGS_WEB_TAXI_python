@@ -1,16 +1,18 @@
-from models import User
+from ..models.user_model import User
 from hashlib import sha256
 import json
 import pandas as pd
-from flask import jsonify, request, Response
+from flask import jsonify, request, Response, session
 from http import HTTPStatus
-import pathlib
+from pathlib import Path
 
-PATH = pathlib.Path(__name__).parent.resolve() / "dataUsers.csv"
+
+BASE_DIR = Path(__file__).resolve().parent.parent
+DATA_USERS_PATH = BASE_DIR / "dataUsers.csv"
 
 
 def registration():
-    DataBase = pd.read_csv(PATH)
+    DataBase = pd.read_csv(DATA_USERS_PATH)
 
     data = request.get_json()  # получаем данные формы пост запросом
 
@@ -53,7 +55,7 @@ def registration():
         user._User__password,
     ]
     DataBase.to_csv(
-        PATH,
+        DATA_USERS_PATH,
         index=False,
     )
 
@@ -62,7 +64,7 @@ def registration():
 
 def entrance():
 
-    DataBase = pd.read_csv(PATH)
+    DataBase = pd.read_csv(DATA_USERS_PATH)
     data = request.get_json()
 
     hashed_cur_log = sha256()  # хэширование полученных данных для сравнения
@@ -88,6 +90,7 @@ def entrance():
     if user_row is not None and not user_row.empty:
         # Получаем первую строку, соответствующую пользователю
         user_data = user_row.iloc[0]
+        session["user_id"] = user_data["user_id"]  # Сохраняем user_id в сессии
 
         # Подготавливаем данные пользователя для ответа
         body = {

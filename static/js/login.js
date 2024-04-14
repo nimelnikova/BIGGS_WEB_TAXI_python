@@ -56,11 +56,31 @@ function onLoginClick(event) {
     sendPostRequest('/api/entrance', { login_or_email, password })
         .then(data => {
             console.log('Login Success:', data);
-            window.location.href = 'main_window/index.html';
+            onSuccessfulLogin();
+            window.location.href = '/main.html';
         })
         .catch(error => {
             loginError.textContent = error.message; // Показываем сообщение об ошибке от сервера
             document.getElementById('login-password').value = '';
+        });
+}
+
+// Предполагается, что эта функция вызывается после успешного входа в систему.
+function onSuccessfulLogin() {
+    // Запрос к серверу для получения user_id
+    fetch('/get-user-id')
+        .then(response => response.json())
+        .then(data => {
+            if (data.user_id) {
+                localStorage.setItem('userId', data.user_id);
+                // Теперь user_id доступен для использования при создании заказа
+            } else {
+                console.error('Не удалось получить user_id');
+                // Возможно, вам следует перенаправить пользователя на страницу входа
+            }
+        })
+        .catch(error => {
+            console.error('Произошла ошибка при попытке получить user_id:', error);
         });
 }
 
@@ -93,7 +113,7 @@ function onRegisterClick(event) {
     sendPostRequest('/api/registration', { fullname, username, email, password }) // Исправил URL на '/api/registration'
         .then(data => {
             console.log('Registration Success:', data);
-            window.location.href = 'main_window/index.html'; // Переход на главную страницу после успешной регистрации
+            window.location.href = '/main.html'; // Переход на главную страницу после успешной регистрации
         })
         .catch(error => {
             registerError.textContent = error.message; // Показываем сообщение об ошибке от сервера

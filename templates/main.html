@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,100..900;1,100..900&display=swap"
+        rel="stylesheet">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <!-- <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}"> -->
+    <link rel="stylesheet" href="../static/css/main.css"> <!-- ЗАМЕНИТЬ -->
+    <link rel="icon" type="image/png" href="../static/icons/favicon.png">
+
+    <title>ОСНОВНОЕ ОКНО</title>
+    <script
+        src="https://api-maps.yandex.ru/2.1/?apikey=8d3faaa1-8ec9-4ba2-8a0d-8977f91aa49f&lang=ru_RU&load=package.full"
+        type="text/javascript"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.12/dist/vue.js"></script>
+
+    <!-- <script src="{{ url_for('static', filename='main.js') }}"></script> -->
+    <script src="../static/js/main.js"></script> <!-- ЗАМЕНИТЬ -->
+</head>
+
+<body>
+    <header class="container">
+        <div class="page-header">
+            <div class="logo">
+                <a href="#">PRIME car</a>
+            </div>
+            <input type="checkbox" id="click">
+
+            <label for="click" class="mainicon">
+                <div class="menu">
+                    <i class='bx bx-menu'></i>
+                </div>
+            </label>
+            <ul>
+                <li class="dropdown">
+                    <a href="javascript:void(0);" class="dropbtn" style="--navAni:1">Тарифы ↓</a>
+                    <div class="dropdown-content">
+                        <!-- <a href="http://127.0.0.1:5500/3D%20car%20Mercedes/dist%20(work)/index.html">STANDARD</a> -->
+                        <a href="standart.html">STANDARD</a> <!-- ЗАМЕНИТЬ -->
+                        <a href="premium.html">PREMIUM</a> <!-- ЗАМЕНИТЬ -->
+                        <a href="VIP.html">VIP</a> <!-- ЗАМЕНИТЬ -->
+                    </div>
+                </li>
+                <li><a href="#" style="--navAni:2">История заказов</a></li>
+                <li><a href="#" style="--navAni:3">Q & A</a></li>
+                <li><a href="#" style="--navAni:4">Тех. Поддержка</a></li>
+                <!-- Другие пункты меню, если они у вас есть -->
+            </ul>
+            <label class="mode">
+                <input type="checkbox" id="darkModeToggle">
+                <i class='bx bxs-moon'></i>
+            </label>
+        </div>
+    </header>
+
+    <div class="address-form">
+        <input type="text" id="from-input" placeholder="Откуда">
+        <input type="text" id="to-input" placeholder="Куда?">
+        <input type="'text" id="route-info" placeholder="Информация о вашей поездке" readonly>
+    </div>
+
+    <!-- Тарифы -->
+    <div class="tariff-selection">
+        <div class="tariff" data-tariff-type="standard" role="button">
+            <img src="../static/icons/hongqi.png" alt="Иконка Стандарт" class="tariff-icon"> <!-- ЗАМЕНИТЬ -->
+            <div class="tariff-info">
+                <h3>Standart</h3>
+                <p class="tariff-price">от 555 ₽</p>
+            </div>
+        </div>
+        <div class="tariff" data-tariff-type="premium" role="button">
+            <img src="../static/icons/мерс.png" alt="Иконка Премиум" class="tariff-icon"> <!-- ЗАМЕНИТЬ -->
+            <div class="tariff-info">
+                <h3>Premium</h3>
+                <p class="tariff-price">от 1555 ₽</p>
+            </div>
+        </div>
+        <div class="tariff" data-tariff-type="vip" role="button">
+            <img src="../static/icons/ролс.png" alt="Иконка VIP" class="tariff-icon"> <!-- ЗАМЕНИТЬ -->
+            <div class="tariff-info">
+                <h3>VIP</h3>
+                <p class="tariff-price">от 5555 ₽</p>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="payment-method-selection">
+        <button id="payment-method-button" class="payment-method-button">
+            <span class="payment-method-label">Способ оплаты:</span>
+            <span id="payment-method-value" class="payment-method-value">
+                <img src="../static/icons/cash.svg" alt="Наличные" class="payment-method-icon"> <!-- ЗАМЕНИТЬ -->
+                Наличные
+            </span>
+            <i class="input-icon uil uil-angle-right-b"></i>
+        </button>
+    </div>
+
+    <!-- Модальное окно выбора способа оплаты -->
+    <div id="payment-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">Выберите способ оплаты</div>
+                <span class="close-modal">&times;</span>
+            </div>
+            <div class="payment-options">
+                <div class="payment-option">
+                    <img class="payment-option-icon" src="../static/icons/cash.svg" alt="Наличные"> <!-- ЗАМЕНИТЬ -->
+                    <!-- Путь к иконке наличных -->
+                    <span class="payment-option-text">Наличные</span>
+                </div>
+                <div class="payment-option">
+                    <img class="payment-option-icon" src="../static/icons/credit-card.svg" alt="Карта">
+                    <!-- ЗАМЕНИТЬ -->
+                    <!-- Путь к иконке карты -->
+                    <span class="payment-option-text">Карта</span>
+                </div>
+                <div id="add-card-option" class="payment-option">
+                    <a href="credit_card.html" class="payment-option-link">
+                        <i class="input-icon uil uil-plus"></i> Добавить карту
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="order-button-container">
+        <button id="order-button" class="order-button">ЗАКАЗАТЬ</button>
+    </div>
+
+
+    <div id="map"></div>
+
+    <!-- Кнопки масштабирования -->
+    <div class="zoom-control">
+        <button class="zoom-in">+</button>
+        <button class="zoom-out">-</button>
+    </div>
+
+    <!-- Кнопка геолокации -->
+    <div class="geolocation-control">
+        <button id="geolocation-button"><i class='bx bx-navigation'></i></button>
+    </div>
+
+    <script>
+        const darkModeToggle = document.getElementById('darkModeToggle');
+        const body = document.body;
+        const isDarkMode = localStorage.getItem('darkMode') === 'enabled';
+        if (isDarkMode) {
+            body.classList.add('dark-mode');
+            darkModeToggle.checked = true;
+        }
+        darkModeToggle.addEventListener('change', () => {
+            if (darkModeToggle.checked) {
+                body.classList.add('dark-mode');
+                localStorage.setItem('darkMode', 'enabled');
+            } else {
+                body.classList.remove('dark-mode');
+                localStorage.setItem('darkMode', 'disabled');
+            }
+        });
+    </script>
+</body>
+
+</html>

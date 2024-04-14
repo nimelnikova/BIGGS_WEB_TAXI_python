@@ -1,0 +1,1 @@
+customer_id,order_id,pickup_location,destination,distance,car_category,start_time,end_time,total_ride_time,order_amount
