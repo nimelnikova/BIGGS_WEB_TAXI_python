@@ -372,7 +372,7 @@ function init() {
 
     // логика связи с бекендом / отправка данных
     document.getElementById('order-button').addEventListener('click', function () {
-        const userId = localStorage.getItem('userId'); // Получаем user_id из localStorage
+        const userId = parseInt(localStorage.getItem('userId'), 10);  // Получаем user_id из localStorage
         if (!userId) {
             alert('Пожалуйста, войдите в систему перед созданием заказа.');
             return;

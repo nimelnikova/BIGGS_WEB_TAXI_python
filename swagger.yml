@@ -9,7 +9,7 @@ servers:
 
 components:
   schemas:
-    CreateUser: 
+    CreateUser:
       type: "object"
       required:
         - fullname
@@ -65,6 +65,11 @@ components:
           type: "integer"
         order_amount:
           type: "integer"
+    Error:
+      type: "object"
+      properties:
+        message:
+          type: "string"
   responses:
     BadRequest:
       description: "Invalid request parameters"
@@ -79,10 +84,11 @@ components:
           schema:
             $ref: '#/components/schemas/Error'
     Error:
-      type: "object"
-      properties:
-        message:
-          type: "string"
+      description: "General error response"
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
   parameters:
     userIdParam:
       name: "id_person"
@@ -107,10 +113,10 @@ paths:
       responses:
         "200":
           description: "Start window was opened successfully."
-  
+
   /registration:
     post:
-      operationId: "controllers.login_controller.registration"
+      operationId: "src.controllers.login_controller.registration"
       tags:
         - "Register"
       summary: "Register a new user."
@@ -127,10 +133,10 @@ paths:
           description: "User was successfully registered."
         "400":
           $ref: "#/components/responses/BadRequest"
-  
+
   /entrance:
     post:
-      operationId: "controllers.login_controller.entrance"
+      operationId: "src.controllers.login_controller.entrance"
       tags:
         - "Enter"
       summary: "User enters with their email and password."
@@ -150,7 +156,7 @@ paths:
 
   /orders:
     get:
-      operationId: "orders.get_all"
+      operationId: "src.controllers.orders_controller.get_all"
       tags:
         - "Orders"
       summary: "Read the list of people"
@@ -158,7 +164,7 @@ paths:
         "200":
           description: "Successfully read people list"
     post:
-      operationId: "orders.create_order"
+      operationId: "src.controllers.orders_controller.create_order"
       tags:
         - "Orders"
       summary: "Getting order information"
@@ -175,7 +181,7 @@ paths:
 
   /orders/{id_person}:
     get:
-      operationId: "orders.get_all_person"
+      operationId: "src.controllers.orders_controller.get_all_person"
       tags:
         - "Orders"
       summary: "Get orders by person ID"
@@ -195,7 +201,7 @@ paths:
     delete:
       summary: "Delete trip by its identifier"
       description: "Deletes a trip from the CSV file by its identifier."
-      operationId: "orders.delete_trip_by_id"
+      operationId: "src.controllers.orders_controller.delete_trip_by_id"
       tags:
         - "Orders"
       parameters:

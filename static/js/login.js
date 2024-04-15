@@ -112,8 +112,15 @@ function onRegisterClick(event) {
 
     sendPostRequest('/api/registration', { fullname, username, email, password }) // Исправил URL на '/api/registration'
         .then(data => {
-            console.log('Registration Success:', data);
-            window.location.href = '/main.html'; // Переход на главную страницу после успешной регистрации
+            if (data.user_id !== undefined) {
+                // Сохраняем user_id в localStorage как строку
+                localStorage.setItem('userId', String(data.user_id));
+                console.log(localStorage.getItem('userId')); // Для проверки
+                // Переход на главную страницу после успешной регистрации
+                window.location.href = '/main.html';
+            } else {
+                registerError.textContent = 'Ошибка регистрации: ID пользователя не получен.';
+            }
         })
         .catch(error => {
             registerError.textContent = error.message; // Показываем сообщение об ошибке от сервера

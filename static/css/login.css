@@ -309,14 +309,11 @@ h6 span {
     box-shadow: 0 8px 24px 0 rgba(16, 39, 112, 0.2);
 }
 
-/* Для родительского контейнера 'ВХОД' и 'РЕГИСТРАЦИЯ' */
+/* Для контейнера 'ВХОД' и 'РЕГИСТРАЦИЯ' */
 h6 {
     position: relative;
-    /* Относительное позиционирование */
     text-align: left;
-    /* Выравнивание текста по левому краю */
     width: 100%;
-    /* Задаем ширину */
     margin: 0;
     padding: 0;
     font-size: 22px;
@@ -344,18 +341,14 @@ h6 {
     background: linear-gradient(45deg, #ffeba7, #ff7eb3, #ffeba7, #fff);
     background-size: 200% 200%;
     -webkit-text-fill-color: transparent;
-    /* Для Safari */
     -webkit-background-clip: text;
     background-clip: text;
-    /* Для Safari */
     color: transparent;
-    /* Устанавливаем цвет текста прозрачным, чтобы показать градиент */
     animation: gradient-animation 3s linear infinite;
 }
 
 .login-spacing {
     left: calc(50% - 235px);
-    /* Рассчитываем позицию с учетом размера элемента */
 }
 
 .registration-spacing {
@@ -367,7 +360,6 @@ h6 {
 .login-spacing:hover,
 .registration-spacing:hover {
     transform: scale(1.05);
-    /* Увеличиваем размер */
 }
 
 .field-icon {
