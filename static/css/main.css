@@ -1,5 +1,3 @@
-/* @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800&display=swap'); */
-/* @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@200;300;400;500;600;700;800&family=Roboto:wght@100;300;400&display=swap'); */
 @import url("https://unicons.iconscout.com/release/v2.1.9/css/unicons.css");
 @import url('https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,100..900;1,100..900&display=swap');
 
@@ -188,41 +186,30 @@ li a:hover {
 /* Стили для темного режима */
 .dark-mode .address-form {
     background: var(--primary-dark);
-    /* Фон для темного режима */
     color: #ffffff;
-    /* Цвет текста для темного режима */
 }
 
 .dark-mode .address-form input {
     background: #2c2f33;
-    /* Фон для полей ввода в темном режиме */
     color: #ffffff;
-    /* Цвет текста для полей ввода в темном режиме */
     border: 1px solid #555;
-    /* Границы полей ввода в темном режиме */
 }
 
 .dark-mode .address-form button {
     background-color: #2160a9;
-    /* Фон для кнопки в темном режиме */
     color: #ffffff;
-    /* Цвет текста для кнопки в темном режиме */
 }
 
 .dark-mode .zoom-control button {
     background: #2c2f33;
-    /* Темный фон для кнопок */
     color: #fff;
-    /* Светлый цвет текста для кнопок */
     box-shadow: 0 12px 5px rgb(94, 196, 243);
-    /* Светлая тень для контраста */
+
 }
 
 .dark-mode .geolocation-control button {
     background: #2c2f33;
-    /* Темный фон для кнопки */
     color: #fff;
-    /* Светлый цвет текста для кнопки */
     box-shadow: 0 4px 5px rgb(94, 196, 243);
 }
 
@@ -238,7 +225,6 @@ li a:hover {
     background-color: var(--primary-dark);
     color: #fff;
     position: relative;
-    /* Для позиционирования псевдоэлемента */
     overflow: hidden;
 }
 
@@ -247,12 +233,9 @@ li a:hover {
     position: absolute;
     top: 0;
     left: -200%;
-    /* начинаем с левого края */
     height: 100%;
     width: 200%;
-    /* ширина в два раза больше, чтобы покрыть всю кнопку */
     background: linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.2) 50%, rgba(255, 255, 255, 0) 100%);
-    /* Прозрачность увеличивается до 0.2 в середине и уменьшается обратно до 0 по краям */
     z-index: 0;
     transition: all 0.7s ease-in-out;
 }
@@ -277,7 +260,6 @@ li a:hover {
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
 }
 
-/* Проверяем, подходит ли пользовательский интерфейс для темного режима, и если да, то используем светлые цвета для текста и иконок */
 @media (prefers-color-scheme: dark) {
     .dark-mode .tariff-icon {
         filter: invert(0%) sepia(0%) saturate(0%) hue-rotate(93deg) brightness(103%) contrast(103%);
@@ -355,12 +337,10 @@ li a:hover {
 
 .dark-mode .modal-header {
     border-bottom: 1px solid #555;
-    /* Темная граница */
 }
 
 .dark-mode .payment-option:hover {
     background-color: #213246;
-    /* Фон при наведении */
 }
 
 .dark-mode .payment-option {
@@ -440,7 +420,6 @@ button {
     top: 420px;
     left: 50px;
     width: 400px;
-    /* Автоматическая ширина */
     padding: 30px;
     background: #fff;
     border-radius: 15px;
@@ -474,7 +453,6 @@ button {
     top: 0;
     left: -200%;
     width: 200%;
-    /* Для полного покрытия при анимации */
     height: 100%;
     background: linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.4) 50%, rgba(255, 255, 255, 0) 100%);
     transition: all 0.9s ease-in-out;
@@ -483,7 +461,6 @@ button {
 
 .tariff:hover::before {
     left: 100%;
-    /* Смещение градиента */
 }
 
 /* Акцентирование кнопки при наведении */
@@ -498,7 +475,6 @@ button {
 @media (max-width: 768px) {
     .tariff {
         flex: 1 1 100%;
-        /* На маленьких экранах каждый тариф будет занимать всю доступную ширину */
     }
 }
 
@@ -507,7 +483,6 @@ button {
     font-size: 20px;
     color: #000000;
     margin-top: auto;
-    /* Размер шрифта для названия тарифа */
 }
 
 .tariff-price {
@@ -519,10 +494,8 @@ button {
 
 .tariff-icon {
     width: 120px;
-    /* или любой другой размер, который вам подходит */
     height: auto;
     margin-bottom: auto;
-    /* для сохранения пропорций изображения */
 }
 
 /* кнопки масштабирования */
@@ -531,9 +504,7 @@ button {
     flex-direction: column;
     position: absolute;
     top: 500px;
-    /* Регулируйте положение кнопок */
     right: 30px;
-    /* Регулируйте положение кнопок */
     z-index: 2;
 }
 
@@ -633,25 +604,17 @@ button {
     border: none;
     outline: none;
     width: 70px;
-    /* Установите ширину */
     height: 70px;
-    /* Установите высоту, равную ширине для создания круга */
     font-size: 30px;
-    /* Регулируйте размер шрифта значка */
     z-index: 10;
     transition: transform 140ms linear;
     background: #f3f3f3;
     box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.9);
-    /* Сделайте тень более естественной */
     cursor: pointer;
     border-radius: 50%;
-    /* Сделайте углы полностью закруглёнными */
     display: flex;
-    /* Для центровки содержимого внутри кнопки */
     justify-content: center;
-    /* Центрируем содержимое по горизонтали */
     align-items: center;
-    /* Центрируем содержимое по вертикали */
 }
 
 .geolocation-control button:hover {
@@ -1010,7 +973,6 @@ button {
     top: 0;
     left: -200%;
     width: 200%;
-    /* В два раза шире, чтобы обеспечить плавность анимации */
     height: 100%;
     background: linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, rgba(20, 71, 255, 0.3) 50%, rgba(0, 166, 255, 0.3) 70%, rgba(255, 255, 255, 0) 100%);
     transition: all 1.7s ease-in-out;
