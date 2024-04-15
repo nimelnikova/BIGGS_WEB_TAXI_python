@@ -3,6 +3,14 @@ from http import HTTPStatus
 import connexion
 import os
 import sys
+import sqlite3
+import sqlite_query
+from pathlib import Path
+
+
+BASE_DIR = Path(__file__).resolve().parent
+DATA_USERS_PATH = BASE_DIR / "dataUsers.db"
+
 
 current_dir = os.path.abspath(os.path.dirname(__file__))
 src_dir = os.path.join(current_dir, "src")
@@ -12,6 +20,9 @@ if src_dir not in sys.path:
 app = connexion.App(__name__, specification_dir="./")
 app.add_api("swagger.yml")
 
+conn = sqlite3.connect(DATA_USERS_PATH) # создаем базу данных, если ее еще нет
+cur = conn.cursor()
+cur.execute(sqlite_query.create_table_users)
 
 @app.route("/")
 def index():
