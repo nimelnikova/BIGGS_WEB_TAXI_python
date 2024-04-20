@@ -14,7 +14,7 @@ DATA_USERS_PATH = BASE_DIR / "dataUsers.db"
 
 
 def registration():
-    conn = sqlite3.connect(DATA_USERS_PATH) # создаем базу данных, если ее еще нет
+    conn = sqlite3.connect(DATA_USERS_PATH)  # создаем базу данных, если ее еще нет
     cur = conn.cursor()
 
     data = request.get_json()  # получаем данные формы пост запросом
@@ -44,8 +44,8 @@ def registration():
 
     if exists:
         return jsonify({"message": "Этот логин уже занят."}), HTTPStatus.BAD_REQUEST
-    
-    # проверка на существование пользователя с такой почтой 
+
+    # проверка на существование пользователя с такой почтой
     cur.execute(sqlite_query.check_user_email, (user.email,))
     exists = cur.fetchone()[0]
 
@@ -55,28 +55,34 @@ def registration():
             HTTPStatus.BAD_REQUEST,
         )
 
-    cur.execute(sqlite_query.insert_user,
+    cur.execute(
+        sqlite_query.insert_user,
         (
-        user.fullname,
-        user.username,
-        user.email,
-        user._User__password,
-        )
+            user.fullname,
+            user.username,
+            user.email,
+            user._User__password,
+        ),
     )
 
-    user_id = cur.execute(sqlite_query.find_id, (user.username,))
+    user_id = cur.lastrowid  # Получаем ID вставленного пользователя
 
-    body = {  # формирование тела для response
-        "id": user_id.fetchall()[0][0],
+    session["user_id"] = user_id  # Устанавливаем user_id в сессию
+
+    # Тело ответа должно содержать только необходимую информацию
+    body = {
+        "id": user_id,
         "fullname": user.fullname,
         "username": user.username,
         "email": user.email,
-        "password": user.get_password(),
     }
 
     conn.commit()
+    cur.close()
     conn.close()
-    return Response(json.dumps(body), HTTPStatus.OK, mimetype="application/json")
+
+    # Возвращаем ответ без пароля и с правильным MIME типом
+    return jsonify(body), HTTPStatus.CREATED
 
 
 def entrance():
@@ -103,7 +109,13 @@ def entrance():
     email_exists = cur.fetchone()[0]
 
     # Получаем пароль пользователя
-    cur.execute(sqlite_query.check_user, (hashed_log_result, hashed_log_result,))
+    cur.execute(
+        sqlite_query.check_user,
+        (
+            hashed_log_result,
+            hashed_log_result,
+        ),
+    )
     rows = cur.fetchone()
     data = [0] * 5
     for i, row in enumerate(rows):
@@ -115,13 +127,11 @@ def entrance():
     cur_email = data[3]
     cur_password = data[4]
 
-    if (
-        login_exists or email_exists
-    ):
-        if ( # Сравниваем пароль пользователя с переданным
+    if login_exists or email_exists:
+        if (  # Сравниваем пароль пользователя с переданным
             hashed_password_result == cur_password
         ):
-            body = { # Формируем тело пользователя для ответа
+            body = {  # Формируем тело пользователя для ответа
                 "user_id": cur_id,
                 "fullname": cur_name,
                 "username": cur_login,
@@ -130,12 +140,14 @@ def entrance():
             }
             conn.close()
             # Отправляем ответ
-            return Response(json.dumps(body), HTTPStatus.OK, mimetype="application/json")
+            return Response(
+                json.dumps(body), HTTPStatus.OK, mimetype="application/json"
+            )
         conn.close()
         return (
             jsonify({"message": "Неверный пароль."}),
             HTTPStatus.BAD_REQUEST,
-            )
+        )
     conn.close()
     return (
         jsonify({"message": "Неверный адрес электронной почты или логин."}),
