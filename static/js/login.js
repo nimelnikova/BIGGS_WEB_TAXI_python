@@ -110,14 +110,12 @@ function onRegisterClick(event) {
         return;
     }
 
-    sendPostRequest('/api/registration', { fullname, username, email, password }) // Исправил URL на '/api/registration'
+    sendPostRequest('/api/registration', { fullname, username, email, password })
         .then(data => {
-            if (data.user_id !== undefined) {
-                // Сохраняем user_id в localStorage как строку
-                localStorage.setItem('userId', String(data.user_id));
-                console.log(localStorage.getItem('userId')); // Для проверки
-                // Переход на главную страницу после успешной регистрации
-                window.location.href = '/main.html';
+            // Проверяем, что в ответе есть user_id
+            if (data.id !== undefined) {
+                // Вызываем функцию для успешной регистрации
+                onSuccessfulRegistration(data.id);
             } else {
                 registerError.textContent = 'Ошибка регистрации: ID пользователя не получен.';
             }
@@ -125,6 +123,16 @@ function onRegisterClick(event) {
         .catch(error => {
             registerError.textContent = error.message; // Показываем сообщение об ошибке от сервера
         });
+}
+
+// Функция, которая будет вызвана после успешной регистрации пользователя.
+function onSuccessfulRegistration(userId) {
+    // Сохраняем user_id в localStorage
+    localStorage.setItem('userId', userId);
+
+    // Теперь user_id доступен для использования при создании заказа
+    // Переход на главную страницу после успешной регистрации
+    window.location.href = '/main.html';
 }
 
 document.addEventListener('DOMContentLoaded', function () {

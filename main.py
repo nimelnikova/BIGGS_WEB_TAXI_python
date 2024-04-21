@@ -8,6 +8,11 @@ import sqlite_query
 from pathlib import Path
 
 
+# секретный ключ
+def generate_secret_key():
+    return os.urandom(24)
+
+
 BASE_DIR = Path(__file__).resolve().parent
 DATA_USERS_PATH = BASE_DIR / "dataUsers.db"
 
@@ -20,9 +25,13 @@ if src_dir not in sys.path:
 app = connexion.App(__name__, specification_dir="./")
 app.add_api("swagger.yml")
 
-conn = sqlite3.connect(DATA_USERS_PATH) # создаем базу данных, если ее еще нет
+# установка ключа
+app.app.secret_key = generate_secret_key()
+
+conn = sqlite3.connect(DATA_USERS_PATH)  # создаем базу данных, если ее еще нет
 cur = conn.cursor()
 cur.execute(sqlite_query.create_table_users)
+
 
 @app.route("/")
 def index():
