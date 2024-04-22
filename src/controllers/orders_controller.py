@@ -94,3 +94,6 @@ def delete_trip_by_id(trip_id: Any) -> None:
 
     # Запись обновленных данных обратно в CSV файл
     data_base = pd.read_csv(TRIPS_PATH)
+
+def get_all():
+    return pd.read_csv(TRIPS_PATH).to_json(orient="records")
