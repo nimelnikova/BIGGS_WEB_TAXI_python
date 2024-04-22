@@ -38,7 +38,7 @@ components:
     Order:
       type: "object"
       required:
-        - customer_id
+        - user_id
         - pickup_location
         - destination
         - car_category
@@ -47,7 +47,7 @@ components:
         - end_time
         - total_ride_time
       properties:
-        customer_id:
+        user_id:
           type: "integer"
         pickup_location:
           type: "string"

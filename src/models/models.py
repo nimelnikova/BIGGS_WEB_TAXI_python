@@ -3,7 +3,7 @@ from dataclasses import dataclass
 
 @dataclass
 class Order:
-    customer_id: int  # id клиент
+    user_id: int  # id клиент
     pickup_location: str
     destination: str
     distance: float  # km
@@ -16,7 +16,7 @@ class Order:
 
     def get_order_details(self):
         return {
-            "customer_id": self.customer_id,
+            "user_id": self.user_id,
             "pickup_location": self.pickup_location,
             "destination": self.destination,
             "distance": self.distance,

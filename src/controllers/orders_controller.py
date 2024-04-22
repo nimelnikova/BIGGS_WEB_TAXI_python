@@ -8,13 +8,13 @@ from flask import request
 import sqlite3
 import sqlite_query
 
-BASE_DIR = Path(__file__).resolve().parent.parent
-ORDERS_PATH = BASE_DIR / "data_base_orders.db"
+BASE_DIR = Path(__file__).resolve().parent.parent.parent
+DATA_USERS_PATH = BASE_DIR / "dataUsers.db"
 TRIPS_PATH = BASE_DIR / "trips.csv"
 
 
 def create_order():
-    conn = sqlite3.connect(ORDERS_PATH) 
+    conn = sqlite3.connect(DATA_USERS_PATH) 
     cur = conn.cursor()
     cur.execute(sqlite_query.create_table_orders)
     conn.commit()    
@@ -22,7 +22,7 @@ def create_order():
 
     order_data = request.get_json()
 
-    customer_id = order_data["customer_id"] 
+    user_id = order_data["user_id"] 
     pickup_location = order_data["pickup_location"]
     destination = order_data["destination"]
     distance = order_data["distance"]
@@ -34,7 +34,7 @@ def create_order():
 
     
     new_order = Order(
-        customer_id,
+        user_id,
         pickup_location,
         destination,
         distance,
@@ -47,7 +47,7 @@ def create_order():
     
     cur.execute(sqlite_query.insert_orders,
                 (
-                    new_order.customer_id,
+                    new_order.user_id,
                     new_order.pickup_location,
                     new_order.destination,
                     new_order.distance,
@@ -66,7 +66,7 @@ def create_order():
 
 
 def get_all_person(id_person: str) -> str:
-    data_person = pd.read_csv("./data_base_orders.csv")
+    data_person = pd.read_csv("./data_base_orders.db")
     trips = []
     filtered_df = data_person[data_person["customer_id"] == id_person]
     for index, row in filtered_df.iterrows():
@@ -94,7 +94,3 @@ def delete_trip_by_id(trip_id: Any) -> None:
 
     # Запись обновленных данных обратно в CSV файл
     data_base = pd.read_csv(TRIPS_PATH)
-
-
-def get_all():
-    return pd.read_csv(ORDERS_PATH).to_json(orient="records")
