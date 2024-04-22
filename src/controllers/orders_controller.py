@@ -9,12 +9,12 @@ import sqlite3
 import sqlite_query
 
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
-DATA_USERS_PATH = BASE_DIR / "dataUsers.db"
+DATA_ORDERS_PATH = BASE_DIR / "dataUsers.db"
 TRIPS_PATH = BASE_DIR / "trips.csv"
 
 
 def create_order():
-    conn = sqlite3.connect(DATA_USERS_PATH) 
+    conn = sqlite3.connect(DATA_ORDERS_PATH) 
     cur = conn.cursor()
     cur.execute(sqlite_query.create_table_orders)
     conn.commit()    
