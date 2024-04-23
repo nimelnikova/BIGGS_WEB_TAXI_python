@@ -23,7 +23,7 @@ check_user = """SELECT * FROM users WHERE username = ? OR email = ?;"""
 
 create_table_orders = """CREATE TABLE IF NOT EXISTS orders(
                 order_id INTEGER PRIMARY KEY AUTOINCREMENT,
-                customer_id INTEGER,
+                user_id INTEGER,
                 pickup_location TEXT,
                 destination TEXT,
                 distance REAL,
@@ -31,8 +31,9 @@ create_table_orders = """CREATE TABLE IF NOT EXISTS orders(
                 start_time TEXT,
                 end_time TEXT,
                 total_ride_time INTEGER,
-                order_amount INTEGER
+                order_amount INTEGER,
+                FOREIGN KEY (user_id) REFERENCES users(id)
 
     )"""
 
-insert_orders = """INSERT INTO orders (customer_id, pickup_location, destination, distance, car_category, start_time, end_time, total_ride_time, order_amount) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);"""
+insert_orders = """INSERT INTO orders (user_id, pickup_location, destination, distance, car_category, start_time, end_time, total_ride_time, order_amount) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);"""
