@@ -14,25 +14,23 @@ TRIPS_PATH = BASE_DIR / "trips.csv"
 
 
 def create_order():
-    conn = sqlite3.connect(DATA_ORDERS_PATH) 
+    conn = sqlite3.connect(DATA_ORDERS_PATH)
     cur = conn.cursor()
     cur.execute(sqlite_query.create_table_orders)
-    conn.commit()    
-
+    conn.commit()
 
     order_data = request.get_json()
 
-    user_id = order_data["user_id"] 
+    user_id = order_data["user_id"]
     pickup_location = order_data["pickup_location"]
     destination = order_data["destination"]
     distance = order_data["distance"]
     car_category = order_data["car_category"]
-    start_time = order_data["start_time"]                                                                                                                                                                                                                                                                                                   
+    start_time = order_data["start_time"]
     end_time = order_data["end_time"]
     total_ride_time = order_data["total_ride_time"]
     order_amount = order_data["order_amount"]
 
-    
     new_order = Order(
         user_id,
         pickup_location,
@@ -44,19 +42,20 @@ def create_order():
         total_ride_time,
         order_amount,
     )
-    
-    cur.execute(sqlite_query.insert_orders,
-                (
-                    new_order.user_id,
-                    new_order.pickup_location,
-                    new_order.destination,
-                    new_order.distance,
-                    new_order.car_category,
-                    new_order.start_time,
-                    new_order.end_time,
-                    new_order.total_ride_time,
-                    new_order.order_amount,
-                ),
+
+    cur.execute(
+        sqlite_query.insert_orders,
+        (
+            new_order.user_id,
+            new_order.pickup_location,
+            new_order.destination,
+            new_order.distance,
+            new_order.car_category,
+            new_order.start_time,
+            new_order.end_time,
+            new_order.total_ride_time,
+            new_order.order_amount,
+        ),
     )
 
     conn.commit()
@@ -94,6 +93,7 @@ def delete_trip_by_id(trip_id: Any) -> None:
 
     # Запись обновленных данных обратно в CSV файл
     data_base = pd.read_csv(TRIPS_PATH)
+
 
 def get_all():
     return pd.read_csv(TRIPS_PATH).to_json(orient="records")

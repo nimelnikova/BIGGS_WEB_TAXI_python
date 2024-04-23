@@ -306,6 +306,16 @@ function init() {
         }
     });
 
+    function parseRouteInfo(routeInfo) {
+        const timeAndDistance = routeInfo.split(' и ');
+        const travelTime = parseInt(timeAndDistance[0].match(/\d+/)[0]); // Извлекаем время в минутах
+        const distance = parseFloat(timeAndDistance[1].match(/\d+\.\d+/)[0]); // Извлекаем расстояние в километрах
+        return {
+            travelTime, // время в пути в минутах
+            distance // расстояние в километрах
+        };
+    }
+
     // Инициализация переменных для модального окна и кнопки способа оплаты
     const paymentModal = document.getElementById('payment-modal');
     const paymentMethodButton = document.getElementById('payment-method-button');
@@ -372,13 +382,16 @@ function init() {
 
     // логика связи с бекендом / отправка данных
     document.getElementById('order-button').addEventListener('click', function () {
-        const userId = parseInt(localStorage.getItem('userId'), 10);  // Получаем user_id из localStorage
+        const userId = localStorage.getItem('userId');
         if (!userId) {
             alert('Пожалуйста, войдите в систему перед созданием заказа.');
             return;
         }
 
-        if (!currentDistance || currentDistance === 0) {
+        const routeInfoText = document.getElementById('route-info').value;
+        const { travelTime, distance } = parseRouteInfo(routeInfoText); // Извлечение времени и расстояния
+
+        if (!currentDistance || currentDistance === 0 || !travelTime) {
             alert('Пожалуйста, уточните маршрут перед оформлением заказа.');
             return;
         }
@@ -395,26 +408,50 @@ function init() {
             alert('Пожалуйста, выберите тариф.');
             return;
         }
+
         const tariffType = selectedTariffElement.getAttribute('data-tariff-type');
         const orderAmountText = selectedTariffElement.querySelector('.tariff-price').textContent;
-        const orderAmount = parseInt(orderAmountText.replace(' от ', '').replace(' ₽', ''));
+        const orderAmount = parseInt(orderAmountText.replace(' от ', '').replace(' ₽', ''), 10);
+
+        // Расчет времени окончания поездки
+        const startTime = new Date().toISOString();
+        const endTime = new Date(new Date().getTime() + travelTime * 60000).toISOString(); // предполагаем, что travelTime в минутах
 
         const orderData = {
-            customer_id: userId,
+            user_id: userId,
             pickup_location: pickupLocation,
             destination: destination,
-            distance: currentDistance, // Убедитесь, что этот параметр обновляется в соответствии с логикой вашего приложения
+            distance: distance,
             car_category: tariffType,
-            start_time: new Date().toISOString(),
-            end_time: null, // Это поле будет заполнено сервером или будет рассчитано позже
-            total_ride_time: null, // Это поле будет рассчитано позже
+            start_time: startTime,
+            end_time: endTime, // Теперь это поле будет заполнено здесь, а не позже
+            total_ride_time: travelTime, // Время поездки в минутах
             order_amount: orderAmount
         };
 
         sendOrder(orderData);
     });
 
+    // function getCurrentDistance() {
+    //     // Здесь должна быть логика для получения текущего расстояния маршрута
+    //     return parseFloat(document.getElementById('distance-input').value); // Примерное значение
+    // }
+
+    // function calculateTravelTime() {
+    //     // Допустим, эта функция возвращает время поездки в минутах на основе данных маршрута
+    //     let route = document.getElementById('route-info').value;  // пример получения времени из поля ввода или другого источника
+    //     return parseInt(route.match(/\d+/)[0]);  // простой пример извлечения числа из строки
+    // }
+
     function sendOrder(orderData) {
+        orderData.user_id = parseInt(orderData.user_id, 10);
+
+        // Проверка, что user_id является числом
+        if (isNaN(orderData.user_id)) {
+            alert('Ошибка: user_id не является числом.');
+            return;
+        }
+
         fetch('/api/orders', {
             method: 'POST',
             headers: {

@@ -34,14 +34,14 @@ function isValidPassword(password) {
     return passwordPattern.test(password);
 }
 
-// Функция, которая будет вызвана при нажатии на кнопку входа
+// Функция, вызываемая при нажатии на кнопку входа
 function onLoginClick(event) {
     event.preventDefault();
     const login_or_email = document.getElementById('login-or-email').value;
     const password = document.getElementById('login-password').value;
     const loginError = document.getElementById('login-error');
 
-    loginError.textContent = ''; // Сброс предыдущего сообщения об ошибке
+    loginError.textContent = ''; // Очистка предыдущего сообщения об ошибке
 
     if (!login_or_email || !password) {
         loginError.textContent = 'Пожалуйста, заполните все поля';
@@ -56,32 +56,26 @@ function onLoginClick(event) {
     sendPostRequest('/api/entrance', { login_or_email, password })
         .then(data => {
             console.log('Login Success:', data);
-            onSuccessfulLogin();
-            window.location.href = '/main.html';
+            onSuccessfulLogin(data);  // Передача данных для дальнейшей обработки
         })
         .catch(error => {
-            loginError.textContent = error.message; // Показываем сообщение об ошибке от сервера
-            document.getElementById('login-password').value = '';
+            loginError.textContent = 'Ошибка входа: ' + error.message; // Уточнен текст ошибки
+            document.getElementById('login-password').value = ''; // Сброс поля пароля
         });
 }
 
-// Предполагается, что эта функция вызывается после успешного входа в систему.
-function onSuccessfulLogin() {
-    // Запрос к серверу для получения user_id
-    fetch('/get-user-id')
-        .then(response => response.json())
-        .then(data => {
-            if (data.user_id) {
-                localStorage.setItem('userId', data.user_id);
-                // Теперь user_id доступен для использования при создании заказа
-            } else {
-                console.error('Не удалось получить user_id');
-                // Возможно, вам следует перенаправить пользователя на страницу входа
-            }
-        })
-        .catch(error => {
-            console.error('Произошла ошибка при попытке получить user_id:', error);
-        });
+
+// Функция вызывается после успешного входа в систему.
+function onSuccessfulLogin(data) {
+    if (data.user_id) {
+        localStorage.setItem('userId', data.user_id);
+        console.log('user_id успешно сохранен:', data.user_id);
+        window.location.href = '/main.html'; // Перенаправление на главную страницу
+    } else {
+        console.error('Не удалось получить user_id');
+        alert('Не удалось получить данные пользователя. Пожалуйста, войдите снова.');
+        window.location.href = '/login.html'; // Перенаправление обратно на страницу входа в случае ошибки
+    }
 }
 
 // Функция для обработки регистрации
