@@ -50,12 +50,29 @@
                 <li><a href="#" style="--navAni:2">История заказов</a></li>
                 <li><a href="#" style="--navAni:3">Q & A</a></li>
                 <li><a href="#" style="--navAni:4">Тех. Поддержка</a></li>
+
                 <!-- Другие пункты меню, если они у вас есть -->
             </ul>
             <label class="mode">
                 <input type="checkbox" id="darkModeToggle">
                 <i class='bx bxs-moon'></i>
             </label>
+            <div class="user-profile">
+                <img id="user-icon" src="../static/icons/userIcon.png" alt="User Icon" class="user-icon">
+                <div class="user-info">
+                    <span class="user-name" onclick="openEditModal()">Мельникова Нина Игоревна</span>
+                </div>
+            </div>
+
+            <!-- Модальное окно для редактирования профиля -->
+            <div id="edit-user-modal" class="edit-user-modal">
+                <div class="edit-user-modal-content">
+                    <span class="close-edit-modal" onclick="closeEditModal()">&times;</span>
+                    <h2>Редактирование профиля</h2>
+                    <!-- Содержимое для редактирования профиля -->
+                    <!-- ... -->
+                </div>
+            </div>
         </div>
     </header>
 
