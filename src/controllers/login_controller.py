@@ -1,7 +1,6 @@
-from ..models.user_model import User
+from ..models.models import User
 from hashlib import sha256
 import json
-import pandas as pd
 from flask import jsonify, request, Response, session
 from http import HTTPStatus
 from pathlib import Path
@@ -36,17 +35,18 @@ def registration():
         hashed_login_result,
         hashed_logemail_result,
         hashed_password_result,
+        payment_method = 0,
     )
 
     # проверка на существование пользователя с таким логином
-    cur.execute(sqlite_query.check_user_login, (user.username,))
+    cur.execute(sqlite_query.check_user_login_exists, (user.username,))
     exists = cur.fetchone()[0]
 
     if exists:
         return jsonify({"message": "Этот логин уже занят."}), HTTPStatus.BAD_REQUEST
 
     # проверка на существование пользователя с такой почтой
-    cur.execute(sqlite_query.check_user_email, (user.email,))
+    cur.execute(sqlite_query.check_user_email_exists, (user.email,))
     exists = cur.fetchone()[0]
 
     if exists:
@@ -62,6 +62,7 @@ def registration():
             user.username,
             user.email,
             user._User__password,
+            user.payment_method,
         ),
     )
 
@@ -75,6 +76,7 @@ def registration():
         "fullname": user.fullname,
         "username": user.username,
         "email": user.email,
+        "payment_method": user.payment_method,
     }
 
     conn.commit()
@@ -102,10 +104,10 @@ def entrance():
     hashed_password_result = hashed_password.hexdigest()
 
     # Попытка найти пользователя по username или email
-    cur.execute(sqlite_query.check_user_login, (hashed_log_result,))
+    cur.execute(sqlite_query.check_user_login_exists, (hashed_log_result,))
     login_exists = cur.fetchone()[0]
 
-    cur.execute(sqlite_query.check_user_email, (hashed_log_result,))
+    cur.execute(sqlite_query.check_user_email_exists, (hashed_log_result,))
     email_exists = cur.fetchone()[0]
 
     # Получаем пароль пользователя
@@ -117,7 +119,7 @@ def entrance():
         ),
     )
     rows = cur.fetchone()
-    data = [0] * 5
+    data = [0] * 6
     for i, row in enumerate(rows):
         data[i] = row
 
@@ -126,6 +128,7 @@ def entrance():
     cur_login = data[2]
     cur_email = data[3]
     cur_password = data[4]
+    cur_payment_method = data[5]
 
     if login_exists or email_exists:
         if (  # Сравниваем пароль пользователя с переданным
@@ -137,6 +140,7 @@ def entrance():
                 "username": cur_login,
                 "email": cur_email,
                 "password": cur_password,
+                "payment_method": cur_payment_method,
             }
             conn.close()
             # Отправляем ответ
