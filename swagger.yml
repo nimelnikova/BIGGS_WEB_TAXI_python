@@ -96,13 +96,10 @@ components:
       required:
         - id
         - new_payment_method
-        - password
       properties:
         id:
           type: "string"
         new_payment_method:
-          type: "string"
-        password:
           type: "string"
 
     Error:
