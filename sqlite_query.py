@@ -24,16 +24,24 @@ check_user = """SELECT * FROM users WHERE username = ? OR email = ?;"""
 create_table_orders = """CREATE TABLE IF NOT EXISTS orders(
                 order_id INTEGER PRIMARY KEY AUTOINCREMENT,
                 user_id INTEGER,
+                driver_name TEXT,
+                driver_average_raiting REAL,
                 pickup_location TEXT,
                 destination TEXT,
                 distance REAL,
                 car_category TEXT,
+                car TEXT,
                 start_time TEXT,
                 end_time TEXT,
                 total_ride_time INTEGER,
                 order_amount INTEGER,
+                waiting_time INTEGER,
                 FOREIGN KEY (user_id) REFERENCES users(id)
 
     )"""
 
-insert_orders = """INSERT INTO orders (user_id, pickup_location, destination, distance, car_category, start_time, end_time, total_ride_time, order_amount) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);"""
+insert_orders = """INSERT INTO orders (user_id, driver_name, driver_average_raiting, pickup_location, destination, distance, car_category, car, start_time, end_time, total_ride_time, order_amount, waiting_time) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);"""
+
+select_free_drivers = """SELECT * FROM drivers WHERE status = 'free'""";
+
+update_driver_status_busy = "UPDATE drivers SET status = 'busy' WHERE driver_id = ?;"
