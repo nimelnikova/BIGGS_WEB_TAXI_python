@@ -14,25 +14,23 @@ TRIPS_PATH = BASE_DIR / "trips.csv"
 
 
 def create_order():
-    conn = sqlite3.connect(DATA_ORDERS_PATH) 
+    conn = sqlite3.connect(DATA_ORDERS_PATH)
     cur = conn.cursor()
     cur.execute(sqlite_query.create_table_orders)
-    conn.commit()    
-
+    conn.commit()
 
     order_data = request.get_json()
 
-    user_id = order_data["user_id"] 
+    user_id = order_data["user_id"]
     pickup_location = order_data["pickup_location"]
     destination = order_data["destination"]
     distance = order_data["distance"]
     car_category = order_data["car_category"]
-    start_time = order_data["start_time"]                                                                                                                                                                                                                                                                                                   
+    start_time = order_data["start_time"]
     end_time = order_data["end_time"]
     total_ride_time = order_data["total_ride_time"]
     order_amount = order_data["order_amount"]
 
-    
     new_order = Order(
         user_id,
         pickup_location,
@@ -44,7 +42,7 @@ def create_order():
         total_ride_time,
         order_amount,
     )
-    
+
     cur.execute(sqlite_query.insert_orders,
                 (
                     new_order.user_id,
@@ -57,7 +55,7 @@ def create_order():
                     new_order.total_ride_time,
                     new_order.order_amount,
                 ),
-    )
+                )
 
     conn.commit()
     cur.close()
@@ -66,34 +64,44 @@ def create_order():
 
 
 def get_all_person(id_person: str) -> str:
-    data_person = pd.read_csv("./data_base_orders.db")
+    conn = sqlite3.connect(DATA_ORDERS_PATH)
+    cur = conn.cursor()
+
+    cur.execute("SELECT * FROM orders WHERE user_id=?", (id_person,))
+    orders = cur.fetchall()
+
     trips = []
-    filtered_df = data_person[data_person["customer_id"] == id_person]
-    for index, row in filtered_df.iterrows():
-        order = Order(
-            row["order_id"],
-            row["customer_id"],
-            row["pickup_location"],
-            row["destination"],
-            row["car_category"],
-            row["order_amount"],
-            row["start_time"],
-            row["end_time"],
-            row["total_ride_time"],
-        )
-        trips.append(order.get_order_details())
+    for order in orders:
+        trip = Order(*order)
+        trips.append(trip.get_order_details())
+
+    cur.close()
+    conn.close()
+
     return json.dumps(trips)
 
 
 def delete_trip_by_id(trip_id: Any) -> None:
-    # Чтение данных из CSV файла
-    data_base = pd.read_csv("trips.csv")
+    conn = sqlite3.connect(TRIPS_PATH)
+    cur = conn.cursor()
 
-    # Поиск строки с указанным trip_id и удаление ее из DataFrame
-    data_base = data_base[data_base["trip_id"] != trip_id]
+    cur.execute("DELETE FROM trips WHERE trip_id=?", (trip_id,))
+    conn.commit()
 
-    # Запись обновленных данных обратно в CSV файл
-    data_base = pd.read_csv(TRIPS_PATH)
+    cur.close()
+    conn.close()
+
 
 def get_all():
-    return pd.read_csv(TRIPS_PATH).to_json(orient="records")
+    conn = sqlite3.connect(TRIPS_PATH)
+    cur = conn.cursor()
+
+    cur.execute("SELECT * FROM trips")
+    trips = cur.fetchall()
+
+    cur.close()
+    conn.close()
+
+    return pd.DataFrame(trips,
+                        columns=["trip_id", "user_id", "pickup_location", "destination", "car_category", "start_time",
+                                 "end_time", "total_ride_time", "order_amount"]).to_json(orient="records")
