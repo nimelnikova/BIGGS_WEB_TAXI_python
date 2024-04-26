@@ -119,30 +119,21 @@ def change_payment_method():
     conn = sqlite3.connect(DATA_USERS_PATH)
     cur = conn.cursor()
 
-    # В ДАТЕ БУДЕТ (1) id, (2) НОВЫЙ СПОСОБ ОПЛАТЫ (1, ЕСЛИ КАРТОЙ; 0, ЕСЛИ НАЛИЧНЫМИ), (3) ПАРОЛЬ ДЛЯ УДОСТОВЕРЕНИЯ ЛИЧНОСТИ 
+    # В ДАТЕ БУДЕТ (1) id, (2) НОВЫЙ СПОСОБ ОПЛАТЫ (1, ЕСЛИ КАРТОЙ; 0, ЕСЛИ НАЛИЧНЫМИ)
     data = request.get_json()
 
-    cur.execute(sqlite_query.check_user_password, (data["id"]))
+    cur.execute(sqlite_query.check_user_payment_method, (data["id"]))
 
     if (
-        hash_password(data["password"]) == cur.fetchone()[0]
+        data["new_payment_method"] == cur.fetchone()[0]
     ):
-        
-        cur.execute(sqlite_query.check_user_payment_method, (data["id"]))
-
-        if (
-            data["new_payment_method"] == cur.fetchone()[0]
-        ):
-            return (jsonify({"message": "Такой способ оплаты уже выбран."}),
-                    HTTPStatus.BAD_REQUEST)
-        else:
-            cur.execute(
-                sqlite_query.update_user_payment_method, (data["new_payment_method"], data["id"])
-            )
+        return (jsonify({"message": "Такой способ оплаты уже выбран."}),
+                HTTPStatus.BAD_REQUEST)
     else:
-        return (jsonify({"message": "Неверный пароль."}),
-                    HTTPStatus.BAD_REQUEST)
-    
+        cur.execute(
+            sqlite_query.update_user_payment_method, (data["new_payment_method"], data["id"])
+        )
+
     # ПОДГОТОВКА ТЕЛА ДЛЯ ОТВЕТА
     cur.execute(sqlite_query.check_user_by_id, (data["id"]))
     rows = cur.fetchone()
@@ -168,15 +159,3 @@ def change_payment_method():
     return Response(
         json.dumps(body), HTTPStatus.OK, mimetype="application/json"
     )
-
-
-# def add_card():
-
-#     conn = sqlite3.connect(DATA_USERS_PATH)
-#     cur = conn.cursor()
-
-#     data = request.get_json()
-
-#     cur.execute(sqlite_query.insert_card, (
-#         data["id"], data["card"]
-#     ))
