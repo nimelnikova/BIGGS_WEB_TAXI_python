@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
+    <!-- <link rel="stylesheet" href="../static/css/login.css"> ЗАМЕНИТЬ -->
+    <title>Страница входа/регистрации</title>
+</head>
+
+<body>
+
+    <div class="section">
+        <div class="container">
+            <div class="row full-height justify-content-center">
+                <div class="col-12 text-center align-self-center py-5">
+                    <div class="section pb-5 pt-5 pt-sm-2 text-center">
+                        <h6 class="mb-0 pb-3">
+                            <div class="toggle-text">
+                                <span class="login-spacing">ВХОД</span>
+                            </div>
+                            <div class="toggle-text">
+                                <span class="registration-spacing">РЕГИСТРАЦИЯ</span>
+                            </div>
+                        </h6>
+                        <input class="checkbox" type="checkbox" id="reg-log" name="reg-log" />
+                        <label for="reg-log"></label>
+                        <div class="card-3d-wrap mx-auto">
+                            <div class="card-3d-wrapper">
+                                <div class="card-front">
+                                    <div class="center-wrap">
+                                        <div class="section text-center">
+                                            <h4 class="mb-4 pb-3">ВХОД</h4>
+                                            <div class="form-group">
+                                                <input type="email" name="loginoremail" class="form-style"
+                                                    placeholder="Логин или Почта" id="login-or-email"
+                                                    autocomplete="username">
+                                                <i class="input-icon uil uil-user"></i>
+                                            </div>
+                                            <div class="form-group mt-2">
+                                                <input type="password" name="loginpassword" class="form-style"
+                                                    placeholder="Пароль" id="login-password"
+                                                    autocomplete="current-password">
+                                                <i class="input-icon uil uil-lock-alt"></i>
+                                            </div>
+                                            <div id="login-error" class="error-message"></div>
+                                            <button type="button" class="btn mt-4">ВОЙТИ</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-back">
+                                    <div class="center-wrap">
+                                        <div class="section text-center">
+                                            <h4 class="mb-4 pb-3">РЕГИСТРАЦИЯ</h4>
+                                            <div class="form-group">
+                                                <input type="text" name="registername" class="form-style"
+                                                    placeholder="Полное имя" id="register-name" autocomplete="off">
+                                                <i class="input-icon uil uil-user"></i>
+                                            </div>
+                                            <div class="form-group mt-2">
+                                                <input type="text" name="registerlogin" class="form-style"
+                                                    placeholder="Логин" id="register-login" autocomplete="off">
+                                                <i class="input-icon uil uil-arrow-circle-right"></i>
+                                            </div>
+                                            <div class="form-group mt-2">
+                                                <input type="email" name="registeremail" class="form-style"
+                                                    placeholder="Почта" id="register-email" autocomplete="off">
+                                                <i class="input-icon uil uil-at"></i>
+                                            </div>
+                                            <div class="form-group mt-2">
+                                                <input type="password" name="registerpassword" class="form-style"
+                                                    placeholder="Пароль" id="register-password" autocomplete="off">
+                                                <i class="input-icon uil uil-lock-alt"></i>
+                                                <i toggle="#register-password"
+                                                    class="uil uil-eye-slash field-icon toggle-password"></i>
+                                            </div>
+                                            <div id="register-error" class="error-message"></div>
+                                            <button type="button" class="btn mt-4">ЗАРЕГИСТРИРОВАТЬСЯ</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="{{ url_for('static', filename='js/login.js') }}"></script>
+    <!-- <script src="../static/js/login.js"></script> ЗАМЕНИТЬ -->
+</body>
+
+</html>

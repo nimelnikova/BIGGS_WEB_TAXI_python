@@ -1,7 +1,7 @@
 openapi: 3.0.0
 info:
   title: "BIGGS_TAXI"
-  description: "An API about BIGGS taxi app."
+  description: "An API about BIGGS taxi app, covering both user registration/authentication and order management."
   version: "1.0.0"
 
 servers:
@@ -9,29 +9,36 @@ servers:
 
 components:
   schemas:
-    Order:
-      type: object
-      properties:
-        customer_id:
-          type: integer
-        pickup_location:
-          type: string
-        destination:
-          type: string
-        distance:
-          type: number
-        car_category:
-          type: string
-        start_time:
-          type: string
-        end_time:
-          type: string
-        total_ride_time:
-          type: integer
-        order_amount:
-          type: integer
+    CreateUser:
+      type: "object"
       required:
-        - customer_id
+        - fullname
+        - username
+        - email
+        - password
+      properties:
+        fullname:
+          type: "string"
+        username:
+          type: "string"
+        email:
+          type: "string"
+        password:
+          type: "string"
+    EnterUser:
+      type: "object"
+      required:
+        - login_or_email
+        - password
+      properties:
+        login_or_email:
+          type: "string"
+        password:
+          type: "string"
+    Order:
+      type: "object"
+      required:
+        - user_id
         - pickup_location
         - destination
         - car_category
@@ -39,15 +46,117 @@ components:
         - start_time
         - end_time
         - total_ride_time
-
-
-
+      properties:
+        user_id:
+          type: "integer"
+        pickup_location:
+          type: "string"
+        destination:
+          type: "string"
+        distance:
+          type: "number"
+        car_category:
+          type: "string"
+        start_time:
+          type: "string"
+        end_time:
+          type: "string"
+        total_ride_time:
+          type: "integer"
+        order_amount:
+          type: "integer"
+    Error:
+      type: "object"
+      properties:
+        message:
+          type: "string"
+  responses:
+    BadRequest:
+      description: "Invalid request parameters"
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    NotFound:
+      description: "Resource not found"
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Error:
+      description: "General error response"
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+  parameters:
+    userIdParam:
+      name: "id_person"
+      in: "path"
+      required: true
+      schema:
+        type: "string"
+    tripIdParam:
+      name: "trip_id"
+      in: "path"
+      required: true
+      schema:
+        type: "string"
 
 paths:
+  /:
+    get:
+      operationId: "main.index"
+      tags:
+        - "Start window"
+      summary: "Opens the start window."
+      responses:
+        "200":
+          description: "Start window was opened successfully."
+
+  /registration:
+    post:
+      operationId: "src.controllers.login_controller.registration"
+      tags:
+        - "Register"
+      summary: "Register a new user."
+      requestBody:
+        description: "User to register"
+        required: True
+        content:
+          application/json:
+            schema:
+              x-body-name: "user"
+              $ref: "#/components/schemas/CreateUser"
+      responses:
+        "201":
+          description: "User was successfully registered."
+        "400":
+          $ref: "#/components/responses/BadRequest"
+
+  /entrance:
+    post:
+      operationId: "src.controllers.login_controller.entrance"
+      tags:
+        - "Enter"
+      summary: "User enters with their email and password."
+      requestBody:
+        description: "User enters"
+        required: True
+        content:
+          application/json:
+            schema:
+              x-body-name: "user"
+              $ref: "#/components/schemas/EnterUser"
+      responses:
+        "200":
+          description: "User successfully entered."
+        "400":
+          $ref: "#/components/responses/BadRequest"
 
   /orders:
     get:
-      operationId: "orders.get_all"
+      operationId: "src.controllers.orders_controller.get_all"
       tags:
         - "Orders"
       summary: "Read the list of people"
@@ -55,7 +164,7 @@ paths:
         "200":
           description: "Successfully read people list"
     post:
-      operationId: "orders.create_order"
+      operationId: "src.controllers.orders_controller.create_order"
       tags:
         - "Orders"
       summary: "Getting order information"
@@ -72,51 +181,33 @@ paths:
 
   /orders/{id_person}:
     get:
-      operationId: "orders.get_all_person"
+      operationId: "src.controllers.orders_controller.get_all_person"
       tags:
         - "Orders"
       summary: "Get orders by person ID"
       parameters:
-        - name: id_person
-          in: path
-          required: true
-          schema:
-            type: string
+        - $ref: "#/components/parameters/userIdParam"
       responses:
         "200":
           description: "Successful operation"
           content:
             application/json:
               schema:
-                type: array
+                type: "array"
                 items:
                   $ref: "#/components/schemas/Order"
 
-
   /trips/{trip_id}:
     delete:
-      summary: "Удалить поездку по ее идентификатору"
-      description: "Удаляет поездку из CSV файла по ее идентификатору."
-      operationId: "orders.delete_trip_by_id"
+      summary: "Delete trip by its identifier"
+      description: "Deletes a trip from the CSV file by its identifier."
+      operationId: "src.controllers.orders_controller.delete_trip_by_id"
       tags:
         - "Orders"
       parameters:
-        - name: trip_id
-          in: path
-          required: true
-          description: Идентификатор поездки для удаления
-          schema:
-            type: string
+        - $ref: "#/components/parameters/tripIdParam"
       responses:
         "200":
-          description: "Поездка успешно удалена"
+          description: "Trip successfully deleted"
         "404":
-          description: "Поездка с указанным идентификатором не найдена"
-
-
-
-
-
-
-
-
+          $ref: "#/components/responses/NotFound"

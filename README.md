@@ -8,4 +8,4 @@
 
 # Запуск проекта 
 
-- Просто запустить open ./start_window/index.html
+- Просто запустить python3 main.py
