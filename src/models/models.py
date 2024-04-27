@@ -38,20 +38,6 @@ class Order:
             "waiting_time": self.waiting_time
         }
     
-        }
-    
-class Driver:
-    driver_id: int
-    name: str
-    car_model: str
-    current_location: str
-    status: str   
-    
-    def change_status(self, new_status):
-        self.status = new_status
-
-    def update_location(self, new_location):
-        self.update_location = new_location
 
 class User:
 

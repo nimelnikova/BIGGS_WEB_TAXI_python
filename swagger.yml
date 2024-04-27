@@ -67,6 +67,8 @@ components:
           type: "integer"
         order_amount:
           type: "integer"
+        payment_method:
+          type: "string"
     ChangeFullname:
       type: "object"
       required:
