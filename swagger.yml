@@ -73,7 +73,7 @@ components:
         - password
       properties:
         id:
-          type: "string"
+          type: "integer"
         new_fullname:
           type: "string"
         password:
@@ -86,7 +86,7 @@ components:
         - password
       properties:
         id:
-          type: "string"
+          type: "integer"
         new_password:
           type: "string"
         password:
@@ -98,12 +98,9 @@ components:
         - new_payment_method
       properties:
         id:
-          type: "string"
+          type: "integer"
         new_payment_method:
           type: "string"
-<<<<<<< HEAD
-
-=======
         password:
           type: "string"
     AddCard:
@@ -117,7 +114,7 @@ components:
         - cvv
       properties:
         id:
-          type: "string"
+          type: "integer"
         card_number:
           type: "string"
         card_holder:
@@ -134,8 +131,7 @@ components:
         - id
       properties:
         id:
-          type: "string"
->>>>>>> bddff05 (Карты)
+          type: "integer"
     Error:
       type: "object"
       properties:

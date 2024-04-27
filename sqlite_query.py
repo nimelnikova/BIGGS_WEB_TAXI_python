@@ -2,7 +2,7 @@
 
 
 create_table_cards = """CREATE TABLE IF NOT EXISTS cards(
-                      id TEXT NOT NULL,
+                      id INTEGER,
                       card_number TEXT NOT NULL,
                       card_holder TEXT NOT NULL,
                       month TEXT NOT NULL,
@@ -10,10 +10,6 @@ create_table_cards = """CREATE TABLE IF NOT EXISTS cards(
                       cvv TEXT NOT NULL
                     );"""
 
-create_table_cipher = """CREATE TABLE IF NOT EXISTS ciphers(
-                      card_number TEXT NOT NULL,
-                      cipher TEXT NOT NULL
-                    );"""
 
 # ЗАПРОСЫ, СВЯЗАННЫЕ С РЕГИСТАРЦИЕЙ И ВХОДОМ (RL-7)
 
