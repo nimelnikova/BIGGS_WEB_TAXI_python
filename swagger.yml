@@ -65,6 +65,43 @@ components:
           type: "integer"
         order_amount:
           type: "integer"
+    ChangeFullname:
+      type: "object"
+      required:
+        - id
+        - new_fullname
+        - password
+      properties:
+        id:
+          type: "string"
+        new_fullname:
+          type: "string"
+        password:
+          type: "string"
+    ChangePassword:
+      type: "object"
+      required:
+        - id
+        - new_password
+        - password
+      properties:
+        id:
+          type: "string"
+        new_password:
+          type: "string"
+        password:
+          type: "string"
+    ChangePaymentMethod:
+      type: "object"
+      required:
+        - id
+        - new_payment_method
+      properties:
+        id:
+          type: "string"
+        new_payment_method:
+          type: "string"
+
     Error:
       type: "object"
       properties:
@@ -211,3 +248,60 @@ paths:
           description: "Trip successfully deleted"
         "404":
           $ref: "#/components/responses/NotFound"
+  
+  /changes/change_fullname:
+    put:
+      summary: "Changes the name of a user."
+      operationId: "src.controllers.account_controller.change_fullname"
+      tags:
+        - "Changes"
+      requestBody:
+        description: "Changes the parametr fullname in the database dataUsers.db"
+        required: True
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ChangeFullname"
+      responses:
+        "200":
+          description: "Fullname was successfully changed"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+  
+  /changes/change_password:
+    put:
+      operationId: "src.controllers.account_controller.change_password"
+      tags:
+        - "Changes"
+      summary: "Changes the password of a user."
+      requestBody:
+        description: "Changes the parameter password of the database dataUsers.db"
+        required: True
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ChangePassword"
+      responses:
+        "200":
+          description: "Password was successfully changed"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+  
+  /changes/change_payment_method:
+    put:
+      operationId: "src.controllers.account_controller.change_payment_method"
+      tags:
+        - "Changes"
+      summary: "Changes thr payment nethod of a user."
+      requestBody:
+        description: "Changes thr parameter payment_method of the database dataUsers.db"
+        required: True
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ChangePaymentMethod"
+      responses:
+        "200":
+          description: "Payment method was successfully changed."
+        "400":
+          $ref: "#/components/responses/BadRequest"
