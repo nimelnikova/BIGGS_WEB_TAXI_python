@@ -4,6 +4,7 @@ from dataclasses import dataclass
 @dataclass
 class Order:
     user_id: int  # id клиент
+    driver_id: int
     driver_name: str
     driver_average_raiting: float
     pickup_location: str
@@ -15,11 +16,13 @@ class Order:
     end_time: str
     total_ride_time: int  # в минутах рассчитывается
     order_amount: int
+    payment_method: str
     waiting_time: int
 
     def get_order_details(self):
         return {
             "user_id": self.user_id,
+            "driver_id": self.driver_id,
             "driver_name": self.driver_name,
             "driver_average_raiting": self.driver_average_raiting,
             "pickup_location": self.pickup_location,
@@ -31,6 +34,7 @@ class Order:
             "end_time": self.end_time,
             "total_ride_time": self.total_ride_time,
             "order_amount": self.order_amount,
+            "payment_method": self.payment_method,
             "waiting_time": self.waiting_time
         }
     

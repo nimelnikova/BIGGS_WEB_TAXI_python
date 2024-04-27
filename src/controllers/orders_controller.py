@@ -14,19 +14,18 @@ DATA_ORDERS_PATH = BASE_DIR / "dataUsers.db"
 TRIPS_PATH = BASE_DIR / "trips.csv"
 
 
-def select_random_driver():
+def select_random_driver(car_category):
     conn = sqlite3.connect(DATA_ORDERS_PATH)
     cur = conn.cursor()
-    cur.execute(sqlite_query.select_free_drivers)
-    drivers = cur.fetchall()
-    conn.close()
-    
+    cur.execute(sqlite_query.select_free_drivers, (car_category,))
+    drivers = cur.fetchall() 
     if not drivers:
         return None
     
     driver = random.choice(drivers)
+    cur.close()
+    conn.close()
     return driver
-
 
 
 def create_order():
@@ -46,9 +45,9 @@ def create_order():
     end_time = order_data["end_time"]
     total_ride_time = order_data["total_ride_time"]
     order_amount = order_data["order_amount"]
+    payment_method = order_data["payment_method"]
 
-
-    driver = select_random_driver()
+    driver = select_random_driver(car_category)
     if driver is None:
         return (
             jsonify({"message": "Нет доступных водителей. Попробуйте заказать позже."}),
@@ -61,10 +60,9 @@ def create_order():
     driver_name = driver[1]
     car = driver[2]
     
-    
-    
     new_order = Order(
         user_id,
+        driver_id,
         driver_name,
         driver_average_raiting,
         pickup_location,
@@ -76,12 +74,14 @@ def create_order():
         end_time,
         total_ride_time,
         order_amount,
+        payment_method,
         waiting_time
     )
 
     cur.execute(sqlite_query.insert_orders,
                 (
                     new_order.user_id,
+                    new_order.driver_id,
                     new_order.driver_name,
                     new_order.driver_average_raiting,
                     new_order.pickup_location,
@@ -93,6 +93,7 @@ def create_order():
                     new_order.end_time,
                     new_order.total_ride_time,
                     new_order.order_amount,
+                    new_order.payment_method,
                     new_order.waiting_time,
                 ),
     )
@@ -105,15 +106,47 @@ def create_order():
     return new_order.get_order_details(), HTTPStatus.CREATED
 
 
+def complete_order():
+    #Получаем инфу о заказе и завершаем его
+    order_data = request.get_json()
+    order_id = order_data["order_id"]
+    driver_id = order_data["driver_id"]
+    user_rating = order_data["user_rating"]
 
+    conn = sqlite3.connect(DATA_ORDERS_PATH)
+    cur = conn.cursor()
+    cur.execute(sqlite_query.select_id_order, (order_id,))
+    order_info = cur.fetchone()
+    cur.close()
+    conn.close()
 
+    if order_info is None:
+        return (
+            jsonify({"message": "Заказ с указанным ID не найден."}), HTTPStatus.NOT_FOUND,
+        )
+    driver_name = order_info[2]
 
+    conn = sqlite3.connect(DATA_ORDERS_PATH)
+    cur = conn.cursor()
+    cur.execute(sqlite_query.update_driver_status_free, (driver_name,))
+    conn.commit()
 
+    #Обновляем рейтинг водителя
+    cur.execute(sqlite_query.select_driver_id, (driver_id,))
+    driver = cur.fetchone()
+    
+    current_rating = driver[7]
+    total_orders = driver[6]
+    new_rating = round((current_rating * total_orders + user_rating) / (total_orders + 1), 2)
+    total_orders += 1
 
+    cur.execute(sqlite_query.update_driver_rating_and_orders, (new_rating, total_orders, driver_id))
+    conn.commit()
+    conn.close()
 
-
-
-
+    return (
+        jsonify({"message": "Заказ успешно завершен"}), HTTPStatus.OK
+    )
 
 
 def get_all_person(id_person: str) -> str:
