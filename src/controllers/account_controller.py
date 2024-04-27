@@ -8,7 +8,7 @@ from http import HTTPStatus
 
 
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
-DATA_USERS_PATH = BASE_DIR / "dataUsers.db"
+DATA_USERS_PATH = BASE_DIR / "data.db"
 
 
 def hash_password(password):
@@ -34,6 +34,7 @@ def change_fullname():
         cur.execute(
             sqlite_query.update_user_fullname, (data["new_fullname"], data["id"])
         )
+        conn.commit()
     else:
         return (jsonify({"message": "Неверный пароль."}),
                 HTTPStatus.BAD_REQUEST)
@@ -81,7 +82,9 @@ def change_password():
         cur.execute(
             sqlite_query.update_user_password, (hash_password(data["new_password"]), data["id"])
         )
+        conn.commit()
     else:
+        
         return (jsonify({"message": "Неверный пароль."}),
                 HTTPStatus.BAD_REQUEST)
     
@@ -109,6 +112,7 @@ def change_password():
         "payment_method": cur_payment_method,
     }
 
+    
     return Response(
         json.dumps(body), HTTPStatus.OK, mimetype="application/json"
     )
@@ -127,12 +131,24 @@ def change_payment_method():
     if (
         data["new_payment_method"] == cur.fetchone()[0]
     ):
-        return (jsonify({"message": "Такой способ оплаты уже выбран."}),
-                HTTPStatus.BAD_REQUEST)
+        
+        cur.execute(sqlite_query.check_user_payment_method, (data["id"]))
+
+        if (
+            data["new_payment_method"] == cur.fetchone()[0]
+        ):
+            
+            return (jsonify({"message": "Такой способ оплаты уже выбран."}),
+                    HTTPStatus.BAD_REQUEST)
+        else:
+            cur.execute(
+                sqlite_query.update_user_payment_method, (data["new_payment_method"], data["id"])
+            )
+            conn.commit()
     else:
-        cur.execute(
-            sqlite_query.update_user_payment_method, (data["new_payment_method"], data["id"])
-        )
+        
+        return (jsonify({"message": "Неверный пароль."}),
+                    HTTPStatus.BAD_REQUEST)
 
     # ПОДГОТОВКА ТЕЛА ДЛЯ ОТВЕТА
     cur.execute(sqlite_query.check_user_by_id, (data["id"]))
@@ -156,6 +172,7 @@ def change_payment_method():
         "payment_method": cur_payment_method,
     }
 
+    
     return Response(
         json.dumps(body), HTTPStatus.OK, mimetype="application/json"
     )

@@ -9,7 +9,7 @@ import sqlite_query
 
 
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
-DATA_USERS_PATH = BASE_DIR / "dataUsers.db"
+DATA_USERS_PATH = BASE_DIR / "data.db"
 
 
 def registration():
@@ -81,7 +81,6 @@ def registration():
 
     conn.commit()
     cur.close()
-    conn.close()
 
     # Возвращаем ответ без пароля и с правильным MIME типом
     return jsonify(body), HTTPStatus.CREATED
@@ -142,17 +141,14 @@ def entrance():
                 "password": cur_password,
                 "payment_method": cur_payment_method,
             }
-            conn.close()
             # Отправляем ответ
             return Response(
                 json.dumps(body), HTTPStatus.OK, mimetype="application/json"
             )
-        conn.close()
         return (
             jsonify({"message": "Неверный пароль."}),
             HTTPStatus.BAD_REQUEST,
         )
-    conn.close()
     return (
         jsonify({"message": "Неверный адрес электронной почты или логин."}),
         HTTPStatus.BAD_REQUEST,
