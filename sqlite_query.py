@@ -1,25 +1,39 @@
+# ЗАПРОСЫ ДЛЯ РАБОТЫ С БАЗОЙ ДАННЫХ SQLITE
+
+
+create_table_cards = """CREATE TABLE IF NOT EXISTS cards(
+                      id TEXT NOT NULL,
+                      card TEXT NOT NULL
+                    );"""
+
+# ЗАПРОСЫ, СВЯЗАННЫЕ С РЕГИСТАРЦИЕЙ И ВХОДОМ (RL-7)
+
 create_table_users = """CREATE TABLE IF NOT EXISTS users(
                   id INTEGER PRIMARY KEY AUTOINCREMENT,
                   fullname TEXT NOT NULL,
                   username TEXT NOT NULL,
                   email TEXT NOT NULL,
-                  password TEXT NOT NULL
+                  password TEXT NOT NULL,
+                  payment_method TEXT NOT NULL
                 );"""
 
 insert_user = (
-    """INSERT INTO users (fullname, username, email, password) VALUES (?, ?, ?, ?);"""
+    """INSERT INTO users (fullname, username, email, password, payment_method) VALUES (?, ?, ?, ?, ?);"""
 )
 
 select_users = """SELECT * FROM users;"""
 
-check_user_login = """SELECT EXISTS(SELECT 1 FROM users WHERE username = ?);"""
+check_user_login_exists = """SELECT EXISTS(SELECT 1 FROM users WHERE username = ?);"""
 
-check_user_email = """SELECT EXISTS(SELECT 1 FROM users WHERE email = ?);"""
+check_user_email_exists = """SELECT EXISTS(SELECT 1 FROM users WHERE email = ?);"""
 
 find_id = """SELECT id FROM users WHERE username = ?;"""
 
 check_user = """SELECT * FROM users WHERE username = ? OR email = ?;"""
 
+
+
+#ЗАПРОСЫ, СВЯЗАННЫЕ С ЗАКАЗОМ ТАКСИ (RL-17)
 
 create_table_orders = """CREATE TABLE IF NOT EXISTS orders(
                 order_id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -55,3 +69,21 @@ update_driver_status_free = "UPDATE drivers SET status = 'free' WHERE driver_id 
 select_driver_id = """SELECT * FROM drivers WHERE driver_id = ?;"""
 
 update_driver_rating_and_orders = "UPDATE drivers SET average_rating = ?, total_trips = ? WHERE driver_id = ?"
+
+
+
+# ЗАПРОСЫ, СВЯЗАННЫЕ С ИЗМЕНЕНИЕМ ДАННЫХ ПОЛЬЗОВАТЕЛЯ (RL-27)
+
+check_user_password = """SELECT password FROM users WHERE id = ?;"""
+
+update_user_fullname = """UPDATE users SET fullname = ? WHERE id = ?;"""
+
+update_user_password = """UPDATE users SET password = ? WHERE id = ?;"""
+
+check_user_payment_method = """SELECT payment_method FROM users WHERE id = ?;"""
+
+update_user_payment_method = """UPDATE users SET payment_method = ? WHERE id = ?;"""
+
+check_user_by_id = """SELECT * FROM users WHERE id = ?;"""
+
+insert_card = """INSERT INTO cards (id, card) VALUES (?, ?)"""

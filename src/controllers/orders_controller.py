@@ -30,17 +30,21 @@ def select_random_driver(car_category):
 
 def create_order():
     conn = sqlite3.connect(DATA_ORDERS_PATH)
+    conn = sqlite3.connect(DATA_ORDERS_PATH)
     cur = conn.cursor()
     cur.execute(sqlite_query.create_table_orders)
+    conn.commit()
     conn.commit()
 
     order_data = request.get_json()
 
     user_id = order_data["user_id"]
+    user_id = order_data["user_id"]
     pickup_location = order_data["pickup_location"]
     destination = order_data["destination"]
     distance = order_data["distance"]
     car_category = order_data["car_category"]
+    start_time = order_data["start_time"]
     start_time = order_data["start_time"]
     end_time = order_data["end_time"]
     total_ride_time = order_data["total_ride_time"]

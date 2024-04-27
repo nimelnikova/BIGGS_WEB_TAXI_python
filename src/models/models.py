@@ -38,3 +38,33 @@ class Order:
             "waiting_time": self.waiting_time
         }
     
+        }
+    
+class Driver:
+    driver_id: int
+    name: str
+    car_model: str
+    current_location: str
+    status: str   
+    
+    def change_status(self, new_status):
+        self.status = new_status
+
+    def update_location(self, new_location):
+        self.update_location = new_location
+
+class User:
+
+    def __init__(self, fullname, username, email, password, payment_method):
+        self.fullname = fullname
+        self.username = username
+        self.email = email
+        self.__password = password
+        # payment_methos = 0, если оплата наличными, = 1, если оплата картой
+        self.payment_method = payment_method
+
+    def get_password(self):
+        return self.__password
+
+    def __str__(self):
+        return f"Пользователь {self.username} с электронной почтой {self.email}."

@@ -31,6 +31,7 @@ app.app.secret_key = generate_secret_key()
 conn = sqlite3.connect(DATA_USERS_PATH)  # создаем базу данных, если ее еще нет
 cur = conn.cursor()
 cur.execute(sqlite_query.create_table_users)
+cur.execute(sqlite_query.create_table_cards)
 
 
 @app.route("/")
