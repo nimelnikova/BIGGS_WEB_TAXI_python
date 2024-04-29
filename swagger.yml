@@ -77,7 +77,7 @@ components:
         - password
       properties:
         id:
-          type: "string"
+          type: "integer"
         new_fullname:
           type: "string"
         password:
@@ -90,7 +90,7 @@ components:
         - password
       properties:
         id:
-          type: "string"
+          type: "integer"
         new_password:
           type: "string"
         password:
@@ -102,12 +102,40 @@ components:
         - new_payment_method
       properties:
         id:
-          type: "string"
+          type: "integer"
         new_payment_method:
           type: "string"
-
-        payment_method:
+        password:
           type: "string"
+    AddCard:
+      type: "object"
+      required:
+        - id
+        - card_number
+        - card_holder
+        - month
+        - year
+        - cvv
+      properties:
+        id:
+          type: "integer"
+        card_number:
+          type: "string"
+        card_holder:
+          type: "string"
+        month:
+          type: "string"
+        year:
+          type: "string"
+        cvv:
+          type: "string"
+    GetCard:
+      type: "object"
+      required:
+        - id
+      properties:
+        id:
+          type: "integer"
     Error:
       type: "object"
       properties:
@@ -334,7 +362,7 @@ paths:
       operationId: "src.controllers.account_controller.change_payment_method"
       tags:
         - "Changes"
-      summary: "Changes thr payment nethod of a user."
+      summary: "Changes the payment method of a user."
       requestBody:
         description: "Changes thr parameter payment_method of the database dataUsers.db"
         required: True
@@ -345,5 +373,40 @@ paths:
       responses:
         "200":
           description: "Payment method was successfully changed."
+        "400":
+          $ref: "#/components/responses/BadRequest"
+  /changes/add_card:
+    post:
+      operationId: "src.controllers.cards_controller.add_card"
+      tags:
+        - "Cards"
+      summary: "Adds for user new card."
+      requestBody:
+        description: "Adds for a user's id new card with parametres: card number, card holder's name, date and cvv."
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AddCard"
+      responses:
+        "200":
+          description: "Card was successfully added."
+        "400":
+          $ref: "#/components/responses/BadRequest"
+  /changes/get_card:
+    post:
+      operationId: "src.controllers.cards_controller.get_card"
+      tags:
+        - "Cards"
+      summary: "Returns card information by user's id."
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/GetCard"
+      responses:
+        "200":
+          description: "Card information was returned"
         "400":
           $ref: "#/components/responses/BadRequest"

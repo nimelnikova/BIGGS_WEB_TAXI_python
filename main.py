@@ -14,7 +14,7 @@ def generate_secret_key():
 
 
 BASE_DIR = Path(__file__).resolve().parent
-DATA_USERS_PATH = BASE_DIR / "dataUsers.db"
+DATA_USERS_PATH = BASE_DIR / "data.db"
 
 
 current_dir = os.path.abspath(os.path.dirname(__file__))

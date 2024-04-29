@@ -2,20 +2,25 @@
 
 
 create_table_cards = """CREATE TABLE IF NOT EXISTS cards(
-                      id TEXT NOT NULL,
-                      card TEXT NOT NULL
+                      id INTEGER,
+                      card_number TEXT NOT NULL,
+                      card_holder TEXT NOT NULL,
+                      month TEXT NOT NULL,
+                      year TEXT NOT NULL,
+                      cvv TEXT NOT NULL
                     );"""
+
 
 # ЗАПРОСЫ, СВЯЗАННЫЕ С РЕГИСТАРЦИЕЙ И ВХОДОМ (RL-7)
 
 create_table_users = """CREATE TABLE IF NOT EXISTS users(
-                  id INTEGER PRIMARY KEY AUTOINCREMENT,
-                  fullname TEXT NOT NULL,
-                  username TEXT NOT NULL,
-                  email TEXT NOT NULL,
-                  password TEXT NOT NULL,
-                  payment_method TEXT NOT NULL
-                );"""
+                      id INTEGER PRIMARY KEY AUTOINCREMENT,
+                      fullname TEXT NOT NULL,
+                      username TEXT NOT NULL,
+                      email TEXT NOT NULL,
+                      password TEXT NOT NULL,
+                      payment_method TEXT NOT NULL
+                    );"""
 
 insert_user = (
     """INSERT INTO users (fullname, username, email, password, payment_method) VALUES (?, ?, ?, ?, ?);"""
@@ -86,4 +91,8 @@ update_user_payment_method = """UPDATE users SET payment_method = ? WHERE id = ?
 
 check_user_by_id = """SELECT * FROM users WHERE id = ?;"""
 
-insert_card = """INSERT INTO cards (id, card) VALUES (?, ?)"""
+insert_card = """INSERT INTO cards (id, card_number, card_holder, month, year, cvv) VALUES (?, ?, ?, ?, ?, ?);"""
+
+check_card_exists = """SELECT EXISTS(SELECT 1 FROM cards WHERE card_number = ?);"""
+
+get_user_card = """SELECT * FROM cards WHERE id = ?;"""
