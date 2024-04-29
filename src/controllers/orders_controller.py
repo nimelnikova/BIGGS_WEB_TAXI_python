@@ -9,7 +9,7 @@ import sqlite3
 import sqlite_query
 
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
-DATA_ORDERS_PATH = BASE_DIR / "dataUsers.db"
+DATA_ORDERS_PATH = BASE_DIR / "data.db"
 TRIPS_PATH = BASE_DIR / "trips.csv"
 
 
