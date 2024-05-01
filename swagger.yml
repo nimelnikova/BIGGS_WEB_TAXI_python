@@ -281,22 +281,29 @@ paths:
   
   /changes/change_fullname:
     put:
-      summary: "Changes the name of a user."
+      summary: "Changes the user's fullname."
       operationId: "src.controllers.account_controller.change_fullname"
       tags:
-        - "Changes"
+        - "User Changes"
       requestBody:
-        description: "Changes the parametr fullname in the database dataUsers.db"
-        required: True
+        description: "Request to change user's fullname."
+        required: true
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/ChangeFullname"
+              $ref: '#/components/schemas/ChangeFullname'
       responses:
         "200":
-          description: "Fullname was successfully changed"
+          description: "Fullname was successfully changed."
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
         "400":
-          $ref: "#/components/responses/BadRequest"
+          $ref: '#/components/responses/BadRequest'
   
   /changes/change_password:
     put:

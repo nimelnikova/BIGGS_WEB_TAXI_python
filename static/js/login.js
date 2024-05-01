@@ -67,14 +67,18 @@ function onLoginClick(event) {
 
 // Функция вызывается после успешного входа в систему.
 function onSuccessfulLogin(data) {
-    if (data.user_id) {
+    console.log(data); // Для отладки
+
+    if (data.user_id && data.fullname) {
         localStorage.setItem('userId', data.user_id);
-        console.log('user_id успешно сохранен:', data.user_id);
-        window.location.href = '/main.html'; // Перенаправление на главную страницу
+        localStorage.setItem('fullname', data.fullname);
+        localStorage.setItem('password', data.password);
+        console.log('user_id и fullname и паролик успешно сохранены:', data.user_id, data.fullname);
+        window.location.href = '/main.html';
     } else {
-        console.error('Не удалось получить user_id');
+        console.error('Не удалось получить user_id или fullname');
         alert('Не удалось получить данные пользователя. Пожалуйста, войдите снова.');
-        window.location.href = '/login.html'; // Перенаправление обратно на страницу входа в случае ошибки
+        window.location.href = '/login.html';
     }
 }
 
@@ -107,26 +111,33 @@ function onRegisterClick(event) {
     sendPostRequest('/api/registration', { fullname, username, email, password })
         .then(data => {
             // Проверяем, что в ответе есть user_id
-            if (data.id !== undefined) {
+            if (data.id !== undefined && data.fullname) {
                 // Вызываем функцию для успешной регистрации
-                onSuccessfulRegistration(data.id);
+                onSuccessfulRegistration(data);
             } else {
-                registerError.textContent = 'Ошибка регистрации: ID пользователя не получен.';
+                registerError.textContent = 'Ошибка регистрации: необходимые данные пользователя не получены.';
             }
         })
         .catch(error => {
-            registerError.textContent = error.message; // Показываем сообщение об ошибке от сервера
+            registerError.textContent = 'Ошибка при запросе: ' + error.message; // Показываем сообщение об ошибке от сервера
         });
+
 }
 
-// Функция, которая будет вызвана после успешной регистрации пользователя.
-function onSuccessfulRegistration(userId) {
-    // Сохраняем user_id в localStorage
-    localStorage.setItem('userId', userId);
+function onSuccessfulRegistration(data) {
+    console.log(data); // Для отладки
 
-    // Теперь user_id доступен для использования при создании заказа
-    // Переход на главную страницу после успешной регистрации
-    window.location.href = '/main.html';
+    if (data.id !== undefined && data.fullname) {
+        localStorage.setItem('userId', data.id);
+        localStorage.setItem('fullname', data.fullname);
+        localStorage.setItem('password', data.password);
+        console.log('userId и fullname успешно сохранены:', data.id, data.fullname);
+        window.location.href = '/main.html';
+    } else {
+        console.error('Не удалось получить userId или fullname или паролик');
+        alert('Не удалось получить данные пользователя. Пожалуйста, войдите снова.');
+        window.location.href = '/login.html';
+    }
 }
 
 document.addEventListener('DOMContentLoaded', function () {
@@ -205,3 +216,6 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 });
+
+
+

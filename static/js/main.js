@@ -1,16 +1,172 @@
-
 ymaps.ready(init);
 
 let multiRoute;
 let searchTimeout;
 
 function init() {
+    updateUserProfile();
     var centerCoords = [55.809732, 37.498923];
     var myMap = new ymaps.Map("map", {
         center: centerCoords,
         zoom: 16,
         controls: []
     });
+    // попробую машинки 
+    // Создаем макет метки с возможностью вращения изображения
+    var carLayout = ymaps.templateLayoutFactory.createClass('<div style="transform: rotate($[properties.rotate]deg);">' +
+        '<img src="../static/icons/getimage.png" style="width: 30px; height: 60px;" /></div>');
+
+    // Создаем метку с кастомным макетом
+    var carPlacemark = new ymaps.Placemark(myMap.getCenter(), {
+        rotate: 0 // начальный угол вращения
+    }, {
+        iconLayout: carLayout,
+        iconShape: {   // Определяем форму иконки, чтобы она корректно реагировала на события мыши
+            type: 'Rectangle',
+            coordinates: [
+                [-15, -30], [15, 30]
+            ]
+        }
+    });
+
+    // Вторая машинка
+    var car2Placemark = new ymaps.Placemark(myMap.getCenter(), {
+        rotate: 0 // начальный угол вращения
+    }, {
+        iconLayout: carLayout
+    });
+
+    // Третья машинка
+    var car3Placemark = new ymaps.Placemark(myMap.getCenter(), {
+        rotate: 0 // начальный угол вращения
+    }, {
+        iconLayout: carLayout
+    });
+
+    // Четвертая машинка
+    var car4Placemark = new ymaps.Placemark(myMap.getCenter(), {
+        rotate: 0 // начальный угол вращения
+    }, {
+        iconLayout: carLayout
+    });
+
+    // Добавляем машинки на карту
+    myMap.geoObjects.add(carPlacemark);
+    myMap.geoObjects.add(car2Placemark);
+    myMap.geoObjects.add(car3Placemark);
+    myMap.geoObjects.add(car4Placemark);
+
+
+    // Получаем маршрут и начинаем анимацию
+    ymaps.route([
+        'Москва, метро Войковская',
+        'Москва, метро Сокол'
+
+    ]).then(function (route) {
+        // Создание маршрута и анимация машинки
+        animateRoute(route, carPlacemark);
+    }, function (error) {
+        alert('Возникла ошибка при построении маршрута: ' + error.message);
+    });
+
+    // Маршрут для второй машинки
+    ymaps.route([
+        'Москва, Дубосековская улица, 5', // Стартовая точка маршрута - МАИ
+        'Москва, метро Тверская' // Конечная точка маршрута - метро Тверская
+    ]).then(function (route) {
+        // Создание маршрута и анимация машинки
+        animateRoute(route, car2Placemark);
+    }, function (error) {
+        alert('Возникла ошибка при построении маршрута: ' + error.message);
+    });
+
+    //третья машинка
+    ymaps.route([
+        'Москва, Волоколамское шоссе, 24', // Стартовая точка маршрута - МАИ
+        'Москва, Дубосековская, 5' // Конечная точка маршрута - метро Тверская
+    ]).then(function (route) {
+        // Создание маршрута и анимация машинки
+        animateRoute(route, car3Placemark);
+    }, function (error) {
+        alert('Возникла ошибка при построении маршрута: ' + error.message);
+    });
+
+    // четвертая 
+    // Получаем маршрут и начинаем анимацию
+    ymaps.route([
+        'Москва, Волоколамское шоссе, 4к31',
+        'Москва, Часовая улица, 30'
+
+    ]).then(function (route) {
+        // Создание маршрута и анимация машинки
+        animateRoute(route, car4Placemark);
+    }, function (error) {
+        alert('Возникла ошибка при построении маршрута: ' + error.message);
+    });
+
+    function animateRoute(route, placemark) {
+        var paths = route.getPaths(),
+            points = [];
+
+        paths.each(function (path) {
+            points = points.concat(path.getSegments().reduce(function (acc, segment) {
+                return acc.concat(segment.getCoordinates());
+            }, []));
+        });
+
+        animateAlongRoute(points, 0, placemark);
+    }
+
+    function animateAlongRoute(points, index, placemark) {
+        if (index < points.length - 1) {
+            var startPos = points[index],
+                endPos = points[index + 1];
+
+            animateCar(startPos, endPos, 2000, function () {
+                animateAlongRoute(points, index + 1, placemark);
+            }, placemark);
+        }
+    }
+
+    function getRotationAngle(from, to) {
+        var angle = Math.atan2(to[1] - from[1], to[0] - from[0]);
+        return (angle * (180 / Math.PI) + 360) % 360;
+    }
+
+    function animateCar(startCoords, endCoords, duration, callback, placemark) {
+        var angle = getRotationAngle(startCoords, endCoords);
+        placemark.properties.set('rotate', angle);
+
+        var startTime = new Date().getTime();
+        var deltaLat = endCoords[0] - startCoords[0];
+        var deltaLng = endCoords[1] - startCoords[1];
+
+        function move() {
+            var currentTime = new Date().getTime();
+            var progress = (currentTime - startTime) / duration;
+            if (progress > 1) progress = 1;
+
+            var currentCoords = [
+                startCoords[0] + deltaLat * progress,
+                startCoords[1] + deltaLng * progress
+            ];
+
+            if (progress < 1) {
+                var nextAngle = getRotationAngle(currentCoords, endCoords);
+                placemark.properties.set('rotate', nextAngle);
+                placemark.geometry.setCoordinates(currentCoords);
+                requestAnimationFrame(move);
+            } else {
+                placemark.geometry.setCoordinates(endCoords);
+                callback && callback();
+            }
+        }
+
+        move();
+    }
+
+
+    // конец машинок
 
     var myPlacemark = new ymaps.Placemark(myMap.getCenter(), {}, {
         iconLayout: 'default#image',
@@ -432,17 +588,6 @@ function init() {
         sendOrder(orderData);
     });
 
-    // function getCurrentDistance() {
-    //     // Здесь должна быть логика для получения текущего расстояния маршрута
-    //     return parseFloat(document.getElementById('distance-input').value); // Примерное значение
-    // }
-
-    // function calculateTravelTime() {
-    //     // Допустим, эта функция возвращает время поездки в минутах на основе данных маршрута
-    //     let route = document.getElementById('route-info').value;  // пример получения времени из поля ввода или другого источника
-    //     return parseInt(route.match(/\d+/)[0]);  // простой пример извлечения числа из строки
-    // }
-
     function sendOrder(orderData) {
         orderData.user_id = parseInt(orderData.user_id, 10);
 
@@ -477,4 +622,162 @@ function init() {
             });
     }
 
+    function updateUserProfile() {
+        console.log('Попытка обновить данные пользователя.');
+
+        // Пытаемся получить полное имя из localStorage
+        const fullname = localStorage.getItem('fullname');
+        console.log('Полученное полное имя:', fullname);
+
+        // Проверяем, существует ли имя пользователя
+        if (fullname) {
+            // Обновляем DOM, если имя пользователя существует
+            const userNameElement = document.querySelector('.user-name');
+            if (userNameElement) {
+                console.log('Элемент с именем пользователя найден, обновляем его содержимое.');
+                userNameElement.textContent = fullname;
+            } else {
+                console.error('Элемент для отображения имени пользователя не найден.');
+            }
+        } else {
+            console.error('Имя пользователя не найдено в localStorage.');
+        }
+    }
+
+    function closeEditModal() {
+        const modal = document.getElementById('edit-user-modal');
+        if (modal) {
+            modal.style.display = 'none';
+        } else {
+            console.error('Не удалось найти модальное окно с ID "edit-user-modal".');
+        }
+    }
+    // Установка обработчика событий
+    document.querySelector('.user-name').addEventListener('click', openEditModal);
+    document.querySelector('.close-edit-modal').addEventListener('click', closeEditModal);
+
+
+    function openEditModal() {
+        const modal = document.getElementById('edit-user-modal');
+        const fullnameInput = document.getElementById('modal-fullname');
+        const currentPasswordInput = document.getElementById('modal-password');
+        const newPasswordInput = document.getElementById('modal-new-password');
+
+        if (modal) {
+            modal.style.display = 'block';
+            fullnameInput.value = localStorage.getItem('fullname') || '';  // Загрузка сохранённого ФИО
+            currentPasswordInput.value = '';  // Поля пароля должны быть пустыми
+            newPasswordInput.value = '';  // Поля пароля должны быть пустыми
+        } else {
+            console.error('Не удалось найти модальное окно для редактирования профиля.');
+        }
+    }
+
+    document.getElementById('edit-profile-form').addEventListener('submit', function (event) {
+        event.preventDefault();
+
+        const fullname = document.getElementById('modal-fullname').value;
+        const currentPassword = document.getElementById('modal-password').value;
+        const newPassword = document.getElementById('modal-new-password').value; // Получаем новый пароль
+        const userId = Number(localStorage.getItem('userId'));
+
+        if (!userId) {
+            alert('Ошибка: ID пользователя не найден. Попробуйте перелогиниться.');
+            return;
+        }
+
+        // Обновление ФИО, если поля не пусты
+        if (fullname && currentPassword) {
+            updateFullname(userId, fullname, currentPassword);
+        }
+
+        // Смена пароля, если заполнены поля текущего и нового пароля
+        if (currentPassword && newPassword) {
+            changeUserPassword(userId, currentPassword, newPassword);
+        }
+    });
+
+    function updateFullname(userId, fullname, currentPassword) {
+        fetch('/api/changes/change_fullname', {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                id: userId,
+                new_fullname: fullname,
+                password: currentPassword
+            })
+        })
+            .then(handleResponse)
+            .then(data => {
+                console.log('ФИО успешно обновлено:', data);
+                localStorage.setItem('fullname', data.fullname);
+                updateUserProfile();
+                closeEditModal();
+                showNotificationModal('ФИО успешно изменено!');
+            })
+            .catch(handleError);
+    }
+
+    function changeUserPassword(userId, currentPassword, newPassword) {
+        fetch('/api/changes/change_password', {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                id: userId,
+                password: currentPassword,
+                new_password: newPassword
+            })
+        })
+            .then(handleResponse)
+            .then(data => {
+                console.log('Пароль успешно изменен:', data);
+                alert('Пароль успешно изменен!');
+                closeEditModal();
+                showNotificationModal('Пароль успешно изменен!');
+            })
+            .catch(handleError);
+    }
+
+    function handleResponse(response) {
+        if (response.ok) {
+            return response.json();
+        } else {
+            // Преобразование неудачного ответа в JSON для получения деталей ошибки и выброс исключения
+            return response.json().then(errorData => {
+                throw new Error(`HTTP error! status: ${response.status}, message: ${errorData.message}`);
+            });
+        }
+    }
+
+    function handleError(error) {
+        console.error('Ошибка:', error);
+        alert('Ошибка при выполнении запроса: ' + error.message);
+    }
+
+
+    function showNotificationModal(message) {
+        const modal = document.getElementById('success-notification-modal');
+        const messageP = document.getElementById('notificationMessage');
+        messageP.textContent = message; // Установка сообщения
+        modal.style.display = 'flex'; // Показать модальное окно
+
+        const closeBtn = document.querySelector('.close-notification-modal');
+        closeBtn.onclick = function () {
+            modal.style.display = 'none'; // Закрыть модальное окно при клике на крестик
+        }
+    }
+
+    function hideNotificationModal() {
+        const modal = document.getElementById('success-notification-modal');
+        modal.style.display = 'none';
+    }
+
 }
+
+
+
+

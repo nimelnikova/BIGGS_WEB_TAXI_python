@@ -1,4 +1,4 @@
-
+import axios from 'axios';
 
 new Vue({
     el: "#app",
@@ -39,6 +39,18 @@ new Vue({
             if (number.match(re) != null) return "mir";
 
             return "visa"; // если тип карты не определен
+        },
+
+        validateCardName() {
+            this.cardName = this.cardName.replace(/[\dа-яА-Я]/g, '');
+            let words = this.cardName.split(/\s+/);
+            if (words.length > 2) {
+                this.cardName = words.slice(0, 2).join(' ');
+            }
+        },
+
+        validateCvv() {
+            this.cardCvv = this.cardCvv.replace(/[^\d]/g, '').slice(0, 3);
         },
 
         generateCardNumberMask() {
@@ -99,29 +111,37 @@ new Vue({
                 let cardData = JSON.parse(storedCardData);
                 this.lastFourDigits = cardData.cardNumber.slice(-4);
             }
-        },
+        }, // <— Добавлена запятая для корректного разделения методов
+
         saveCardData() {
-            if (this.cardNumber && this.cardCvv && this.cardMonth && this.cardYear) {
+            const userId = localStorage.getItem('userId'); // Получаем user_id из localStorage
+            if (!userId) {
+                alert('Пожалуйста, войдите в систему для выполнения этой операции');
+                return;
+            }
+
+            if (this.cardNumber && this.cardCvv && this.cardMonth && this.cardYear && this.cardName) {
                 const cardData = {
+                    id: userId, // Используем полученный user_id
                     cardNumber: this.cardNumber.replace(/\s/g, ''),
-                    cardName: this.cardName,
-                    cardMonth: this.cardMonth,
-                    cardYear: this.cardYear,
-                    cardCvv: this.cardCvv
+                    cardHolder: this.cardName,
+                    month: this.cardMonth,
+                    year: this.cardYear,
+                    cvv: this.cardCvv
                 };
 
-                localStorage.setItem('cardData', JSON.stringify(cardData));
-                this.lastFourDigits = cardData.cardNumber.slice(-4);
-
-                // Отправка события в глобальную область видимости
-                window.dispatchEvent(new CustomEvent('cardAdded', { detail: this.lastFourDigits }));
-                alert('Карта успешно добавлена');
-
-                // Перенаправление пользователя обратно на главную страницу
-                window.location.href = 'main.html';
+                axios.post('/api/changes/add_card', cardData)
+                    .then(response => {
+                        alert('Карта успешно добавлена: ' + response.data.message);
+                    })
+                    .catch(error => {
+                        alert('Ошибка: ' + error.message);
+                    });
             } else {
                 alert('Пожалуйста, заполните все поля карты');
             }
-        }
+        },
+
+
     }
 });
