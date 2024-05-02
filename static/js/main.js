@@ -715,7 +715,7 @@ function init() {
                 localStorage.setItem('fullname', data.fullname);
                 updateUserProfile();
                 closeEditModal();
-                showNotificationModal('ФИО успешно изменено!');
+                showNotification('ФИО успешно обновлено!', true);
             })
             .catch(handleError);
     }
@@ -737,7 +737,7 @@ function init() {
                 console.log('Пароль успешно изменен:', data);
                 alert('Пароль успешно изменен!');
                 closeEditModal();
-                showNotificationModal('Пароль успешно изменен!');
+                showNotification('Пароль успешно изменен!', true);
             })
             .catch(handleError);
     }
@@ -758,23 +758,17 @@ function init() {
         alert('Ошибка при выполнении запроса: ' + error.message);
     }
 
+    function showNotification(message, isSuccess = true) {
+        const notification = document.createElement('div');
+        notification.className = `notification ${isSuccess ? 'success' : 'error'}`;
+        notification.textContent = message;
 
-    function showNotificationModal(message) {
-        const modal = document.getElementById('success-notification-modal');
-        const messageP = document.getElementById('notificationMessage');
-        messageP.textContent = message; // Установка сообщения
-        modal.style.display = 'flex'; // Показать модальное окно
-
-        const closeBtn = document.querySelector('.close-notification-modal');
-        closeBtn.onclick = function () {
-            modal.style.display = 'none'; // Закрыть модальное окно при клике на крестик
-        }
+        document.body.appendChild(notification);
+        setTimeout(() => {
+            document.body.removeChild(notification);
+        }, 3000); // Уведомление исчезает через 3 секунды
     }
 
-    function hideNotificationModal() {
-        const modal = document.getElementById('success-notification-modal');
-        modal.style.display = 'none';
-    }
 
 }
 
