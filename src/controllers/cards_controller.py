@@ -86,12 +86,7 @@ def get_card():
     cards = []
     for row in rows:
         cards.append({
-            "id": row[0],
-            "card_number": row[1],
-            "card_holder": row[2],
-            "month": row[3],
-            "year": row[4],
-            "cvv": row[5],
+            "card_number_last_four": row[1][(15 - 3):],
         })
     
     return jsonify(cards)
