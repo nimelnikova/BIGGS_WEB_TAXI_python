@@ -536,7 +536,7 @@ function init() {
     });
 
 
-    // логика связи с бекендом / отправка данных
+    // логика связи с бекендом / отправка данных (заказ)
     document.getElementById('order-button').addEventListener('click', function () {
         const userId = localStorage.getItem('userId');
         if (!userId) {
@@ -621,6 +621,8 @@ function init() {
                 alert(`Ошибка при оформлении заказа: ${error.message}. Пожалуйста, попробуйте снова.`);
             });
     }
+
+    //здесь все про изменение аккаунта 
 
     function updateUserProfile() {
         console.log('Попытка обновить данные пользователя.');

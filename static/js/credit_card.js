@@ -40,7 +40,7 @@ new Vue({
         },
 
         validateCardName() {
-            this.cardName = this.cardName.replace(/[\dа-яА-Я]/g, '');
+            this.cardName = this.cardName.replace(/[\dа-яА-Я]/g, '').toUpperCase(); // Преобразует имя в верхний регистр и удаляет все цифры и символы кириллицы
             let words = this.cardName.split(/\s+/);
             if (words.length > 2) {
                 this.cardName = words.slice(0, 2).join(' ');
@@ -67,6 +67,15 @@ new Vue({
         }
     },
     methods: {
+        handleEnter(nextInputId, event) {
+            if (event.key === "Enter") {
+                event.preventDefault(); // Отменяем стандартное поведение Enter
+                const nextInput = this.$refs[nextInputId];
+                if (nextInput) {
+                    nextInput.focus(); // Перемещаем фокус на следующий элемент
+                }
+            }
+        },
 
         formatCardNumber() {
             let value = this.cardNumber.replace(/[^\d]/g, ''); // Удаляет все кроме цифр
@@ -112,28 +121,34 @@ new Vue({
         }, // <— Добавлена запятая для корректного разделения методов
 
         saveCardData() {
-            const userId = localStorage.getItem('userId'); // Получаем user_id из localStorage
-            if (!userId) {
+            // Получаем user_id из localStorage и преобразуем в число
+            const userId = parseInt(localStorage.getItem('userId'), 10);  // Добавлен parseInt для преобразования в число
+            if (isNaN(userId)) {  // Проверка на корректность преобразования
                 alert('Пожалуйста, войдите в систему для выполнения этой операции');
                 return;
             }
 
             if (this.cardNumber && this.cardCvv && this.cardMonth && this.cardYear && this.cardName) {
                 const cardData = {
-                    id: userId, // Используем полученный user_id
-                    cardNumber: this.cardNumber.replace(/\s/g, ''),
-                    cardHolder: this.cardName,
+                    id: userId,
+                    card_number: this.cardNumber.replace(/\s/g, ''),  // Удаление пробелов и отправка как 'card_number'
+                    card_holder: this.cardName,
                     month: this.cardMonth,
-                    year: this.cardYear,
+                    year: this.cardYear.toString(),
                     cvv: this.cardCvv
                 };
 
-                axios.post('/api/changes/add_card', cardData)
+                axios.post('/api/changes/add_card', cardData, {
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                })
                     .then(response => {
                         alert('Карта успешно добавлена: ' + response.data.message);
                     })
                     .catch(error => {
-                        alert('Ошибка: ' + error.message);
+                        console.error('Ошибка при добавлении карты:', error);
+                        alert('Ошибка: ' + (error.response && error.response.data ? error.response.data.message : error.message));
                     });
             } else {
                 alert('Пожалуйста, заполните все поля карты');

@@ -124,29 +124,32 @@
                 <div class="card-input">
                     <label for="cardNumber" class="card-input__label">Номер карты</label>
                     <input type="text" id="cardNumber" class="card-input__input" v-model="cardNumber"
-                        @input="formatCardNumber" v-on:focus="focusInput" v-on:blur="blurInput" data-ref="cardNumber"
-                        autocomplete="off" maxlength="19">
+                        @input="formatCardNumber" v-on:focus="focusInput" v-on:blur="blurInput"
+                        @keyup="handleEnter('cardName', $event)" data-ref="cardNumber" autocomplete="off"
+                        maxlength="19">
 
                 </div>
                 <div class="card-input">
                     <label for="cardName" class="card-input__label">Владелец карты</label>
                     <input type="text" id="cardName" class="card-input__input" v-model="cardName"
                         @input="validateCardName" v-on:focus="focusInput" v-on:blur="blurInput" data-ref="cardName"
-                        autocomplete="off">
+                        autocomplete="off" @keyup="handleEnter('cardMonth', $event)">
                 </div>
                 <div class="card-form__row">
                     <div class="card-form__col">
                         <div class="card-form__group">
                             <label for="cardMonth" class="card-input__label">Срок действия</label>
                             <select class="card-input__input -select" id="cardMonth" v-model="cardMonth"
-                                v-on:focus="focusInput" v-on:blur="blurInput" data-ref="cardDate">
+                                v-on:focus="focusInput" v-on:blur="blurInput" @keyup="handleEnter('cardYear', $event)"
+                                data-ref="cardDate">
                                 <option value="" disabled selected>Месяц</option>
                                 <option v-bind:value="n < 10 ? '0' + n : n" v-for="n in 12"
                                     v-bind:disabled="n < minCardMonth" v-bind:key="n">
                                     {{n < 10 ? '0' + n : n}} </option>
                             </select>
                             <select class="card-input__input -select" id="cardYear" v-model="cardYear"
-                                v-on:focus="focusInput" v-on:blur="blurInput" data-ref="cardDate">
+                                v-on:focus="focusInput" v-on:blur="blurInput" @keyup="handleEnter('cardCvv', $event)"
+                                data-ref="cardDate">
                                 <option value="" disabled selected>Год</option>
                                 <option v-bind:value="$index + minCardYear" v-for="(n, $index) in 12" v-bind:key="n">
                                     {{$index + minCardYear}}
@@ -158,8 +161,8 @@
                         <div class="card-input">
                             <label for="cardCvv" class="card-input__label">CVV</label>
                             <input type="text" class="card-input__input" id="cardCvv" v-mask="'###'" maxlength="3"
-                                v-model="cardCvv" @focus="flipCard(true)" @blur="flipCard(false)" autocomplete="off"
-                                @input="validateCvv">
+                                v-model="cardCvv" @focus="flipCard(true)" @blur="flipCard(false)"
+                                @keyup="handleEnter('saveButton', $event)" autocomplete="off" @input="validateCvv">
                         </div>
                     </div>
                 </div>
@@ -173,6 +176,8 @@
     </div>
     {% endraw %}
     <script src='https://cdnjs.cloudflare.com/ajax/libs/vue/2.6.10/vue.min.js'></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
 
     <!-- <script src="{{ url_for('static', filename='credit_card.js') }}"></script> -->
     <!-- <script src="../static/js/credit_card.js"></script> -->
