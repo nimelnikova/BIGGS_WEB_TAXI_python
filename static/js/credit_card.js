@@ -133,7 +133,7 @@ new Vue({
                     id: userId,
                     card_number: this.cardNumber.replace(/\s/g, ''),  // Удаление пробелов и отправка как 'card_number'
                     card_holder: this.cardName,
-                    month: this.cardMonth,
+                    month: this.cardMonth.toString(),
                     year: this.cardYear.toString(),
                     cvv: this.cardCvv
                 };
