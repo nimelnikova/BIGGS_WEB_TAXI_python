@@ -13,14 +13,17 @@ function init() {
     });
     // попробую машинки 
     // Создаем макет метки с возможностью вращения изображения
-    var carLayout = ymaps.templateLayoutFactory.createClass('<div style="transform: rotate($[properties.rotate]deg);">' +
-        '<img src="../static/icons/getimage.png" style="width: 30px; height: 60px;" /></div>');
+    var carLayout1 = ymaps.templateLayoutFactory.createClass('<div style="transform: rotate($[properties.rotate]deg);">' +
+        '<img src="../static/icons/blackCar.png" style="width: 30px; height: 60px;" /></div>');
 
-    // Создаем метку с кастомным макетом
+    // Шаблон для второй машинки (черной)
+    var carLayout2 = ymaps.templateLayoutFactory.createClass('<div style="transform: rotate($[properties.rotate]deg);">' +
+        '<img src="../static/icons/whiteCar.png" style="width: 25px; height: 50px;" /></div>');
+
     var carPlacemark = new ymaps.Placemark(myMap.getCenter(), {
         rotate: 0 // начальный угол вращения
     }, {
-        iconLayout: carLayout,
+        iconLayout: carLayout1,
         iconShape: {   // Определяем форму иконки, чтобы она корректно реагировала на события мыши
             type: 'Rectangle',
             coordinates: [
@@ -29,25 +32,41 @@ function init() {
         }
     });
 
+
     // Вторая машинка
     var car2Placemark = new ymaps.Placemark(myMap.getCenter(), {
         rotate: 0 // начальный угол вращения
     }, {
-        iconLayout: carLayout
+        iconLayout: carLayout1
     });
 
     // Третья машинка
     var car3Placemark = new ymaps.Placemark(myMap.getCenter(), {
         rotate: 0 // начальный угол вращения
     }, {
-        iconLayout: carLayout
+        iconLayout: carLayout2
     });
 
     // Четвертая машинка
     var car4Placemark = new ymaps.Placemark(myMap.getCenter(), {
         rotate: 0 // начальный угол вращения
     }, {
-        iconLayout: carLayout
+        iconLayout: carLayout2
+    });
+
+    // Пятая машинка
+    var car5Placemark = new ymaps.Placemark(myMap.getCenter(), {
+        rotate: 0 // начальный угол вращения
+    }, {
+        iconLayout: carLayout2
+    });
+
+    //шестая 
+    // Вторая машинка
+    var car6Placemark = new ymaps.Placemark(myMap.getCenter(), {
+        rotate: 0 // начальный угол вращения
+    }, {
+        iconLayout: carLayout1
     });
 
     // Добавляем машинки на карту
@@ -55,6 +74,8 @@ function init() {
     myMap.geoObjects.add(car2Placemark);
     myMap.geoObjects.add(car3Placemark);
     myMap.geoObjects.add(car4Placemark);
+    myMap.geoObjects.add(car5Placemark);
+    myMap.geoObjects.add(car6Placemark);
 
 
     // Получаем маршрут и начинаем анимацию
@@ -92,7 +113,6 @@ function init() {
     });
 
     // четвертая 
-    // Получаем маршрут и начинаем анимацию
     ymaps.route([
         'Москва, Волоколамское шоссе, 4к31',
         'Москва, Часовая улица, 30'
@@ -100,6 +120,30 @@ function init() {
     ]).then(function (route) {
         // Создание маршрута и анимация машинки
         animateRoute(route, car4Placemark);
+    }, function (error) {
+        alert('Возникла ошибка при построении маршрута: ' + error.message);
+    });
+
+    //пятая 
+    ymaps.route([
+        'Москва, метро Тверская',
+        'Москва, метро Сокол'
+
+    ]).then(function (route) {
+        // Создание маршрута и анимация машинки
+        animateRoute(route, car5Placemark);
+    }, function (error) {
+        alert('Возникла ошибка при построении маршрута: ' + error.message);
+    });
+
+    //шестая
+    ymaps.route([
+        'Москва, Панфиловская, 5',
+        'Москва, метро Аэропорт'
+
+    ]).then(function (route) {
+        // Создание маршрута и анимация машинки
+        animateRoute(route, car6Placemark);
     }, function (error) {
         alert('Возникла ошибка при построении маршрута: ' + error.message);
     });
@@ -511,30 +555,6 @@ function init() {
             paymentModal.style.display = 'none';
         });
     });
-
-    // Глобальная переменная для хранения последних 4 цифр карты
-    let lastFourDigits = null;
-
-    // Функция для обработки добавления карты
-    function handleCardAdded(event) {
-        lastFourDigits = event.detail; // Сохраняем последние 4 цифры карты
-        updatePaymentMethodDisplay(); // Обновляем отображение способа оплаты
-    }
-
-    document.addEventListener('DOMContentLoaded', () => {
-        // Пытаемся получить данные из localStorage
-        let storedCardData = localStorage.getItem('cardData');
-        if (storedCardData) {
-            let cardData = JSON.parse(storedCardData);
-            lastFourDigits = cardData.cardNumber.slice(-4);
-        } else {
-            lastFourDigits = null;
-        }
-
-        // Обновляем UI
-        updatePaymentMethodDisplay();
-    });
-
 
     // логика связи с бекендом / отправка данных (заказ)
     document.getElementById('order-button').addEventListener('click', function () {

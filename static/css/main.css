@@ -1218,3 +1218,11 @@ button {
         transform: translateX(0);
     }
 }
+
+.logout-modal {
+    position: absolute;
+    top: 20px;
+    left: 10px;
+    color: #a60000;
+    z-index: 10;
+}
