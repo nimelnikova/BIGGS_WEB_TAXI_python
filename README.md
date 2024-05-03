@@ -9,3 +9,4 @@
 # Запуск проекта 
 
 - Просто запустить python3 main.py
+-npm install axios
