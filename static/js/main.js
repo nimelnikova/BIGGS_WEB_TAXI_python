@@ -611,7 +611,6 @@ function init() {
     function sendOrder(orderData) {
         orderData.user_id = parseInt(orderData.user_id, 10);
 
-        // Проверка, что user_id является числом
         if (isNaN(orderData.user_id)) {
             alert('Ошибка: user_id не является числом.');
             return;
@@ -634,13 +633,22 @@ function init() {
             })
             .then(data => {
                 console.log('Заказ успешно создан:', data);
-                alert('Ваш заказ успешно оформлен!');
+                const mapElement = document.getElementById('map');
+                const loadingModal = document.getElementById('loadingModal');
+                loadingModal.style.display = 'flex';
+                mapElement.classList.add('map-shrink'); // Добавляем класс для уменьшения карты
+
+                setTimeout(() => {
+                    loadingModal.style.display = 'none';
+                    mapElement.classList.remove('map-shrink'); // Удаляем класс после завершения поиска
+                }, 5000);
             })
             .catch(error => {
                 console.error('Ошибка при создании заказа:', error);
                 alert(`Ошибка при оформлении заказа: ${error.message}. Пожалуйста, попробуйте снова.`);
             });
     }
+
 
     //здесь все про изменение аккаунта 
 
