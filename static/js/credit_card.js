@@ -40,12 +40,17 @@ new Vue({
         },
 
         validateCardName() {
-            this.cardName = this.cardName.replace(/[\dа-яА-Я]/g, '').toUpperCase(); // Преобразует имя в верхний регистр и удаляет все цифры и символы кириллицы
+            // Фильтрация ввода, оставляя только английские буквы и преобразуя их в верхний регистр
+            this.cardName = this.cardName.replace(/[^a-zA-Z\s]/g, '').toUpperCase();
+
+            // Разделение имени на слова для возможного ограничения их количества до двух
             let words = this.cardName.split(/\s+/);
             if (words.length > 2) {
+                // Если слов более двух, оставляем только первые два слова
                 this.cardName = words.slice(0, 2).join(' ');
             }
         },
+
 
         validateCvv() {
             this.cardCvv = this.cardCvv.replace(/[^\d]/g, '').slice(0, 3);
@@ -133,7 +138,7 @@ new Vue({
                     id: userId,
                     card_number: this.cardNumber.replace(/\s/g, ''),  // Удаление пробелов и отправка как 'card_number'
                     card_holder: this.cardName,
-                    month: this.cardMonth,
+                    month: this.cardMonth.toString(),
                     year: this.cardYear.toString(),
                     cvv: this.cardCvv
                 };
@@ -145,6 +150,7 @@ new Vue({
                 })
                     .then(response => {
                         alert('Карта успешно добавлена: ' + response.data.message);
+                        window.location.href = '/main.html';  // Переадресация на главную страницу
                     })
                     .catch(error => {
                         console.error('Ошибка при добавлении карты:', error);

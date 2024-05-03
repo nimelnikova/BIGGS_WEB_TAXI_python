@@ -77,6 +77,11 @@
                         <input type="password" id="modal-new-password"
                             placeholder="Новый пароль (если хотите изменить)">
                         <button type="submit">Сохранить изменения</button>
+                        <span class="logout-modal" onclick="window.location.href='/'"
+                            style="display: flex; align-items: center; cursor: pointer;">
+                            <i class='bx bx-log-out' style="font-size: 24px;"></i>
+                            <span style="margin-left: 8px; font-size: 16px;">Выход</span>
+                        </span>
                     </form>
                 </div>
             </div>
@@ -142,6 +147,7 @@
                     <img class="payment-option-icon" src="../static/icons/credit-card.svg" alt="Карта">
                     <!-- ЗАМЕНИТЬ -->
                     <span class="payment-option-text">Карта</span>
+                    <span id="card-last-four" class="payment-option-last-four">не привязана</span>
                 </div>
                 <div id="add-card-option" class="payment-option">
                     <a href="credit_card.html" class="payment-option-link">
