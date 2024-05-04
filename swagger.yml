@@ -365,7 +365,7 @@ paths:
       operationId: "src.controllers.cards_controller.get_card"
       tags:
         - "Cards"
-      summary: "Returns card information by user's id."
+      summary: "Returns card's last 4 numbers by user's id."
       requestBody:
         required: true
         content:
