@@ -541,6 +541,28 @@ function init() {
         }
     });
 
+    // document.addEventListener('DOMContentLoaded', function () {
+    //     const paymentModal = document.getElementById('payment-modal');
+    //     const paymentMethodButton = document.getElementById('payment-method-button');
+    //     const closeModalButton = document.querySelector('.close-modal');
+
+    //     paymentMethodButton.addEventListener('click', function () {
+    //         paymentModal.style.display = 'block'; // Отображаем модальное окно
+    //         fetchCardInfo(); // Обновляем информацию о карте
+    //     });
+
+    //     closeModalButton.addEventListener('click', function () {
+    //         paymentModal.style.display = 'none'; // Скрываем модальное окно
+    //     });
+
+    //     // Закрытие модального окна при клике вне его содержимого
+    //     window.addEventListener('click', function (event) {
+    //         if (event.target == paymentModal) {
+    //             paymentModal.style.display = 'none';
+    //         }
+    //     });
+    // });
+
     // Обработчики для опций способа оплаты
     document.querySelectorAll('.payment-option').forEach(function (option) {
         option.addEventListener('click', function () {
@@ -703,31 +725,93 @@ function init() {
         }
     }
 
+    // document.getElementById('edit-profile-form').addEventListener('submit', function (event) {
+    //     event.preventDefault();
+
+    //     const fullname = document.getElementById('modal-fullname').value;
+    //     const currentPassword = document.getElementById('modal-password').value;
+    //     const newPassword = document.getElementById('modal-new-password').value; // Получаем новый пароль
+    //     const userId = Number(localStorage.getItem('userId'));
+
+    //     if (!userId) {
+    //         alert('Ошибка: ID пользователя не найден. Попробуйте перелогиниться.');
+    //         return;
+    //     }
+
+    //     // Обновление ФИО, если поля не пусты
+    //     if (fullname && currentPassword) {
+    //         updateFullname(userId, fullname, currentPassword);
+    //     }
+
+    //     // Смена пароля, если заполнены поля текущего и нового пароля
+    //     if (currentPassword && newPassword) {
+    //         changeUserPassword(userId, currentPassword, newPassword);
+    //     }
+    // });
+
     document.getElementById('edit-profile-form').addEventListener('submit', function (event) {
         event.preventDefault();
 
-        const fullname = document.getElementById('modal-fullname').value;
+        const fullname = document.getElementById('modal-fullname').value.trim();
         const currentPassword = document.getElementById('modal-password').value;
-        const newPassword = document.getElementById('modal-new-password').value; // Получаем новый пароль
+        const newPassword = document.getElementById('modal-new-password').value;
         const userId = Number(localStorage.getItem('userId'));
 
+        // Проверяем наличие ID пользователя
         if (!userId) {
-            alert('Ошибка: ID пользователя не найден. Попробуйте перелогиниться.');
+            showNotification('Ошибка: ID пользователя не найден. Попробуйте перелогиниться.', false);
             return;
         }
 
-        // Обновление ФИО, если поля не пусты
+        // Проверка, что имя и текущий пароль введены для обновления ФИО
         if (fullname && currentPassword) {
             updateFullname(userId, fullname, currentPassword);
+        } else if (!currentPassword) {
+            showNotification('Ошибка: для изменения ФИО необходимо ввести текущий пароль.', false);
+            return;
         }
 
-        // Смена пароля, если заполнены поля текущего и нового пароля
         if (currentPassword && newPassword) {
             changeUserPassword(userId, currentPassword, newPassword);
         }
     });
 
+    function showNotification(message, isSuccess) {
+        const notification = document.createElement('div');
+        notification.className = 'notification';
+        notification.style.background = isSuccess ? '#4CAF50' : '#f44336';
+        notification.style.color = 'white';
+        notification.style.padding = '15px';
+        notification.style.position = 'fixed';
+        notification.style.bottom = '20px';
+        notification.style.right = '20px';
+        notification.style.zIndex = '1000';
+        notification.style.borderRadius = '5px';
+        notification.style.boxShadow = '0px 2px 5px rgba(0,0,0,0.2)';
+        notification.innerText = message;
+        document.body.appendChild(notification);
+
+        setTimeout(function () {
+            document.body.removeChild(notification);
+        }, 5000);
+
+        if (!isSuccess) { // это не работает 
+            const modal = document.getElementById('edit-user-modal');
+            setTimeout(() => {
+                modal.classList.add('shake-animation');
+                setTimeout(() => modal.classList.remove('shake-animation'), 820);
+            }, 100); // Задержка перед началом анимации
+        }
+    }
+
+
     function updateFullname(userId, fullname, currentPassword) {
+        // Проверка, что пароль введен
+        if (!currentPassword) {
+            showNotification('Ошибка: необходимо ввести текущий пароль для подтверждения изменений!', false);
+            return;
+        }
+
         fetch('/api/changes/change_fullname', {
             method: 'PUT',
             headers: {
@@ -798,6 +882,47 @@ function init() {
             document.body.removeChild(notification);
         }, 3000); // Уведомление исчезает через 3 секунды
     }
+    // все для карт
+
+    function fetchCardInfo() {
+        const userId = localStorage.getItem('userId');
+        if (!userId) {
+            alert('Пожалуйста, войдите в систему.');
+            return;
+        }
+
+        // Преобразуем userId в число
+        const numericUserId = parseInt(userId, 10);
+        if (isNaN(numericUserId)) {
+            alert('Идентификатор пользователя не является числом.');
+            return;
+        }
+
+        fetch('/api/changes/get_card', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ id: numericUserId })
+        })
+            .then(response => response.json())
+            .then(data => {
+                const cardInfoElement = document.getElementById('card-last-four');
+                if (data && data.length > 0) {
+                    cardInfoElement.textContent = `•••• ${data[0].card_number_last_four}`;
+                } else {
+                    cardInfoElement.textContent = 'не привязана';
+                }
+            })
+            .catch(error => {
+                console.error('Ошибка при получении данных о карте:', error);
+                alert('Ошибка при получении информации о карте. Пожалуйста, попробуйте снова.');
+            });
+    }
+
+
+    // Предполагается, что эта функция вызывается при открытии модального окна способа оплаты
+    document.getElementById('payment-method-button').addEventListener('click', fetchCardInfo);
 
 
 }
