@@ -20,7 +20,7 @@
         type="text/javascript"></script>
     <script src="https://cdn.jsdelivr.net/npm/vue@2.6.12/dist/vue.js"></script>
 
-    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    <!-- <script src="{{ url_for('static', filename='js/main.js') }}"></script> -->
     <!-- <script src="../static/js/main.js"></script> ЗАМЕНИТЬ -->
 </head>
 
@@ -57,20 +57,32 @@
                 <input type="checkbox" id="darkModeToggle">
                 <i class='bx bxs-moon'></i>
             </label>
+            <!-- редактирование акка -->
             <div class="user-profile">
                 <img id="user-icon" src="../static/icons/userIcon.png" alt="User Icon" class="user-icon">
                 <div class="user-info">
-                    <span class="user-name" onclick="openEditModal()">Мельникова Нина Игоревна</span>
+                    <span class="user-name">USER FULLNAME</span>
                 </div>
             </div>
 
             <!-- Модальное окно для редактирования профиля -->
-            <div id="edit-user-modal" class="edit-user-modal">
+            <div id="edit-user-modal" class="edit-user-modal" style="display:none;">
                 <div class="edit-user-modal-content">
-                    <span class="close-edit-modal" onclick="closeEditModal()">&times;</span>
+                    <span class="close-edit-modal">&times;</span>
                     <h2>Редактирование профиля</h2>
                     <!-- Содержимое для редактирования профиля -->
-                    <!-- ... -->
+                    <form id="edit-profile-form">
+                        <input type="text" id="modal-fullname" placeholder="Новое ФИО">
+                        <input type="password" id="modal-password" placeholder="Текущий пароль (для изменения ФИО)">
+                        <input type="password" id="modal-new-password"
+                            placeholder="Новый пароль (если хотите изменить)">
+                        <button type="submit">Сохранить изменения</button>
+                        <span class="logout-modal" onclick="window.location.href='/'"
+                            style="display: flex; align-items: center; cursor: pointer;">
+                            <i class='bx bx-log-out' style="font-size: 24px;"></i>
+                            <span style="margin-left: 8px; font-size: 16px;">Выход</span>
+                        </span>
+                    </form>
                 </div>
             </div>
         </div>
@@ -135,6 +147,7 @@
                     <img class="payment-option-icon" src="../static/icons/credit-card.svg" alt="Карта">
                     <!-- ЗАМЕНИТЬ -->
                     <span class="payment-option-text">Карта</span>
+                    <span id="card-last-four" class="payment-option-last-four">не привязана</span>
                 </div>
                 <div id="add-card-option" class="payment-option">
                     <a href="credit_card.html" class="payment-option-link">
@@ -163,6 +176,16 @@
         <button id="geolocation-button"><i class='bx bx-navigation'></i></button>
     </div>
 
+    <div id="loadingModal" class="loading-modal" style="display:none;">
+        <div class="loading-content">
+            <img src="../static/icons/loading.gif" alt="Загрузка..." />
+            <h2>Заказ успешно создан!</h2>
+            <h2>Начинаем поиск водителя...</h2>
+        </div>
+    </div>
+
+
+
     <script>
         const darkModeToggle = document.getElementById('darkModeToggle');
         const body = document.body;
@@ -181,6 +204,7 @@
             }
         });
     </script>
+    <script src="{{ url_for('static', filename='js/main.js') }}" async></script>
 </body>
 
 </html>

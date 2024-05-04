@@ -1,16 +1,216 @@
-
 ymaps.ready(init);
 
 let multiRoute;
 let searchTimeout;
 
 function init() {
+    updateUserProfile();
     var centerCoords = [55.809732, 37.498923];
     var myMap = new ymaps.Map("map", {
         center: centerCoords,
         zoom: 16,
         controls: []
     });
+    // попробую машинки 
+    // Создаем макет метки с возможностью вращения изображения
+    var carLayout1 = ymaps.templateLayoutFactory.createClass('<div style="transform: rotate($[properties.rotate]deg);">' +
+        '<img src="../static/icons/blackCar.png" style="width: 30px; height: 60px;" /></div>');
+
+    // Шаблон для второй машинки (черной)
+    var carLayout2 = ymaps.templateLayoutFactory.createClass('<div style="transform: rotate($[properties.rotate]deg);">' +
+        '<img src="../static/icons/whiteCar.png" style="width: 25px; height: 50px;" /></div>');
+
+    var carPlacemark = new ymaps.Placemark(myMap.getCenter(), {
+        rotate: 0 // начальный угол вращения
+    }, {
+        iconLayout: carLayout1,
+        iconShape: {   // Определяем форму иконки, чтобы она корректно реагировала на события мыши
+            type: 'Rectangle',
+            coordinates: [
+                [-15, -30], [15, 30]
+            ]
+        }
+    });
+
+
+    // Вторая машинка
+    var car2Placemark = new ymaps.Placemark(myMap.getCenter(), {
+        rotate: 0 // начальный угол вращения
+    }, {
+        iconLayout: carLayout1
+    });
+
+    // Третья машинка
+    var car3Placemark = new ymaps.Placemark(myMap.getCenter(), {
+        rotate: 0 // начальный угол вращения
+    }, {
+        iconLayout: carLayout2
+    });
+
+    // Четвертая машинка
+    var car4Placemark = new ymaps.Placemark(myMap.getCenter(), {
+        rotate: 0 // начальный угол вращения
+    }, {
+        iconLayout: carLayout2
+    });
+
+    // Пятая машинка
+    var car5Placemark = new ymaps.Placemark(myMap.getCenter(), {
+        rotate: 0 // начальный угол вращения
+    }, {
+        iconLayout: carLayout2
+    });
+
+    //шестая 
+    // Вторая машинка
+    var car6Placemark = new ymaps.Placemark(myMap.getCenter(), {
+        rotate: 0 // начальный угол вращения
+    }, {
+        iconLayout: carLayout1
+    });
+
+    // Добавляем машинки на карту
+    myMap.geoObjects.add(carPlacemark);
+    myMap.geoObjects.add(car2Placemark);
+    myMap.geoObjects.add(car3Placemark);
+    myMap.geoObjects.add(car4Placemark);
+    myMap.geoObjects.add(car5Placemark);
+    myMap.geoObjects.add(car6Placemark);
+
+
+    // Получаем маршрут и начинаем анимацию
+    ymaps.route([
+        'Москва, метро Войковская',
+        'Москва, метро Сокол'
+
+    ]).then(function (route) {
+        // Создание маршрута и анимация машинки
+        animateRoute(route, carPlacemark);
+    }, function (error) {
+        alert('Возникла ошибка при построении маршрута: ' + error.message);
+    });
+
+    // Маршрут для второй машинки
+    ymaps.route([
+        'Москва, Дубосековская улица, 5', // Стартовая точка маршрута - МАИ
+        'Москва, метро Тверская' // Конечная точка маршрута - метро Тверская
+    ]).then(function (route) {
+        // Создание маршрута и анимация машинки
+        animateRoute(route, car2Placemark);
+    }, function (error) {
+        alert('Возникла ошибка при построении маршрута: ' + error.message);
+    });
+
+    //третья машинка
+    ymaps.route([
+        'Москва, Волоколамское шоссе, 24', // Стартовая точка маршрута - МАИ
+        'Москва, Дубосековская, 5' // Конечная точка маршрута - метро Тверская
+    ]).then(function (route) {
+        // Создание маршрута и анимация машинки
+        animateRoute(route, car3Placemark);
+    }, function (error) {
+        alert('Возникла ошибка при построении маршрута: ' + error.message);
+    });
+
+    // четвертая 
+    ymaps.route([
+        'Москва, Волоколамское шоссе, 4к31',
+        'Москва, Часовая улица, 30'
+
+    ]).then(function (route) {
+        // Создание маршрута и анимация машинки
+        animateRoute(route, car4Placemark);
+    }, function (error) {
+        alert('Возникла ошибка при построении маршрута: ' + error.message);
+    });
+
+    //пятая 
+    ymaps.route([
+        'Москва, метро Тверская',
+        'Москва, метро Сокол'
+
+    ]).then(function (route) {
+        // Создание маршрута и анимация машинки
+        animateRoute(route, car5Placemark);
+    }, function (error) {
+        alert('Возникла ошибка при построении маршрута: ' + error.message);
+    });
+
+    //шестая
+    ymaps.route([
+        'Москва, Панфиловская, 5',
+        'Москва, метро Аэропорт'
+
+    ]).then(function (route) {
+        // Создание маршрута и анимация машинки
+        animateRoute(route, car6Placemark);
+    }, function (error) {
+        alert('Возникла ошибка при построении маршрута: ' + error.message);
+    });
+
+    function animateRoute(route, placemark) {
+        var paths = route.getPaths(),
+            points = [];
+
+        paths.each(function (path) {
+            points = points.concat(path.getSegments().reduce(function (acc, segment) {
+                return acc.concat(segment.getCoordinates());
+            }, []));
+        });
+
+        animateAlongRoute(points, 0, placemark);
+    }
+
+    function animateAlongRoute(points, index, placemark) {
+        if (index < points.length - 1) {
+            var startPos = points[index],
+                endPos = points[index + 1];
+
+            animateCar(startPos, endPos, 2000, function () {
+                animateAlongRoute(points, index + 1, placemark);
+            }, placemark);
+        }
+    }
+
+    function getRotationAngle(from, to) {
+        var angle = Math.atan2(to[1] - from[1], to[0] - from[0]);
+        return (angle * (180 / Math.PI) + 360) % 360;
+    }
+
+    function animateCar(startCoords, endCoords, duration, callback, placemark) {
+        var angle = getRotationAngle(startCoords, endCoords);
+        placemark.properties.set('rotate', angle);
+
+        var startTime = new Date().getTime();
+        var deltaLat = endCoords[0] - startCoords[0];
+        var deltaLng = endCoords[1] - startCoords[1];
+
+        function move() {
+            var currentTime = new Date().getTime();
+            var progress = (currentTime - startTime) / duration;
+            if (progress > 1) progress = 1;
+
+            var currentCoords = [
+                startCoords[0] + deltaLat * progress,
+                startCoords[1] + deltaLng * progress
+            ];
+
+            if (progress < 1) {
+                var nextAngle = getRotationAngle(currentCoords, endCoords);
+                placemark.properties.set('rotate', nextAngle);
+                placemark.geometry.setCoordinates(currentCoords);
+                requestAnimationFrame(move);
+            } else {
+                placemark.geometry.setCoordinates(endCoords);
+                callback && callback();
+            }
+        }
+
+        move();
+    }
+
+
+    // конец машинок
 
     var myPlacemark = new ymaps.Placemark(myMap.getCenter(), {}, {
         iconLayout: 'default#image',
@@ -356,31 +556,7 @@ function init() {
         });
     });
 
-    // Глобальная переменная для хранения последних 4 цифр карты
-    let lastFourDigits = null;
-
-    // Функция для обработки добавления карты
-    function handleCardAdded(event) {
-        lastFourDigits = event.detail; // Сохраняем последние 4 цифры карты
-        updatePaymentMethodDisplay(); // Обновляем отображение способа оплаты
-    }
-
-    document.addEventListener('DOMContentLoaded', () => {
-        // Пытаемся получить данные из localStorage
-        let storedCardData = localStorage.getItem('cardData');
-        if (storedCardData) {
-            let cardData = JSON.parse(storedCardData);
-            lastFourDigits = cardData.cardNumber.slice(-4);
-        } else {
-            lastFourDigits = null;
-        }
-
-        // Обновляем UI
-        updatePaymentMethodDisplay();
-    });
-
-
-    // логика связи с бекендом / отправка данных
+    // логика связи с бекендом / отправка данных (заказ)
     document.getElementById('order-button').addEventListener('click', function () {
         const userId = localStorage.getItem('userId');
         if (!userId) {
@@ -432,21 +608,9 @@ function init() {
         sendOrder(orderData);
     });
 
-    // function getCurrentDistance() {
-    //     // Здесь должна быть логика для получения текущего расстояния маршрута
-    //     return parseFloat(document.getElementById('distance-input').value); // Примерное значение
-    // }
-
-    // function calculateTravelTime() {
-    //     // Допустим, эта функция возвращает время поездки в минутах на основе данных маршрута
-    //     let route = document.getElementById('route-info').value;  // пример получения времени из поля ввода или другого источника
-    //     return parseInt(route.match(/\d+/)[0]);  // простой пример извлечения числа из строки
-    // }
-
     function sendOrder(orderData) {
         orderData.user_id = parseInt(orderData.user_id, 10);
 
-        // Проверка, что user_id является числом
         if (isNaN(orderData.user_id)) {
             alert('Ошибка: user_id не является числом.');
             return;
@@ -469,7 +633,15 @@ function init() {
             })
             .then(data => {
                 console.log('Заказ успешно создан:', data);
-                alert('Ваш заказ успешно оформлен!');
+                const mapElement = document.getElementById('map');
+                const loadingModal = document.getElementById('loadingModal');
+                loadingModal.style.display = 'flex';
+                mapElement.classList.add('map-shrink'); // Добавляем класс для уменьшения карты
+
+                setTimeout(() => {
+                    loadingModal.style.display = 'none';
+                    mapElement.classList.remove('map-shrink'); // Удаляем класс после завершения поиска
+                }, 5000);
             })
             .catch(error => {
                 console.error('Ошибка при создании заказа:', error);
@@ -477,4 +649,159 @@ function init() {
             });
     }
 
+
+    //здесь все про изменение аккаунта 
+
+    function updateUserProfile() {
+        console.log('Попытка обновить данные пользователя.');
+
+        // Пытаемся получить полное имя из localStorage
+        const fullname = localStorage.getItem('fullname');
+        console.log('Полученное полное имя:', fullname);
+
+        // Проверяем, существует ли имя пользователя
+        if (fullname) {
+            // Обновляем DOM, если имя пользователя существует
+            const userNameElement = document.querySelector('.user-name');
+            if (userNameElement) {
+                console.log('Элемент с именем пользователя найден, обновляем его содержимое.');
+                userNameElement.textContent = fullname;
+            } else {
+                console.error('Элемент для отображения имени пользователя не найден.');
+            }
+        } else {
+            console.error('Имя пользователя не найдено в localStorage.');
+        }
+    }
+
+    function closeEditModal() {
+        const modal = document.getElementById('edit-user-modal');
+        if (modal) {
+            modal.style.display = 'none';
+        } else {
+            console.error('Не удалось найти модальное окно с ID "edit-user-modal".');
+        }
+    }
+    // Установка обработчика событий
+    document.querySelector('.user-name').addEventListener('click', openEditModal);
+    document.querySelector('.close-edit-modal').addEventListener('click', closeEditModal);
+
+
+    function openEditModal() {
+        const modal = document.getElementById('edit-user-modal');
+        const fullnameInput = document.getElementById('modal-fullname');
+        const currentPasswordInput = document.getElementById('modal-password');
+        const newPasswordInput = document.getElementById('modal-new-password');
+
+        if (modal) {
+            modal.style.display = 'block';
+            fullnameInput.value = localStorage.getItem('fullname') || '';  // Загрузка сохранённого ФИО
+            currentPasswordInput.value = '';  // Поля пароля должны быть пустыми
+            newPasswordInput.value = '';  // Поля пароля должны быть пустыми
+        } else {
+            console.error('Не удалось найти модальное окно для редактирования профиля.');
+        }
+    }
+
+    document.getElementById('edit-profile-form').addEventListener('submit', function (event) {
+        event.preventDefault();
+
+        const fullname = document.getElementById('modal-fullname').value;
+        const currentPassword = document.getElementById('modal-password').value;
+        const newPassword = document.getElementById('modal-new-password').value; // Получаем новый пароль
+        const userId = Number(localStorage.getItem('userId'));
+
+        if (!userId) {
+            alert('Ошибка: ID пользователя не найден. Попробуйте перелогиниться.');
+            return;
+        }
+
+        // Обновление ФИО, если поля не пусты
+        if (fullname && currentPassword) {
+            updateFullname(userId, fullname, currentPassword);
+        }
+
+        // Смена пароля, если заполнены поля текущего и нового пароля
+        if (currentPassword && newPassword) {
+            changeUserPassword(userId, currentPassword, newPassword);
+        }
+    });
+
+    function updateFullname(userId, fullname, currentPassword) {
+        fetch('/api/changes/change_fullname', {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                id: userId,
+                new_fullname: fullname,
+                password: currentPassword
+            })
+        })
+            .then(handleResponse)
+            .then(data => {
+                console.log('ФИО успешно обновлено:', data);
+                localStorage.setItem('fullname', data.fullname);
+                updateUserProfile();
+                closeEditModal();
+                showNotification('ФИО успешно обновлено!', true);
+            })
+            .catch(handleError);
+    }
+
+    function changeUserPassword(userId, currentPassword, newPassword) {
+        fetch('/api/changes/change_password', {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                id: userId,
+                password: currentPassword,
+                new_password: newPassword
+            })
+        })
+            .then(handleResponse)
+            .then(data => {
+                console.log('Пароль успешно изменен:', data);
+                alert('Пароль успешно изменен!');
+                closeEditModal();
+                showNotification('Пароль успешно изменен!', true);
+            })
+            .catch(handleError);
+    }
+
+    function handleResponse(response) {
+        if (response.ok) {
+            return response.json();
+        } else {
+            // Преобразование неудачного ответа в JSON для получения деталей ошибки и выброс исключения
+            return response.json().then(errorData => {
+                throw new Error(`HTTP error! status: ${response.status}, message: ${errorData.message}`);
+            });
+        }
+    }
+
+    function handleError(error) {
+        console.error('Ошибка:', error);
+        alert('Ошибка при выполнении запроса: ' + error.message);
+    }
+
+    function showNotification(message, isSuccess = true) {
+        const notification = document.createElement('div');
+        notification.className = `notification ${isSuccess ? 'success' : 'error'}`;
+        notification.textContent = message;
+
+        document.body.appendChild(notification);
+        setTimeout(() => {
+            document.body.removeChild(notification);
+        }, 3000); // Уведомление исчезает через 3 секунды
+    }
+
+
 }
+
+
+
+

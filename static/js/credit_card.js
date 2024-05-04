@@ -1,5 +1,3 @@
-
-
 new Vue({
     el: "#app",
     data() {
@@ -41,6 +39,23 @@ new Vue({
             return "visa"; // если тип карты не определен
         },
 
+        validateCardName() {
+            // Фильтрация ввода, оставляя только английские буквы и преобразуя их в верхний регистр
+            this.cardName = this.cardName.replace(/[^a-zA-Z\s]/g, '').toUpperCase();
+
+            // Разделение имени на слова для возможного ограничения их количества до двух
+            let words = this.cardName.split(/\s+/);
+            if (words.length > 2) {
+                // Если слов более двух, оставляем только первые два слова
+                this.cardName = words.slice(0, 2).join(' ');
+            }
+        },
+
+
+        validateCvv() {
+            this.cardCvv = this.cardCvv.replace(/[^\d]/g, '').slice(0, 3);
+        },
+
         generateCardNumberMask() {
             return this.getCardType === "amex" ? this.amexCardMask : this.otherCardMask;
         },
@@ -57,6 +72,15 @@ new Vue({
         }
     },
     methods: {
+        handleEnter(nextInputId, event) {
+            if (event.key === "Enter") {
+                event.preventDefault(); // Отменяем стандартное поведение Enter
+                const nextInput = this.$refs[nextInputId];
+                if (nextInput) {
+                    nextInput.focus(); // Перемещаем фокус на следующий элемент
+                }
+            }
+        },
 
         formatCardNumber() {
             let value = this.cardNumber.replace(/[^\d]/g, ''); // Удаляет все кроме цифр
@@ -99,29 +123,44 @@ new Vue({
                 let cardData = JSON.parse(storedCardData);
                 this.lastFourDigits = cardData.cardNumber.slice(-4);
             }
-        },
+        }, // <— Добавлена запятая для корректного разделения методов
+
         saveCardData() {
-            if (this.cardNumber && this.cardCvv && this.cardMonth && this.cardYear) {
+            // Получаем user_id из localStorage и преобразуем в число
+            const userId = parseInt(localStorage.getItem('userId'), 10);  // Добавлен parseInt для преобразования в число
+            if (isNaN(userId)) {  // Проверка на корректность преобразования
+                alert('Пожалуйста, войдите в систему для выполнения этой операции');
+                return;
+            }
+
+            if (this.cardNumber && this.cardCvv && this.cardMonth && this.cardYear && this.cardName) {
                 const cardData = {
-                    cardNumber: this.cardNumber.replace(/\s/g, ''),
-                    cardName: this.cardName,
-                    cardMonth: this.cardMonth,
-                    cardYear: this.cardYear,
-                    cardCvv: this.cardCvv
+                    id: userId,
+                    card_number: this.cardNumber.replace(/\s/g, ''),  // Удаление пробелов и отправка как 'card_number'
+                    card_holder: this.cardName,
+                    month: this.cardMonth.toString(),
+                    year: this.cardYear.toString(),
+                    cvv: this.cardCvv
                 };
 
-                localStorage.setItem('cardData', JSON.stringify(cardData));
-                this.lastFourDigits = cardData.cardNumber.slice(-4);
-
-                // Отправка события в глобальную область видимости
-                window.dispatchEvent(new CustomEvent('cardAdded', { detail: this.lastFourDigits }));
-                alert('Карта успешно добавлена');
-
-                // Перенаправление пользователя обратно на главную страницу
-                window.location.href = 'main.html';
+                axios.post('/api/changes/add_card', cardData, {
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                })
+                    .then(response => {
+                        alert('Карта успешно добавлена: ' + response.data.message);
+                        window.location.href = '/main.html';  // Переадресация на главную страницу
+                    })
+                    .catch(error => {
+                        console.error('Ошибка при добавлении карты:', error);
+                        alert('Ошибка: ' + (error.response && error.response.data ? error.response.data.message : error.message));
+                    });
             } else {
                 alert('Пожалуйста, заполните все поля карты');
             }
-        }
+        },
+
+
     }
 });

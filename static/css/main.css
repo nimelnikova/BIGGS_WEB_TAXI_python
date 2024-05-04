@@ -45,7 +45,7 @@ header {
 }
 
 .logo {
-    font-size: 2rem;
+    font-size: 1.7rem;
     font-weight: 800;
     opacity: 0;
     animation: PrimeCarLogo 1s ease forwards;
@@ -141,7 +141,7 @@ li a:hover {
 }
 
 .dropdown:hover .dropdown-content {
-    z-index: 1000;
+    z-index: 50;
     display: inline;
 }
 
@@ -354,6 +354,15 @@ li a:hover {
     text-align: left;
     cursor: pointer;
     transition: background-color 0.2s;
+}
+
+.dark-mode .user-profile {
+    background-color: var(--primary-dark);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+}
+
+.dark-mode .user-name {
+    color: #fff;
 }
 
 /* конец темной темы */
@@ -728,7 +737,7 @@ button {
         text-align: center;
         top: 3.4rem;
         left: -100%;
-        z-index: 111111;
+        z-index: 51;
     }
 
     .menu {
@@ -1005,12 +1014,62 @@ button {
 }
 
 /* редактирование профиля */
+
+.user-profile {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    /* делает весь блок кликабельным */
+    background-color: #fff;
+    /* цвет фона, возможно, понадобится изменить */
+    padding: 10px;
+    border-radius: 20px;
+    /* закругление углов */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    /* тень под блоком */
+    transition: box-shadow 0.3s ease;
+    /* анимация тени */
+    max-width: calc(100% - 100px);
+    /* максимальная ширина блока */
+    margin-left: 50px;
+    justify-content: start;
+}
+
+.user-profile:hover {
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+    /* увеличение тени при наведении */
+}
+
+.user-icon {
+    width: 40px;
+    /* размер иконки пользователя */
+    height: 40px;
+    border-radius: 50%;
+    /* круглая форма иконки */
+    margin-right: 10px;
+    /* отступ иконки от текста */
+}
+
+.user-name {
+    font-size: 16px;
+    /* размер шрифта имени пользователя */
+    color: #333;
+    /* цвет шрифта */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    flex-grow: 1;
+    /* Заставляет имя пользователя занимать все доступное пространство */
+    margin-right: 10px;
+    /* добавление троеточия, если текст не умещается */
+}
+
+/* Основной стиль для модального окна редактирования пользователя */
 /* Основной стиль для модального окна редактирования пользователя */
 .edit-user-modal {
     display: none;
     position: fixed;
-    z-index: 1001;
-    /* Убедитесь, что z-index выше, чем у первого модального окна */
+    z-index: 1000;
     left: 0;
     top: 0;
     width: 100%;
@@ -1021,35 +1080,177 @@ button {
 
 .edit-user-modal-content {
     background-color: #fefefe;
-    margin: 15% auto;
-    padding: 20px;
+    margin: 10% auto;
+    padding: 40px;
     border: 1px solid #888;
-    width: 50%;
-    /* Ширина модального окна */
+    width: 400px;
+    /* Фиксированная ширина для модального окна */
     box-shadow: 0px 4px 8px 0px rgba(0, 0, 0, 0.2);
-    border-radius: 10px;
-    /* Скругление углов */
+    border-radius: 18px;
     position: relative;
+    display: flex;
+    flex-direction: column;
 }
 
+/* Стилизация формы внутри модального окна */
+#edit-profile-form {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+#edit-profile-form label {
+    margin-bottom: 5px;
+}
+
+#edit-profile-form input[type='text'],
+#edit-profile-form input[type='email'] {
+    width: calc(100% - 20px);
+    padding: 10px;
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+#edit-profile-form button {
+    padding: 10px 20px;
+    font-size: 18px;
+    border-radius: 8px;
+    border: none;
+    background-color: #0056b3;
+    color: #fff;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+#edit-profile-form button:hover {
+    background-color: #003d82;
+}
+
+/* Стиль для закрытия модального окна */
 .close-edit-modal {
     color: #aaa;
     position: absolute;
     top: 10px;
-    right: 25px;
+    right: 10px;
     font-size: 35px;
     font-weight: bold;
+    cursor: pointer;
 }
 
 .close-edit-modal:hover,
 .close-edit-modal:focus {
     color: black;
-    text-decoration: none;
-    cursor: pointer;
 }
 
-/* Примените темные стили если используете темную тему */
+@media (max-width: 768px) {
+    .edit-user-modal-content {
+        width: 90%;
+        /* Подстройка ширины под мобильные устройства */
+        margin-top: 50px;
+        /* Меньше места сверху на маленьких экранах */
+        padding: 20px;
+        /* Меньше отступов на маленьких экранах */
+    }
+}
+
+
 .dark-mode .edit-user-modal-content {
     background-color: var(--primary-dark);
     color: #fff;
+}
+
+
+#route-info {
+    width: 100%;
+    padding: 20px;
+    margin-bottom: 10px;
+    border: none;
+    /* Убираем рамку */
+    background-color: transparent;
+    /* Прозрачный фон */
+    color: #1b1b1b;
+    /* Цвет текста */
+    font-size: 20px;
+    font-family: 'Jost', sans-serif;
+    /* Шрифт */
+    text-align: left;
+    /* Выравнивание текста */
+}
+
+.dark-mode #route-info {
+    color: #fff;
+    /* Светлый цвет текста для лучшей видимости на тёмном фоне */
+    background-color: transparent;
+    /* Прозрачный фон подходит и для тёмного режима */
+}
+
+.notification {
+    padding: 10px 20px;
+    color: #fff;
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1000;
+    border-radius: 5px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    animation: slideIn 0.3s ease-out forwards;
+}
+
+.notification.success {
+    background-color: #4CAF50;
+    /* Зеленый для успеха */
+}
+
+.notification.error {
+    background-color: #f44336;
+    /* Красный для ошибок */
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateX(100%);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.logout-modal {
+    position: absolute;
+    top: 20px;
+    left: 10px;
+    color: #a60000;
+    z-index: 10;
+}
+
+.loading-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 30;
+    /* Убедитесь, что модальное окно будет на переднем плане */
+}
+
+.loading-content {
+    text-align: center;
+    color: white;
+}
+
+.loading-content h2 {
+    margin-top: 20px;
+}
+
+.map-shrink {
+    transition: transform 5s ease;
+    transform: scale(1.3);
 }
