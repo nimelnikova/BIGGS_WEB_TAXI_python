@@ -96,3 +96,23 @@ insert_card = """INSERT INTO cards (id, card_number, card_holder, month, year, c
 check_card_exists = """SELECT EXISTS(SELECT 1 FROM cards WHERE card_number = ?);"""
 
 get_user_card = """SELECT * FROM cards WHERE id = ?;"""
+
+
+
+#ЗАПРОСЫ, СВЯЗАННЫЕ С ЗАКАЗОМ ВОДИТЕЛЯМИ
+
+create_table_drivers = """CREATE TABLE IF NOT EXISTS drivers(
+    driver_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    full_name TEXT,
+    car_model TEXT,
+    car_category TEXT,
+    car_number TEXT,
+    status TEXT,
+    total_trips INTEGER,
+    average_rating REAL
+    )"""
+
+insert_drivers = '''INSERT INTO drivers (full_name, car_model, car_category, car_number, status, total_trips, average_rating)
+                   VALUES (?, ?, ?, ?, ?, ?, ?);'''
+
+checking_existence_table = ("SELECT name FROM sqlite_master WHERE type='table' AND name='drivers'")
