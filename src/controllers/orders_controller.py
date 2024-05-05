@@ -1,6 +1,7 @@
 from typing import Any
 import pandas as pd
 from ..models.models import Order
+from .drivers_controller import generate_table
 import json
 from pathlib import Path
 from flask import request, jsonify
@@ -16,6 +17,11 @@ TRIPS_PATH = BASE_DIR / "trips.csv"
 
 def select_random_driver(car_category):
     conn = sqlite3.connect(DATA_ORDERS_PATH)
+    cursor = conn.cursor()
+    if cursor.fetchone() is None:
+        generate_table()
+    
+    cursor.execute(sqlite_query.checking_existence_table)
     cur = conn.cursor()
     cur.execute(sqlite_query.select_free_drivers, (car_category,))
     drivers = cur.fetchall() 
