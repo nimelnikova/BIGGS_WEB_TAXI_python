@@ -41,11 +41,13 @@ components:
         - user_id
         - pickup_location
         - destination
+        - distance
         - car_category
         - order_amount
         - start_time
         - end_time
         - total_ride_time
+        - payment_method
       properties:
         user_id:
           type: "integer"
@@ -65,6 +67,8 @@ components:
           type: "integer"
         order_amount:
           type: "integer"
+        payment_method:
+          type: "string"
     ChangeFullname:
       type: "object"
       required:
@@ -263,6 +267,42 @@ paths:
                 type: "array"
                 items:
                   $ref: "#/components/schemas/Order"
+
+  /orders/complete:
+    post:
+      operationId: "src.controllers.orders_controller.complete_order"
+      tags:
+        - "Orders"
+      summary: "Complete order"
+      description: "Complete the specified order and update driver status."
+      requestBody:
+        description: "Order completion details"
+        required: true
+        content:
+          application/json:
+            schema:
+              type: "object"
+              required:
+                - order_id
+                - driver_id
+                - user_rating
+              properties:
+                order_id:
+                  type: "integer"
+                  description: "The ID of the order to be completed"
+                driver_id:
+                  type: "integer"
+                  description: "The ID of the driver who completed the order"
+                user_rating:
+                  type: "number"
+                  description: "The rating given by the user for the completed order"
+      responses:
+        "200":
+          description: "Order successfully completed and driver's status and rating updated"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "404":
+          $ref: "#/components/responses/NotFound"
 
   /trips/{trip_id}:
     delete:
