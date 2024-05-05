@@ -4,7 +4,7 @@ from pathlib import Path
 
 
 BASE_DIR = Path(__file__).resolve().parent.parent
-DATA_DRIVERS_PATH = BASE_DIR / "dataUsers.db"
+DATA_DRIVERS_PATH = BASE_DIR / "data.db"
 
 conn = sqlite3.connect(DATA_DRIVERS_PATH)
 
