@@ -452,15 +452,15 @@ function init() {
         let basePrice;
 
         switch (tariffType) {
-            case 'standard':
+            case 'Standart':
                 pricePerKm = 20; // цена за км для стандартного тарифа
                 basePrice = 555;
                 break;
-            case 'premium':
+            case 'Premium':
                 pricePerKm = 50; // цена за км для премиум тарифа
                 basePrice = 1555;
                 break;
-            case 'vip':
+            case 'VIP':
                 pricePerKm = 100; // цена за км для VIP тарифа
                 basePrice = 5555;
                 break;
@@ -521,6 +521,8 @@ function init() {
     const paymentMethodButton = document.getElementById('payment-method-button');
     const paymentMethodValue = document.getElementById('payment-method-value');
 
+    let paymentMethod;
+
     // Обработчик клика для кнопки способа оплаты
     paymentMethodButton.addEventListener('click', function () {
         paymentModal.style.display = 'block';
@@ -541,34 +543,13 @@ function init() {
         }
     });
 
-    // document.addEventListener('DOMContentLoaded', function () {
-    //     const paymentModal = document.getElementById('payment-modal');
-    //     const paymentMethodButton = document.getElementById('payment-method-button');
-    //     const closeModalButton = document.querySelector('.close-modal');
-
-    //     paymentMethodButton.addEventListener('click', function () {
-    //         paymentModal.style.display = 'block'; // Отображаем модальное окно
-    //         fetchCardInfo(); // Обновляем информацию о карте
-    //     });
-
-    //     closeModalButton.addEventListener('click', function () {
-    //         paymentModal.style.display = 'none'; // Скрываем модальное окно
-    //     });
-
-    //     // Закрытие модального окна при клике вне его содержимого
-    //     window.addEventListener('click', function (event) {
-    //         if (event.target == paymentModal) {
-    //             paymentModal.style.display = 'none';
-    //         }
-    //     });
-    // });
-
     // Обработчики для опций способа оплаты
     document.querySelectorAll('.payment-option').forEach(function (option) {
         option.addEventListener('click', function () {
             // Извлекаем информацию о выбранном способе оплаты
             const paymentMethodText = this.querySelector('.payment-option-text').textContent;
             const paymentMethodIcon = this.querySelector('.payment-option-icon').outerHTML; // Получаем HTML иконки
+            paymentMethod = this.getAttribute('data-value'); // Получаем метод оплаты из атрибута
 
             // %Обновляем кнопку способа оплаты новым текстом и иконкой
             paymentMethodValue.innerHTML = `${paymentMethodIcon} ${paymentMethodText}`;
@@ -591,6 +572,12 @@ function init() {
 
         if (!currentDistance || currentDistance === 0 || !travelTime) {
             alert('Пожалуйста, уточните маршрут перед оформлением заказа.');
+            return;
+        }
+
+        // Проверим, что переменная paymentMethod определена, чтобы избежать ошибок
+        if (!paymentMethod) {
+            alert('Ошибка: не выбран метод оплаты.');
             return;
         }
 
@@ -622,9 +609,10 @@ function init() {
             distance: distance,
             car_category: tariffType,
             start_time: startTime,
-            end_time: endTime, // Теперь это поле будет заполнено здесь, а не позже
-            total_ride_time: travelTime, // Время поездки в минутах
-            order_amount: orderAmount
+            end_time: endTime,
+            total_ride_time: travelTime,
+            order_amount: orderAmount,
+            payment_method: paymentMethod
         };
 
         sendOrder(orderData);
@@ -663,13 +651,67 @@ function init() {
                 setTimeout(() => {
                     loadingModal.style.display = 'none';
                     mapElement.classList.remove('map-shrink'); // Удаляем класс после завершения поиска
-                }, 5000);
+
+                    if (data.driver) {
+                        displayDriverInfo(data.driver); // Показываем информацию о водителе после скрытия модали
+                    } else {
+                        console.error('Информация о водителе не доступна');
+                        alert('Информация о водителе не доступна.');
+                    }
+                }, 5000); // Время ожидания перед скрытием анимации
             })
             .catch(error => {
                 console.error('Ошибка при создании заказа:', error);
                 alert(`Ошибка при оформлении заказа: ${error.message}. Пожалуйста, попробуйте снова.`);
             });
+
     }
+
+    function displayDriverInfo(driver) {
+        // Отображение данных водителя
+        if (!driver || !driver.name || !driver.car || !driver.average_rating || !driver.waiting_time || !driver.car_number) {
+            console.error('Информация о водителе не доступна');
+            alert('Информация о водителе не доступна.');
+            return;
+        }
+
+        document.getElementById('driver-waiting-time').textContent = `Через ${driver.waiting_time} мин приедет`;
+        document.getElementById('driver-car').textContent = `${driver.car}`;
+        document.getElementById('car-number-box').textContent = `${driver.car_number}`;
+        document.getElementById('driver-name').textContent = `Ваш водитель: ${driver.name}`;
+        document.getElementById('driver-rating').textContent = `Рейтинг: ${driver.average_rating}`;
+
+        // Добавление изображения автомобиля
+        const carImage = document.getElementById('car-image');
+        console.log(driver);
+        if (carImage && driver.image) {
+            carImage.src = driver.image;
+            carImage.alt = `Image of ${driver.car}`;
+        } else {
+            console.error('No valid image URL provided.');
+        }
+
+
+        // Показ модального окна с информацией о водителе
+        const modal = document.getElementById('driver-info-modal');
+        modal.style.display = 'block';
+
+        const closeBtn = document.querySelector('.close-driver-info-modal');
+        closeBtn.onclick = function () {
+            modal.style.display = 'none';
+        };
+
+        document.getElementById('close-modal-btn').addEventListener('click', function () {
+            document.getElementById('driver-info-modal').style.display = 'none';
+        });
+
+        window.onclick = function (event) {
+            if (event.target == modal) {
+                modal.style.display = 'none';
+            }
+        };
+    }
+
 
 
     //здесь все про изменение аккаунта 
@@ -724,30 +766,6 @@ function init() {
             console.error('Не удалось найти модальное окно для редактирования профиля.');
         }
     }
-
-    // document.getElementById('edit-profile-form').addEventListener('submit', function (event) {
-    //     event.preventDefault();
-
-    //     const fullname = document.getElementById('modal-fullname').value;
-    //     const currentPassword = document.getElementById('modal-password').value;
-    //     const newPassword = document.getElementById('modal-new-password').value; // Получаем новый пароль
-    //     const userId = Number(localStorage.getItem('userId'));
-
-    //     if (!userId) {
-    //         alert('Ошибка: ID пользователя не найден. Попробуйте перелогиниться.');
-    //         return;
-    //     }
-
-    //     // Обновление ФИО, если поля не пусты
-    //     if (fullname && currentPassword) {
-    //         updateFullname(userId, fullname, currentPassword);
-    //     }
-
-    //     // Смена пароля, если заполнены поля текущего и нового пароля
-    //     if (currentPassword && newPassword) {
-    //         changeUserPassword(userId, currentPassword, newPassword);
-    //     }
-    // });
 
     document.getElementById('edit-profile-form').addEventListener('submit', function (event) {
         event.preventDefault();
