@@ -16,30 +16,6 @@ def add_card():
     cur = conn.cursor()
     data = request.get_json()
 
-    # ШИФРОВАНИЕ ДАННЫХ КАРТЫ С ВОЗМОЖНОСТЬЮ РАСШИФРОВКИ
-
-    # key = Fernet.generate_key()
-    # cipher = Fernet(key)
-
-    # encrypted_data = {
-    #     "id": data["id"],
-    #     "card_number": cipher.encrypt(
-    #         data["card_number"].encode("utf-8")
-    #     ),
-    #     "card_holder": cipher.encrypt(
-    #         data["card_holder"].encode("utf-8")
-    #     ),
-    #     "month": cipher.encrypt(
-    #         data["month"].encode("utf-8")
-    #     ),
-    #     "year": cipher.encrypt(
-    #         data["year"].encode("utf-8")
-    #     ),
-    #     "cvv": cipher.encrypt(
-    #         data["cvv"].encode("utf-8")
-    #     ),
-    # }
-
     # ПРОВЕРКА НА УЖЕ СУЩЕСТВОВАНИЕ ТАКОЙ КАРТЫ
 
     cur.execute(sqlite_query.check_card_exists, (
