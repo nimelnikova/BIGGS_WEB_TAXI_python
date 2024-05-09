@@ -1,6 +1,5 @@
 import sqlite3
 import sqlite_query
-from cryptography.fernet import Fernet
 from flask import request, jsonify
 from http import HTTPStatus
 from pathlib import Path

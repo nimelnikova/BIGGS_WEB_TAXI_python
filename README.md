@@ -8,5 +8,7 @@
 
 # Запуск проекта 
 
-- Просто запустить python3 main.py
--npm install axios
+- Скачать зависимости: 
+    pip install -r requirements.txt
+    npm install axios
+- Запустить python3 main.py
