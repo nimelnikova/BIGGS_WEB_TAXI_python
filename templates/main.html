@@ -14,7 +14,9 @@
     <!-- <link rel="stylesheet" href="../static/css/main.css"> ЗАМЕНИТЬ -->
     <link rel="icon" type="image/png" href="../static/icons/favicon.png">
 
-    <title>ОСНОВНОЕ ОКНО</title>
+
+
+    <title>PRIME CAR</title>
     <script
         src="https://api-maps.yandex.ru/2.1/?apikey=8d3faaa1-8ec9-4ba2-8a0d-8977f91aa49f&lang=ru_RU&load=package.full"
         type="text/javascript"></script>
@@ -96,21 +98,21 @@
 
     <!-- Тарифы -->
     <div class="tariff-selection">
-        <div class="tariff" data-tariff-type="standard" role="button">
+        <div class="tariff" data-tariff-type="Standart" role="button">
             <img src="../static/icons/hongqi.png" alt="Иконка Стандарт" class="tariff-icon"> <!-- ЗАМЕНИТЬ -->
             <div class="tariff-info">
                 <h3>Standart</h3>
                 <p class="tariff-price">от 555 ₽</p>
             </div>
         </div>
-        <div class="tariff" data-tariff-type="premium" role="button">
+        <div class="tariff" data-tariff-type="Premium" role="button">
             <img src="../static/icons/мерс.png" alt="Иконка Премиум" class="tariff-icon"> <!-- ЗАМЕНИТЬ -->
             <div class="tariff-info">
                 <h3>Premium</h3>
                 <p class="tariff-price">от 1555 ₽</p>
             </div>
         </div>
-        <div class="tariff" data-tariff-type="vip" role="button">
+        <div class="tariff" data-tariff-type="VIP" role="button">
             <img src="../static/icons/ролс.png" alt="Иконка VIP" class="tariff-icon"> <!-- ЗАМЕНИТЬ -->
             <div class="tariff-info">
                 <h3>VIP</h3>
@@ -125,7 +127,7 @@
             <span class="payment-method-label">Способ оплаты:</span>
             <span id="payment-method-value" class="payment-method-value">
                 <img src="../static/icons/cash.svg" alt="Наличные" class="payment-method-icon"> <!-- ЗАМЕНИТЬ -->
-                Наличные
+                Не выбран
             </span>
             <i class="input-icon uil uil-angle-right-b"></i>
         </button>
@@ -139,13 +141,12 @@
                 <span class="close-modal">&times;</span>
             </div>
             <div class="payment-options">
-                <div class="payment-option">
+                <div class="payment-option" data-value="0">
                     <img class="payment-option-icon" src="../static/icons/cash.svg" alt="Наличные"> <!-- ЗАМЕНИТЬ -->
                     <span class="payment-option-text">Наличные</span>
                 </div>
-                <div class="payment-option">
+                <div class="payment-option" data-value="1">
                     <img class="payment-option-icon" src="../static/icons/credit-card.svg" alt="Карта">
-                    <!-- ЗАМЕНИТЬ -->
                     <span class="payment-option-text">Карта</span>
                     <span id="card-last-four" class="payment-option-last-four">не привязана</span>
                 </div>
@@ -183,6 +184,29 @@
             <h2>Начинаем поиск водителя...</h2>
         </div>
     </div>
+
+    <!-- Модальное окно для информации о водителе -->
+    <div id="driver-info-modal" class="modal-driver">
+        <div class="modal-content-driver">
+            <span class="close-driver-info-modal">&times;</span>
+            <h3>Информация о поездке</h3>
+            <div class="modal-body">
+                <div class="modal-text">
+                    <p id="driver-waiting-time"><i class="input-icon uil uil-clock"></i> Через Х мин приедет</p>
+                    <p id="driver-car"><i class="uim uim-car-sideview"></i> Автомобиль: Х</p>
+                    <p id="driver-name"><i class="input-icon uil uil-user"></i>Ваш водитель: ХХХ</p>
+                    <p id="driver-rating"><i class="input-icon uil uil-star"></i> Рейтинг: Х.Х</p>
+                </div>
+                <div class="modal-image">
+                    <img id="car-image" src="" alt="Car Image">
+                    <div id="car-number-box">хХХХххХХ</div>
+                </div>
+            </div>
+            <button id="close-modal-btn">Понятно</button>
+        </div>
+    </div>
+
+
 
 
 

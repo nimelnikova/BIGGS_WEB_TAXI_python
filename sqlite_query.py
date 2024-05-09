@@ -22,9 +22,7 @@ create_table_users = """CREATE TABLE IF NOT EXISTS users(
                       payment_method TEXT NOT NULL
                     );"""
 
-insert_user = (
-    """INSERT INTO users (fullname, username, email, password, payment_method) VALUES (?, ?, ?, ?, ?);"""
-)
+insert_user = """INSERT INTO users (fullname, username, email, password, payment_method) VALUES (?, ?, ?, ?, ?);"""
 
 select_users = """SELECT * FROM users;"""
 
@@ -37,8 +35,7 @@ find_id = """SELECT id FROM users WHERE username = ?;"""
 check_user = """SELECT * FROM users WHERE username = ? OR email = ?;"""
 
 
-
-#ЗАПРОСЫ, СВЯЗАННЫЕ С ЗАКАЗОМ ТАКСИ (RL-17)
+# ЗАПРОСЫ, СВЯЗАННЫЕ С ЗАКАЗОМ ТАКСИ (RL-17)
 
 create_table_orders = """CREATE TABLE IF NOT EXISTS orders(
                 order_id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -63,7 +60,9 @@ create_table_orders = """CREATE TABLE IF NOT EXISTS orders(
 
 insert_orders = """INSERT INTO orders (user_id, driver_id, driver_name, driver_average_raiting, pickup_location, destination, distance, car_category, car, start_time, end_time, total_ride_time, order_amount, payment_method, waiting_time) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);"""
 
-select_free_drivers = """SELECT * FROM drivers WHERE status = 'free' AND car_category = ?""";
+select_free_drivers = (
+    """SELECT * FROM drivers WHERE status = 'free' AND car_category = ?"""
+)
 
 update_driver_status_busy = "UPDATE drivers SET status = 'busy' WHERE driver_id = ?;"
 
@@ -73,8 +72,9 @@ update_driver_status_free = "UPDATE drivers SET status = 'free' WHERE driver_id 
 
 select_driver_id = """SELECT * FROM drivers WHERE driver_id = ?;"""
 
-update_driver_rating_and_orders = "UPDATE drivers SET average_rating = ?, total_trips = ? WHERE driver_id = ?"
-
+update_driver_rating_and_orders = (
+    "UPDATE drivers SET average_rating = ?, total_trips = ? WHERE driver_id = ?"
+)
 
 
 # ЗАПРОСЫ, СВЯЗАННЫЕ С ИЗМЕНЕНИЕМ ДАННЫХ ПОЛЬЗОВАТЕЛЯ (RL-27)
@@ -98,13 +98,13 @@ check_card_exists = """SELECT EXISTS(SELECT 1 FROM cards WHERE card_number = ?);
 get_user_card = """SELECT * FROM cards WHERE id = ?;"""
 
 
-
-#ЗАПРОСЫ, СВЯЗАННЫЕ С ЗАКАЗОМ ВОДИТЕЛЯМИ
+# ЗАПРОСЫ, СВЯЗАННЫЕ С ЗАКАЗОМ ВОДИТЕЛЯМИ
 
 create_table_drivers = """CREATE TABLE IF NOT EXISTS drivers(
     driver_id INTEGER PRIMARY KEY AUTOINCREMENT,
     full_name TEXT,
     car_model TEXT,
+    car_image TEXT,
     car_category TEXT,
     car_number TEXT,
     status TEXT,
@@ -112,7 +112,9 @@ create_table_drivers = """CREATE TABLE IF NOT EXISTS drivers(
     average_rating REAL
     )"""
 
-insert_drivers = '''INSERT INTO drivers (full_name, car_model, car_category, car_number, status, total_trips, average_rating)
-                   VALUES (?, ?, ?, ?, ?, ?, ?);'''
+insert_drivers = """INSERT INTO drivers (full_name, car_model, car_image, car_category, car_number, status, total_trips, average_rating)
+                   VALUES (?, ?, ?, ?, ?, ?, ?, ?);"""
 
-checking_existence_table = ("SELECT name FROM sqlite_master WHERE type='table' AND name='drivers'")
+checking_existence_table = (
+    "SELECT name FROM sqlite_master WHERE type='table' AND name='drivers'"
+)
