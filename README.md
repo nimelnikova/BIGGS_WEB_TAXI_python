@@ -36,7 +36,7 @@
     pip install -r requirements.txt
     npm install axios
     ```
-2. **Запуск сервера:** 
+2. **Запуск проекта:** 
     ```bash
     python3 main.py
     ```
