@@ -54,11 +54,12 @@ create_table_orders = """CREATE TABLE IF NOT EXISTS orders(
                 order_amount INTEGER,
                 payment_method TEXT,
                 waiting_time INTEGER,
+                status TEXT,
                 FOREIGN KEY (user_id) REFERENCES users(id)
 
     )"""
 
-insert_orders = """INSERT INTO orders (user_id, driver_id, driver_name, driver_average_raiting, pickup_location, destination, distance, car_category, car, start_time, end_time, total_ride_time, order_amount, payment_method, waiting_time) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);"""
+insert_orders = """INSERT INTO orders (user_id, driver_id, driver_name, driver_average_raiting, pickup_location, destination, distance, car_category, car, start_time, end_time, total_ride_time, order_amount, payment_method, waiting_time, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);"""
 
 select_free_drivers = (
     """SELECT * FROM drivers WHERE status = 'free' AND car_category = ?"""
@@ -118,3 +119,8 @@ insert_drivers = """INSERT INTO drivers (full_name, car_model, car_image, car_ca
 checking_existence_table = (
     "SELECT name FROM sqlite_master WHERE type='table' AND name='drivers'"
 )
+
+
+get_user_order = "SELECT order_id, driver_id FROM orders WHERE user_id=? AND status = 'active';"
+
+update_order_status_completed = "UPDATE orders SET status = 'completed' WHERE order_id = ?;"

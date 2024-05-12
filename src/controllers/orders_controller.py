@@ -88,6 +88,7 @@ def create_order():
         order_amount,
         payment_method,
         waiting_time,
+        "active",
     )
 
     cur.execute(
@@ -108,6 +109,7 @@ def create_order():
             new_order.order_amount,
             new_order.payment_method,
             new_order.waiting_time,
+            new_order.status,
         ),
     )
 
@@ -135,6 +137,32 @@ def create_order():
         HTTPStatus.CREATED,
     )
 
+def get_order_id():
+    user_id = request.args.get("user_id")
+
+    conn = sqlite3.connect(DATA_ORDERS_PATH)
+    cur = conn.cursor()
+    cur.execute(sqlite_query.get_user_order, (user_id,))
+    orders = cur.fetchone()
+
+    if orders is None:
+        return (
+            jsonify({"message": "Заказ не найден для данного user_id"}),
+            HTTPStatus.BAD_REQUEST,
+        )
+
+    order_id = orders[0]
+    driver_id = orders[1]
+
+    cur.close()
+    conn.close()
+
+    return jsonify(
+        {
+            "order_id": order_id,
+            "driver_id": driver_id,
+        }
+    )
 
 def complete_order():
     # Получаем инфу о заказе и завершаем его
@@ -166,8 +194,8 @@ def complete_order():
     cur.execute(sqlite_query.select_driver_id, (driver_id,))
     driver = cur.fetchone()
 
-    current_rating = driver[7]
-    total_orders = driver[6]
+    current_rating = driver[8]
+    total_orders = driver[7]
     new_rating = round(
         (current_rating * total_orders + user_rating) / (total_orders + 1), 2
     )
@@ -177,6 +205,11 @@ def complete_order():
         sqlite_query.update_driver_rating_and_orders,
         (new_rating, total_orders, driver_id),
     )
+    conn.commit()
+
+    #Меняем статус на завершенный
+    cur.execute(sqlite_query.update_order_status_completed, (order_id,))
+
     conn.commit()
     conn.close()
 
