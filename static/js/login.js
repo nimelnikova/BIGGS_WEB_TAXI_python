@@ -8,13 +8,13 @@ function sendPostRequest(url, data) {
         body: JSON.stringify(data),
     })
         .then(response => {
-            if (!response.ok) {
-                // Конвертация ответа в JSON для получения детальной информации об ошибке
-                return response.json().then(errorData => {
-                    throw new Error(`HTTP error! status: ${response.status}, message: ${errorData.message}`);
-                });
-            }
-            return response.json();
+            return response.json().then(body => {
+                if (!response.ok) {
+                    // Добавлено более специфическое сообщение об ошибке
+                    throw new Error(body.message || 'Произошла неизвестная ошибка');
+                }
+                return body;
+            });
         })
         .catch(error => {
             console.error('Network error:', error.message);
@@ -59,7 +59,12 @@ function onLoginClick(event) {
             onSuccessfulLogin(data);  // Передача данных для дальнейшей обработки
         })
         .catch(error => {
-            loginError.textContent = 'Ошибка входа: ' + error.message; // Уточнен текст ошибки
+            // Проверка содержимого сообщения об ошибке
+            if (error.message.includes('не зарегистрирован')) {
+                loginError.textContent = 'Такой пользователь не зарегистрирован. Пожалуйста, проверьте данные или зарегистрируйтесь.';
+            } else {
+                loginError.textContent = 'Ошибка входа: ' + error.message; // Уточнен текст ошибки
+            }
             document.getElementById('login-password').value = ''; // Сброс поля пароля
         });
 }

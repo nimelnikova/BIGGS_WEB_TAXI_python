@@ -126,7 +126,7 @@ function init() {
 
     //пятая 
     ymaps.route([
-        'Москва, метро Тверская',
+        'Москва, метро Чистые пруды',
         'Москва, метро Сокол'
 
     ]).then(function (route) {
@@ -408,9 +408,6 @@ function init() {
                     // Получаем расстояние в метрах и конвертируем в километры
                     currentDistance = activeRoute.properties.get('distance').value / 1000;
                     console.log(`Текущее расстояние: ${currentDistance} км.`);
-
-                    // Здесь вы можете вызвать функцию обновления цены, если это необходимо
-                    // Например, updatePriceForCurrentTariff();
                 }
             });
         }).catch(function (error) {
@@ -696,22 +693,188 @@ function init() {
         const modal = document.getElementById('driver-info-modal');
         modal.style.display = 'block';
 
-        const closeBtn = document.querySelector('.close-driver-info-modal');
-        closeBtn.onclick = function () {
-            modal.style.display = 'none';
-        };
-
-        document.getElementById('close-modal-btn').addEventListener('click', function () {
-            document.getElementById('driver-info-modal').style.display = 'none';
-        });
-
-        window.onclick = function (event) {
-            if (event.target == modal) {
-                modal.style.display = 'none';
-            }
-        };
+        initCloseModalHandler(carOrderPlacemark);
     }
 
+    function initCloseModalHandler(carOrderPlacemark) {
+        // Закрытие модального окна и запуск анимации
+        const closeBtn = document.querySelector('.close-driver-info-modal');
+        closeBtn.onclick = closeModalAndStartAnimation;
+
+        document.getElementById('close-modal-btn').addEventListener('click', closeModalAndStartAnimation);
+
+        window.onclick = function (event) {
+            const modal = document.getElementById('driver-info-modal');
+            if (event.target === modal) {
+                closeModalAndStartAnimation();
+            }
+        };
+
+        function closeModalAndStartAnimation() {
+            document.getElementById('driver-info-modal').style.display = 'none';
+
+            if (multiRoute) {
+                let activeRoute = multiRoute.getActiveRoute();
+                if (activeRoute && activeRoute.getPaths().getLength() > 0) {
+                    let paths = activeRoute.getPaths();
+                    let firstPath = paths.get(0);
+                    let lastPath = paths.get(paths.getLength() - 1);
+
+                    let startPoint = firstPath.getSegments().get(0).geometry.getCoordinates()[0];
+                    let endPoint = lastPath.getSegments().get(lastPath.getSegments().getLength() - 1).geometry.getCoordinates().slice(-1)[0];
+
+                    console.log("Начальная точка:", startPoint);
+                    console.log("Конечная точка:", endPoint);
+
+                    buildUserRoute(startPoint, endPoint);
+                } else {
+                    console.error("Маршрут не содержит путей для анимации.");
+                }
+            } else {
+                console.error("Маршрут не доступен для анимации.");
+            }
+        }
+
+    }
+    // метка для машинки
+    var carOrderPlacemark = new ymaps.Placemark(myMap.getCenter(), {
+        rotate: 0
+    }, {
+        iconLayout: carLayout1,
+        iconShape: {
+            type: 'Rectangle',
+            coordinates: [[-15, -30], [15, 30]]
+        },
+        iconImageOffset: [100, -660]
+    });
+
+    myMap.geoObjects.add(carOrderPlacemark);
+
+    var userRoute;
+
+    // Функция создания маршрута
+    function buildUserRoute(startAddress, endAddress) {
+        console.log("Строим маршрут от:", startAddress, "до:", endAddress);
+        ymaps.route([startAddress, endAddress]).then(function (route) {
+            userRoute = route;
+            myMap.geoObjects.add(route);
+
+            animateUserRoute(route, carOrderPlacemark, function () {
+                console.log("Анимация завершена");
+                showRatingModal(orderId, driverId);
+            });
+        }, function (error) {
+            alert('Ошибка построения маршрута: ' + error.message);
+        });
+    }
+
+
+    // Анимация по маршруту
+    function animateUserRoute(route, placemark, onComplete) {
+        var paths = route.getPaths();
+        var points = [];
+
+        paths.each(function (path) {
+            points = points.concat(path.getSegments().reduce(function (acc, segment) {
+                return acc.concat(segment.getCoordinates());
+            }, []));
+        });
+
+        console.log("Total points for animation:", points.length);
+
+        animateAlongRouteUser(points, 0, placemark, function () {
+            console.log("Анимация завершена");
+            onComplete && onComplete();
+        }, route);
+    }
+
+    animateUserRoute(route, carOrderPlacemark, function () {
+        showRatingModal(orderId, driverId);
+    });
+
+
+
+    // Анимация между двумя точками маршрута
+    function animateAlongRouteUser(points, index, placemark, onComplete, route) {
+        if (index < points.length - 1) {
+            var startPos = points[index];
+            var endPos = points[index + 1];
+
+            animateUserCar(startPos, endPos, 2000, function () {
+                if (index === 0) {  // Обновляем стиль маршрута при начале движения
+                    updateRouteSegmentStyle(route);
+                }
+                animateAlongRouteUser(points, index + 1, placemark, onComplete, route);
+            }, placemark);
+        } else {
+            onComplete && onComplete();
+        }
+    }
+
+
+    // угол поворота
+    function getRotationAngleUser(from, to) {
+        var angle = Math.atan2(to[1] - from[1], to[0] - from[0]);
+        return (angle * (180 / Math.PI) + 360) % 360;
+    }
+
+
+    // Анимация машинки между двумя точками
+    function animateUserCar(startCoords, endCoords, duration, callback, placemark) {
+        var startAngle = placemark.properties.get('rotate') || getRotationAngleUser(startCoords, endCoords);
+        var endAngle = getRotationAngleUser(startCoords, endCoords);
+
+        var startTime = new Date().getTime();
+        var deltaLat = endCoords[0] - startCoords[0];
+        var deltaLng = endCoords[1] - startCoords[1];
+
+        function moveUser() {
+            var currentTime = new Date().getTime();
+            var progress = (currentTime - startTime) / duration;
+            if (progress > 1) progress = 1;
+
+            var currentCoords = [
+                startCoords[0] + deltaLat * progress,
+                startCoords[1] + deltaLng * progress
+            ];
+            var currentAngle = interpolateAngles(startAngle, endAngle, progress);
+
+            placemark.properties.set('rotate', currentAngle);
+            placemark.geometry.setCoordinates(currentCoords);
+
+            if (progress < 1) {
+                requestAnimationFrame(moveUser);
+            } else {
+                placemark.geometry.setCoordinates(endCoords);
+                placemark.properties.set('rotate', endAngle);
+                callback && callback();
+            }
+        }
+
+        moveUser();
+    }
+
+
+    //что- то сырое но работает
+    function interpolateAngles(startAngle, endAngle, progress) {
+        var delta = endAngle - startAngle;
+        delta -= Math.floor((delta + 180) / 360) * 360;
+
+        return startAngle + delta * progress;
+    }
+
+    function updateRouteSegmentStyle(route) {
+        var pathOptions = {
+            strokeColor: '00FF00FF',  // Синий цвет с полупрозрачностью
+            strokeWidth: 5
+        };
+
+        route.getPaths().each(function (path) {
+            path.options.set(pathOptions);
+        });
+    }
+
+    //КОНЕЦ 
 
 
     //здесь все про изменение аккаунта 
@@ -944,7 +1107,6 @@ function init() {
 
 
 }
-
 
 
 
