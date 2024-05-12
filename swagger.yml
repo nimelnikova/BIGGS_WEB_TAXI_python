@@ -303,25 +303,21 @@ paths:
           $ref: "#/components/responses/BadRequest"
         "404":
           $ref: "#/components/responses/NotFound"
+
   /orders/get_order_id:
-    post:
+    get:
       operationId: "src.controllers.orders_controller.get_order_id"
       tags:
         - "Orders"
       summary: "Get orders by user ID"
       description: "Retrieve orders for a specific user by their ID."
-      requestBody:
-        description: "User ID to retrieve orders"
-        required: true
-        content:
-          application/json:
-            schema:
-              type: "object"
-              required:
-                - user_id
-              properties:
-                user_id:
-                  type: "integer"
+      parameters:
+        - name: user_id
+          in: query
+          description: "User ID to retrieve orders"
+          required: true
+          schema:
+            type: integer
       responses:
         "200":
           description: "Successful operation"

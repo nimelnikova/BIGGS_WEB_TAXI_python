@@ -138,8 +138,7 @@ def create_order():
     )
 
 def get_order_id():
-    data = request.get_json()
-    user_id = data["user_id"]
+    user_id = request.args.get("user_id")
 
     conn = sqlite3.connect(DATA_ORDERS_PATH)
     cur = conn.cursor()
