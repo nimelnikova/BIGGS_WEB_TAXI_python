@@ -18,6 +18,7 @@ class Order:
     order_amount: int
     payment_method: str
     waiting_time: int
+    status: str
 
     def get_order_details(self):
         return {
@@ -35,7 +36,8 @@ class Order:
             "total_ride_time": self.total_ride_time,
             "order_amount": self.order_amount,
             "payment_method": self.payment_method,
-            "waiting_time": self.waiting_time
+            "waiting_time": self.waiting_time,
+            "status": self.status
         }
     
 
