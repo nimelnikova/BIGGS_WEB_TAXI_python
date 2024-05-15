@@ -227,7 +227,7 @@ paths:
 
   /orders:
     get:
-      operationId: "src.controllers.orders_controller.get_all"
+      operationId: "src.controllers.orders_controller.get_all_trips"
       tags:
         - "Orders"
       summary: "Read the list of people"
@@ -252,7 +252,7 @@ paths:
 
   /orders/{id_person}:
     get:
-      operationId: "src.controllers.orders_controller.get_all_person"
+      operationId: "src.controllers.orders_controller.get_user_trip_history"
       tags:
         - "Orders"
       summary: "Get orders by person ID"
@@ -304,7 +304,7 @@ paths:
         "404":
           $ref: "#/components/responses/NotFound"
 
-  /trips/{trip_id}:
+  /order/{trip_id}:
     delete:
       summary: "Delete trip by its identifier"
       description: "Deletes a trip from the CSV file by its identifier."
