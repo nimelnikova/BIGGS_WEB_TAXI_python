@@ -400,7 +400,7 @@ function init() {
             multiRoute.model.events.once('requestsuccess', function () {
                 myMap.setBounds(multiRoute.getBounds(), {
                     checkZoomRange: true,
-                    duration: 1000
+                    duration: 500
                 });
                 // После успешного построения маршрута получаем и обновляем расстояние
                 let activeRoute = multiRoute.getActiveRoute();
@@ -743,31 +743,158 @@ function init() {
         iconLayout: carLayout1,
         iconShape: {
             type: 'Rectangle',
-            coordinates: [[-15, -30], [15, 30]]
+            coordinates: [[-15, -30], [15, 30]] // Это ограничивающая рамка для кликабельной области, если нужно.
         },
-        iconImageOffset: [100, -660]
+        iconImageOffset: [-80, -160] // Обновлённое смещение для корректного отображения
     });
 
     myMap.geoObjects.add(carOrderPlacemark);
+
+    function getUserId() {
+        const userId = Number(localStorage.getItem('userId'));
+        if (!userId || isNaN(userId)) {
+            console.error("User ID не определен или недействителен:", userId);
+            alert('Пожалуйста, войдите в систему перед завершением поездки.');
+            return null;
+        }
+        return userId;
+    }
 
     var userRoute;
 
     // Функция создания маршрута
     function buildUserRoute(startAddress, endAddress) {
+        const userId = getUserId();
+        if (!userId) {
+            return;
+        }
+
         console.log("Строим маршрут от:", startAddress, "до:", endAddress);
         ymaps.route([startAddress, endAddress]).then(function (route) {
             userRoute = route;
             myMap.geoObjects.add(route);
 
-            animateUserRoute(route, carOrderPlacemark, function () {
-                console.log("Анимация завершена");
-                showRatingModal(orderId, driverId);
+            fetchOrderDetails(userId, function (orderId, driverId) {
+                animateUserRoute(route, carOrderPlacemark, function () {
+                    console.log("Анимация завершена");
+                    showRatingModal(orderId, driverId);
+                });
             });
         }, function (error) {
             alert('Ошибка построения маршрута: ' + error.message);
         });
     }
 
+    document.getElementById('rating-form').addEventListener('submit', function (event) {
+        event.preventDefault();  // Предотвращаем обновление страницы
+
+        const userId = getUserId();
+        if (!userId) {
+            return;
+        }
+
+        const userRating = parseInt(document.querySelector('input[name="rating"]:checked').value, 10);
+
+
+        // Далее используем userRating для выполнения дальнейших действий
+        console.log('Выбранная оценка:', userRating); // Выводим в консоль для отладки
+
+        fetchOrderDetails(userId, function (orderId, driverId) {
+            completeOrder(orderId, driverId, userRating);
+        });
+    });
+
+    function fetchOrderDetails(userId, callback) {
+        if (!userId || isNaN(userId)) {
+            console.error("User ID не определен или недействителен:", userId);
+            alert("User ID не определен. Пожалуйста, войдите в систему.");
+            return;
+        }
+
+        const url = `/api/orders/get_order_id?user_id=${userId}`;
+        console.log("Запрос на URL:", url);
+
+        fetch(url)
+            .then(response => {
+                if (!response.ok) {
+                    console.error("Ошибка ответа сервера:", response.status, response.statusText);
+                    alert(`Ошибка получения данных заказа: ${response.statusText}`);
+                    return null;
+                }
+                return response.json();
+            })
+            .then(order => {
+                if (!order) {
+                    return;
+                }
+                console.log("Данные заказа:", order);
+                if (order.order_id && order.driver_id) {
+                    callback(order.order_id, order.driver_id);
+                } else {
+                    console.error("Order ID или Driver ID не определены");
+                    alert("Order ID или Driver ID не определены.");
+                }
+            })
+            .catch(error => {
+                console.error("Ошибка при получении данных заказа:", error);
+                alert('Ошибка при получении данных заказа.');
+            });
+    }
+    // console.log('Попытка завершения заказа', { orderId, driverId, userRating });
+
+    function completeOrder(orderId, driverId, userRating) {
+        console.log('Начало завершения заказа', { orderId, driverId, userRating });
+        const completionData = {
+            order_id: orderId,
+            driver_id: driverId,
+            user_rating: parseInt(userRating, 10)
+        };
+
+        fetch('/api/orders/complete', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(completionData)
+        })
+            .then(response => {
+                console.log('Ответ получен от сервера', response);
+                if (!response.ok) {
+                    return response.json().then(errorData => {
+                        throw new Error(`Ошибка завершения заказа! Статус: ${response.status}, сообщение: ${errorData.message}`);
+                    });
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('Заказ успешно завершен:', data);
+                document.getElementById('rating-modal').style.display = 'none';
+                updateUIAfterOrderCompletion(orderId);
+                showThankYouModal();
+                location.reload();
+            })
+            .catch(error => {
+                console.error('Ошибка при завершении заказа:', error);
+                alert(`Ошибка при завершении заказа: ${error.message}. Пожалуйста, попробуйте снова.`);
+            });
+    }
+
+    function updateUIAfterOrderCompletion(orderId) {
+        // Здесь можно обновить интерфейс, чтобы отразить завершение заказа
+        // Например, убрать элементы маршрута с карты или обновить информацию о заказе
+        console.log(`Заказ ${orderId} завершен. Обновление интерфейса.`);
+    }
+
+    // Функция для разбора информации о маршруте
+    function parseRouteInfo(routeInfoText) {
+        const travelTimeMatch = routeInfoText.match(/(\d+)\s*мин/);
+        const distanceMatch = routeInfoText.match(/(\d+(\.\d+)?)\s*км/);
+
+        const travelTime = travelTimeMatch ? parseInt(travelTimeMatch[1], 10) : 0;
+        const distance = distanceMatch ? parseFloat(distanceMatch[1]) : 0;
+
+        return { travelTime, distance };
+    }
 
     // Анимация по маршруту
     function animateUserRoute(route, placemark, onComplete) {
@@ -782,17 +909,28 @@ function init() {
 
         console.log("Total points for animation:", points.length);
 
+        // Уменьшаем продолжительность анимации для ускорения
         animateAlongRouteUser(points, 0, placemark, function () {
             console.log("Анимация завершена");
             onComplete && onComplete();
-        }, route);
+        }, route, 1000); // Продолжительность анимации уменьшена до 1000 мс (1 секунда)
     }
 
-    animateUserRoute(route, carOrderPlacemark, function () {
-        showRatingModal(orderId, driverId);
-    });
+    // Анимация по маршруту
+    function animateUserRoute(route, placemark, onComplete) {
+        var paths = route.getPaths();
+        var points = [];
 
+        paths.each(function (path) {
+            points = points.concat(path.getSegments().reduce(function (acc, segment) {
+                return acc.concat(segment.getCoordinates());
+            }, []));
+        });
 
+        console.log("Total points for animation:", points.length);
+
+        animateAlongRouteUser(points, 0, placemark, onComplete, route);
+    }
 
     // Анимация между двумя точками маршрута
     function animateAlongRouteUser(points, index, placemark, onComplete, route) {
@@ -800,7 +938,11 @@ function init() {
             var startPos = points[index];
             var endPos = points[index + 1];
 
-            animateUserCar(startPos, endPos, 2000, function () {
+            // Рассчитываем продолжительность анимации в зависимости от расстояния
+            var distance = Math.sqrt(Math.pow(endPos[0] - startPos[0], 2) + Math.pow(endPos[1] - startPos[1], 2));
+            var duration = distance * 105000; // Пример расчета продолжительности
+
+            animateUserCar(startPos, endPos, duration, function () {
                 if (index === 0) {  // Обновляем стиль маршрута при начале движения
                     updateRouteSegmentStyle(route);
                 }
@@ -810,14 +952,6 @@ function init() {
             onComplete && onComplete();
         }
     }
-
-
-    // угол поворота
-    function getRotationAngleUser(from, to) {
-        var angle = Math.atan2(to[1] - from[1], to[0] - from[0]);
-        return (angle * (180 / Math.PI) + 360) % 360;
-    }
-
 
     // Анимация машинки между двумя точками
     function animateUserCar(startCoords, endCoords, duration, callback, placemark) {
@@ -854,18 +988,23 @@ function init() {
         moveUser();
     }
 
-
-    //что- то сырое но работает
     function interpolateAngles(startAngle, endAngle, progress) {
-        var delta = endAngle - startAngle;
-        delta -= Math.floor((delta + 180) / 360) * 360;
-
+        var delta = (endAngle - startAngle + 360) % 360;
+        if (delta > 180) {
+            delta -= 360;
+        }
         return startAngle + delta * progress;
     }
 
+    function getRotationAngleUser(from, to) {
+        var angle = Math.atan2(to[1] - from[1], to[0] - from[0]);
+        return (angle * (180 / Math.PI) + 360) % 360;
+    }
+
+
     function updateRouteSegmentStyle(route) {
         var pathOptions = {
-            strokeColor: '00FF00FF',  // Синий цвет с полупрозрачностью
+            strokeColor: '00FF00FF',  // Зеленый цвет с полупрозрачностью
             strokeWidth: 5
         };
 
@@ -873,6 +1012,105 @@ function init() {
             path.options.set(pathOptions);
         });
     }
+
+    function showRatingModal(orderId, driverId) {
+        const ratingModal = document.getElementById('rating-modal');
+        ratingModal.style.display = 'block';
+
+        // Убедитесь, что значения orderId и driverId сохраняются для дальнейшего использования
+        ratingModal.setAttribute('data-order-id', orderId);
+        ratingModal.setAttribute('data-driver-id', driverId);
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+        const ratingModal = document.getElementById('rating-modal');
+        const closeButton = document.querySelector('.rating-modal-content .close-rating-modal');
+        const ratingForm = document.getElementById('rating-form');
+
+        // Функция для закрытия модального окна
+        function closeModal() {
+            ratingModal.style.display = 'none';
+        }
+
+        closeButton.addEventListener('click', closeModal);
+
+        // Закрытие модального окна при клике вне его содержимого
+        window.onclick = function (event) {
+            if (event.target === ratingModal) {
+                closeModal();
+            }
+        };
+
+        // Закрытие модального окна при нажатии на клавишу Esc
+        window.addEventListener('keydown', function (event) {
+            if (event.key === "Escape") {
+                closeModal();
+            }
+        });
+
+        ratingForm.addEventListener('submit', function (event) {
+            event.preventDefault();
+
+            const orderId = ratingModal.getAttribute('data-order-id');
+            const driverId = ratingModal.getAttribute('data-driver-id');
+            const userRating = ratingForm.querySelector('input[name="rating"]:checked').value;
+
+            // Функция для завершения заказа, принимает ID заказа, ID водителя и рейтинг
+            completeOrder(orderId, driverId, parseInt(userRating, 10)); // Преобразуем значение рейтинга в целое число
+        });
+    });
+
+    function showRatingModal(orderId, driverId) {
+        const ratingModal = document.getElementById('rating-modal');
+        const overlay = document.getElementById('rating-modal-overlay');
+        overlay.style.display = 'block'; // Показ оверлея
+        ratingModal.style.display = 'block'; // Показ модального окна
+        ratingModal.setAttribute('data-order-id', orderId);
+        ratingModal.setAttribute('data-driver-id', driverId);
+    }
+
+    function closeModal() {
+        const ratingModal = document.getElementById('rating-modal');
+        const overlay = document.getElementById('rating-modal-overlay');
+        overlay.style.display = 'none'; // Скрытие оверлея
+        ratingModal.style.display = 'none'; // Скрытие модального окна
+    }
+
+    function showThankYouModal() {
+        const thankYouModal = document.getElementById('thank-you-modal');
+        thankYouModal.style.display = 'block'; // Показываем модальное окно
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+        const thankYouModal = document.getElementById('thank-you-modal');
+        const closeThankYouModal = document.querySelector('.close-thank-you-modal');
+        console.log("DOMContentLoaded - модальное окно и кнопка закрытия должны быть доступны");
+
+
+        // Закрытие модального окна при клике на крестик
+        closeThankYouModal.addEventListener('click', function () {
+            thankYouModal.style.display = 'none';
+            console.log("Клик на крестик - модальное окно закрыто");
+        });
+
+        // Закрытие модального окна при клике вне его содержимого
+        window.onclick = function (event) {
+            if (event.target === thankYouModal) {
+                thankYouModal.style.display = 'none';
+            }
+        };
+
+        // Закрытие модального окна при нажатии на клавишу Esc
+        document.addEventListener('keydown', function (event) {
+            if (event.key === "Escape" && thankYouModal.style.display === 'block') {
+                thankYouModal.style.display = 'none';
+            }
+        });
+    });
+
+
+
+
 
     //КОНЕЦ 
 
@@ -1104,6 +1342,80 @@ function init() {
 
     // Предполагается, что эта функция вызывается при открытии модального окна способа оплаты
     document.getElementById('payment-method-button').addEventListener('click', fetchCardInfo);
+
+    // история заказов 
+    function fetchTripHistory(userId) {
+        if (!userId) {
+            console.error("User ID не определен или недействителен:", userId);
+            alert('Пожалуйста, войдите в систему перед запросом истории поездок.');
+            return;
+        }
+
+        const url = `/api/orders/${userId}`;
+        console.log("Запрос истории поездок на URL:", url);
+
+        fetch(url)
+            .then(response => {
+                if (!response.ok) {
+                    console.error("Ошибка ответа сервера:", response.status, response.statusText);
+                    alert(`Ошибка получения истории поездок: ${response.statusText}`);
+                    return [];
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log("История поездок получена:", data);
+                updateTripHistoryUI(data);
+            })
+            .catch(error => {
+                console.error("Ошибка при получении истории поездок:", error);
+                alert('Ошибка при получении истории поездок. Попробуйте снова.');
+            });
+    }
+
+    function updateTripHistoryUI(trips) {
+        const historyElement = document.getElementById('trip-history');
+        historyElement.innerHTML = ''; // Очищаем предыдущие данные
+
+        if (!Array.isArray(trips) || trips.length === 0) {
+            historyElement.innerHTML = '<p>Поездок не найдено.</p>';
+            return;
+        }
+
+        const list = document.createElement('ul');
+        trips.forEach(trip => {
+            const item = document.createElement('li');
+            const statusText = trip.status === 'completed' ? '' : 'Отменено';
+            const time = new Date(trip.start_time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            const date = new Date(trip.start_time).toLocaleDateString();
+            item.textContent = `Поездка ${date}, в ${time}: ${trip.order_amount}₽, ${trip.pickup_location} -> ${trip.destination} ${statusText}`;
+            list.appendChild(item);
+        });
+        historyElement.appendChild(list);
+    }
+
+    // Открытие модального окна с историей поездок
+    document.getElementById('history-button').addEventListener('click', function (event) {
+        event.preventDefault();
+        const userId = getUserId();
+        if (!userId) return;
+
+        fetchTripHistory(userId);
+        document.getElementById('trip-history-modal').style.display = 'block';
+    });
+
+    // Закрытие модального окна
+    document.querySelector('.history-close-btn').addEventListener('click', function () {
+        document.getElementById('trip-history-modal').style.display = 'none';
+    });
+
+    // Закрытие модального окна при клике за его пределами
+    window.onclick = function (event) {
+        const modal = document.getElementById('trip-history-modal');
+        if (event.target === modal) {
+            modal.style.display = 'none';
+        }
+    };
 
 
 }

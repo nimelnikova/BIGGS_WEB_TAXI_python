@@ -113,50 +113,115 @@ def create_order():
     conn.commit()
     cur.close()
     conn.close()
-    return new_order.get_order_details(), HTTPStatus.CREATED
+
+    # return new_order.get_order_details(), HTTPStatus.CREATED
+    # Возвращаем только сообщение об успешном заказе
+    return (
+        jsonify(
+            {
+                "message": "Заказ успешно создан",
+                "driver": {
+                    "name": driver_name,
+                    "car": car,
+                    "car_number": car_number,
+                    "average_rating": driver_average_raiting,
+                    "waiting_time": waiting_time,
+                    "image": car_image,
+                },
+            }
+        ),
+        HTTPStatus.CREATED,
+    )
 
 
-def complete_order():
-    # Получаем инфу о заказе и завершаем его
-    order_data = request.get_json()
-    order_id = order_data["order_id"]
-    driver_id = order_data["driver_id"]
-    user_rating = order_data["user_rating"]
+def get_order_id():
+    user_id = request.args.get("user_id")
 
     conn = sqlite3.connect(DATA_ORDERS_PATH)
     cur = conn.cursor()
-    cur.execute(sqlite_query.select_id_order, (order_id,))
-    order_info = cur.fetchone()
+    cur.execute(sqlite_query.get_user_order, (user_id,))
+    orders = cur.fetchone()
+
+    if orders is None:
+        return (
+            jsonify({"message": "Заказ не найден для данного user_id"}),
+            HTTPStatus.NOT_FOUND,
+        )
+
+    order_id = orders[0]
+    driver_id = orders[1]
+
     cur.close()
     conn.close()
 
-    if order_info is None:
-        return (
-            jsonify({"message": "Заказ с указанным ID не найден."}), HTTPStatus.NOT_FOUND,
-        )
-    driver_name = order_info[2]
+
+
+
+def complete_order():
+    order_data = request.get_json()
+    order_id = order_data["order_id"]
+    driver_id = order_data["driver_id"]
+    user_rating = int(order_data["user_rating"])
 
     conn = sqlite3.connect(DATA_ORDERS_PATH)
     cur = conn.cursor()
-    cur.execute(sqlite_query.update_driver_status_free, (driver_name,))
+
+    # Получаем информацию о заказе
+    cur.execute(sqlite_query.select_id_order, (order_id,))
+    order_info = cur.fetchone()
+    if order_info is None:
+        cur.close()
+        conn.close()
+        return (
+            jsonify({"message": "Заказ с указанным ID не найден."}), HTTPStatus.NOT_FOUND,
+        )
+    driver_name = order_info[3]
+
+    # Обновляем статус водителя
+    cur.execute(sqlite_query.update_driver_status_free, (driver_id,))
     conn.commit()
 
     # Обновляем рейтинг водителя
     cur.execute(sqlite_query.select_driver_id, (driver_id,))
     driver = cur.fetchone()
 
-    current_rating = driver[7]
-    total_orders = driver[6]
-    new_rating = round((current_rating * total_orders + user_rating) / (total_orders + 1), 2)
-    total_orders += 1
 
-    cur.execute(sqlite_query.update_driver_rating_and_orders, (new_rating, total_orders, driver_id))
+    if driver is None:
+        cur.close()
+        conn.close()
+        return (
+            jsonify({"message": "Водитель с указанным ID не найден."}),
+            HTTPStatus.NOT_FOUND,
+        )
+
+    current_rating = float(driver[8])  # Преобразование из строки в float
+    total_trips = int(driver[7])  # Преобразование из строки в int
+
+    # Вычисление нового рейтинга
+    new_rating = round(
+        (current_rating * total_trips + user_rating) / (total_trips + 1), 2
+    )
+    total_trips += 1
+
+    # Обновление рейтинга и количества поездок водителя
+    cur.execute(
+        sqlite_query.update_driver_rating_and_orders,
+        (new_rating, total_trips, driver_id),
+    )
+
     conn.commit()
     conn.close()
 
-    return (
-        jsonify({"message": "Заказ успешно завершен"}), HTTPStatus.OK
-    )
+
+    # Меняем статус заказа на завершенный
+    cur.execute(sqlite_query.update_order_status_completed, (order_id,))
+    conn.commit()
+
+    cur.close()
+    conn.close()
+
+    return jsonify({"message": "Заказ успешно завершен"}), HTTPStatus.OK
+
 
 
 def get_user_trip_history(user_id):

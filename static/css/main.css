@@ -1082,7 +1082,7 @@ button {
 .edit-user-modal {
     display: none;
     position: fixed;
-    z-index: 1000;
+    z-index: 200;
     left: 0;
     top: 0;
     width: 100%;
@@ -1206,7 +1206,7 @@ button {
     position: fixed;
     top: 20px;
     right: 20px;
-    z-index: 1000;
+    z-index: 120;
     border-radius: 5px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     animation: slideIn 0.3s ease-out forwards;
@@ -1416,4 +1416,333 @@ button {
     margin-top: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
 
+}
+
+.rating-modal-overlay {
+    display: none;
+    /* Скрыт по умолчанию */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    /* Полупрозрачный черный цвет */
+    z-index: 99;
+    /* Значение меньше, чем у модального окна, чтобы оверлей был под ним */
+}
+
+
+
+/* Модальное окно для оценки ВОДИТЕЛЯ */
+.rating-modal {
+    display: none;
+    position: fixed;
+    z-index: 100;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+    max-width: 500px;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    padding: 30px;
+    text-align: center;
+    min-height: 300px;
+    /* Устанавливаем минимальную высоту модального окна */
+}
+
+.rating-modal-content {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.rating-modal-content .close-rating-modal {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: none;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+/* Стили для рейтинговых звезд */
+.rating {
+    margin: auto;
+    margin-top: 40px;
+}
+
+.rating__display {
+    font-size: 1em;
+    font-weight: 500;
+    min-height: 1.25em;
+    position: absolute;
+    top: 100%;
+    width: 100%;
+    text-align: center;
+}
+
+.rating__stars {
+    display: flex;
+    justify-content: center;
+    padding-bottom: 0.375em;
+    position: relative;
+}
+
+.rating__star {
+    display: block;
+    overflow: visible;
+    pointer-events: none;
+    width: 2em;
+    height: 2em;
+}
+
+.rating__star-ring,
+.rating__star-fill,
+.rating__star-line,
+.rating__star-stroke {
+    animation-duration: 1s;
+    animation-timing-function: ease-in-out;
+    animation-fill-mode: forwards;
+}
+
+.rating__star-ring,
+.rating__star-fill,
+.rating__star-line {
+    stroke: #FFD700;
+    /* Золотой цвет */
+}
+
+.rating__star-fill {
+    fill: #FFD700;
+    /* Золотой цвет */
+    transform: scale(0);
+    transition: fill var(--trans-dur) var(--bezier), transform var(--trans-dur) var(--bezier);
+}
+
+.rating__star-line {
+    stroke-dasharray: 12 13;
+    stroke-dashoffset: -13;
+}
+
+.rating__star-stroke {
+    stroke: hsl(var(--hue), 10%, 80%);
+    transition: stroke var(--trans-dur);
+}
+
+.rating__label {
+    cursor: pointer;
+    padding: 0.125em;
+}
+
+.rating__input {
+    position: absolute;
+    -webkit-appearance: none;
+    appearance: none;
+}
+
+.rating__input:hover~[data-rating]:not([hidden]) {
+    display: none;
+}
+
+.rating__input-1:hover~[data-rating="1"][hidden],
+.rating__input-2:hover~[data-rating="2"][hidden],
+.rating__input-3:hover~[data-rating="3"][hidden],
+.rating__input-4:hover~[data-rating="4"][hidden],
+.rating__input-5:hover~[data-rating="5"][hidden],
+.rating__input:checked:hover~[data-rating]:not([hidden]) {
+    display: block;
+}
+
+.rating__input-1:hover~.rating__label:first-of-type .rating__star-stroke,
+.rating__input-2:hover~.rating__label:nth-of-type(-n + 2) .rating__star-stroke,
+.rating__input-3:hover~.rating__label:nth-of-type(-n + 3) .rating__star-stroke,
+.rating__input-4:hover~.rating__label:nth-of-type(-n + 4) .rating__star-stroke,
+.rating__input-5:hover~.rating__label:nth-of-type(-n + 5) .rating__star-stroke {
+    stroke: #FFD700;
+    /* Золотой цвет */
+    transform: scale(1);
+}
+
+.rating__input-1:checked~.rating__label:first-of-type .rating__star-ring,
+.rating__input-2:checked~.rating__label:nth-of-type(-n + 2) .rating__star-ring,
+.rating__input-3:checked~.rating__label:nth-of-type(-n + 3) .rating__star-ring,
+.rating__input-4:checked~.rating__label:nth-of-type(-n + 4) .rating__star-ring,
+.rating__input-5:checked~.rating__label:nth-of-type(-n + 5) .rating__star-ring {
+    animation-name: starRing;
+}
+
+.rating__input-1:checked~.rating__label:first-of-type .rating__star-stroke,
+.rating__input-2:checked~.rating__label:nth-of-type(-n + 2) .rating__star-stroke,
+.rating__input-3:checked~.rating__label:nth-of-type(-n + 3) .rating__star-stroke,
+.rating__input-4:checked~.rating__label:nth-of-type(-n + 4) .rating__star-stroke,
+.rating__input-5:checked~.rating__label:nth-of-type(-n + 5) .rating__star-stroke {
+    animation-name: starStroke;
+}
+
+.rating__input-1:checked~.rating__label:first-of-type .rating__star-line,
+.rating__input-2:checked~.rating__label:nth-of-type(-n + 2) .rating__star-line,
+.rating__input-3:checked~.rating__label:nth-of-type(-n + 3) .rating__star-line,
+.rating__input-4:checked~.rating__label:nth-of-type(-n + 4) .rating__star-line,
+.rating__input-5:checked~.rating__label:nth-of-type(-n + 5) .rating__star-line {
+    animation-name: starLine;
+}
+
+.rating__input-1:checked~.rating__label:first-of-type .rating__star-fill,
+.rating__input-2:checked~.rating__label:nth-of-type(-n + 2) .rating__star-fill,
+.rating__input-3:checked~.rating__label:nth-of-type(-n + 3) .rating__star-fill,
+.rating__input-4:checked~.rating__label:nth-of-type(-n + 4) .rating__star-fill,
+.rating__input-5:checked~.rating__label:nth-of-type(-n + 5) .rating__star-fill {
+    animation-name: starFill;
+}
+
+.rating__input-1:not(:checked):hover~.rating__label:first-of-type .rating__star-fill,
+.rating__input-2:not(:checked):hover~.rating__label:nth-of-type(2) .rating__star-fill,
+.rating__input-3:not(:checked):hover~.rating__label:nth-of-type(3) .rating__star-fill,
+.rating__input-4:not(:checked):hover~.rating__label:nth-of-type(4) .rating__star-fill,
+.rating__input-5:not(:checked):hover~.rating__label:nth-of-type(5) .rating__star-fill {
+    fill: rgba(255, 215, 0, 0.5);
+    /* Прозрачный золотой */
+}
+
+.rating__sr {
+    clip: rect(1px, 1px, 1px, 1px);
+    overflow: hidden;
+    position: absolute;
+    width: 1px;
+    height: 1px;
+}
+
+/* Анимации */
+@keyframes starRing {
+
+    from,
+    20% {
+        animation-timing-function: ease-in;
+        opacity: 1;
+        r: 8px;
+        stroke-width: 16px;
+        transform: scale(0);
+    }
+
+    35% {
+        animation-timing-function: ease-out;
+        opacity: 0.5;
+        r: 8px;
+        stroke-width: 16px;
+        transform: scale(1);
+    }
+
+    50%,
+    to {
+        opacity: 0;
+        r: 16px;
+        stroke-width: 0;
+        transform: scale(1);
+    }
+}
+
+@keyframes starFill {
+
+    from,
+    40% {
+        animation-timing-function: ease-out;
+        transform: scale(0);
+    }
+
+    60% {
+        animation-timing-function: ease-in-out;
+        transform: scale(1.2);
+    }
+
+    80% {
+        transform: scale(0.9);
+    }
+
+    to {
+        transform: scale(1);
+    }
+}
+
+@keyframes starStroke {
+    from {
+        transform: scale(1);
+    }
+
+    20%,
+    to {
+        transform: scale(0);
+    }
+}
+
+@keyframes starLine {
+
+    from,
+    40% {
+        animation-timing-function: ease-out;
+        stroke-dasharray: 1 23;
+        stroke-dashoffset: 1;
+    }
+
+    60%,
+    to {
+        stroke-dasharray: 12 13;
+        stroke-dashoffset: -13;
+    }
+}
+
+#submit-rating {
+    background-color: #FFD700;
+    /* Золотой цвет */
+    border: none;
+    color: black;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 10px 0;
+    cursor: pointer;
+    border-radius: 5px;
+    margin-top: 40px;
+}
+
+/* история заказов */
+.history-modal {
+    display: none;
+    position: fixed;
+    right: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.4);
+    z-index: 9999;
+}
+
+.history-modal-content {
+    background-color: #fefefe;
+    margin: 5% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 20%;
+    transform: translateX(100%);
+}
+
+.history-close-btn {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.history-close-btn:hover,
+.history-close-btn:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
 }

@@ -3,6 +3,7 @@ from dataclasses import dataclass
 
 @dataclass
 class Order:
+    order_id: int
     user_id: int  # id клиент
     driver_id: int
     driver_name: str
@@ -22,6 +23,7 @@ class Order:
 
     def get_order_details(self):
         return {
+            "order_id": self.order_id,
             "user_id": self.user_id,
             "driver_id": self.driver_id,
             "driver_name": self.driver_name,
@@ -37,9 +39,9 @@ class Order:
             "order_amount": self.order_amount,
             "payment_method": self.payment_method,
             "waiting_time": self.waiting_time,
-            "status": self.status
+            "status": self.status,
         }
-    
+
 
 class User:
 

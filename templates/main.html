@@ -49,7 +49,8 @@
                         <a href="VIP.html">VIP</a> <!-- ЗАМЕНИТЬ -->
                     </div>
                 </li>
-                <li><a href="#" style="--navAni:2">История заказов</a></li>
+                <li><button id="history-button" class="history-btn" style="--navAni:2">История заказов</button></li>
+                <!-- <li><a href="#" style="--navAni:2">История заказов</a></li> -->
                 <li><a href="#" style="--navAni:3">Q & A</a></li>
                 <li><a href="#" style="--navAni:4">Тех. Поддержка</a></li>
 
@@ -176,6 +177,14 @@
     <div class="geolocation-control">
         <button id="geolocation-button"><i class='bx bx-navigation'></i></button>
     </div>
+    <!-- история заказов -->
+    <div id="trip-history-modal" class="history-modal">
+        <div class="history-modal-content">
+            <span class="history-close-btn">&times;</span>
+            <h2>История поездок</h2>
+            <div id="trip-history"></div>
+        </div>
+    </div>
 
     <div id="loadingModal" class="loading-modal" style="display:none;">
         <div class="loading-content">
@@ -184,6 +193,7 @@
             <h2>Начинаем поиск водителя...</h2>
         </div>
     </div>
+
 
     <!-- Модальное окно для информации о водителе -->
     <div id="driver-info-modal" class="modal-driver">
@@ -206,9 +216,168 @@
         </div>
     </div>
 
-
-
-
+    <!-- оценка водителей -->
+    <div id="rating-modal-overlay" class="rating-modal-overlay"></div>
+    <!-- Модальное окно для оценки ВОДИТЕЛЯ -->
+    <div id="rating-modal" class="rating-modal">
+        <div class="rating-modal-content">
+            <button class="close-rating-modal">&times;</button>
+            <h2>Спасибо за поездку!</h2>
+            <p>Пожалуйста, оцените вашего водителя:</p>
+            <form id="rating-form" class="rating">
+                <div class="rating__stars">
+                    <input id="rating-1" class="rating__input rating__input-1" type="radio" name="rating" value="1">
+                    <input id="rating-2" class="rating__input rating__input-2" type="radio" name="rating" value="2">
+                    <input id="rating-3" class="rating__input rating__input-3" type="radio" name="rating" value="3">
+                    <input id="rating-4" class="rating__input rating__input-4" type="radio" name="rating" value="4">
+                    <input id="rating-5" class="rating__input rating__input-5" type="radio" name="rating" value="5">
+                    <label class="rating__label" for="rating-1">
+                        <svg class="rating__star" width="32" height="32" viewBox="0 0 32 32" aria-hidden="true">
+                            <g transform="translate(16,16)">
+                                <circle class="rating__star-ring" fill="none" stroke="#000" stroke-width="16" r="8"
+                                    transform="scale(0)" />
+                            </g>
+                            <g stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <g transform="translate(16,16) rotate(180)">
+                                    <polygon class="rating__star-stroke"
+                                        points="0,15 4.41,6.07 14.27,4.64 7.13,-2.32 8.82,-12.14 0,-7.5 -8.82,-12.14 -7.13,-2.32 -14.27,4.64 -4.41,6.07"
+                                        fill="none" />
+                                    <polygon class="rating__star-fill"
+                                        points="0,15 4.41,6.07 14.27,4.64 7.13,-2.32 8.82,-12.14 0,-7.5 -8.82,-12.14 -7.13,-2.32 -14.27,4.64 -4.41,6.07"
+                                        fill="#000" />
+                                </g>
+                                <g transform="translate(16,16)" stroke-dasharray="12 12" stroke-dashoffset="12">
+                                    <polyline class="rating__star-line" transform="rotate(0)" points="0 4,0 16" />
+                                    <polyline class="rating__star-line" transform="rotate(72)" points="0 4,0 16" />
+                                    <polyline class="rating__star-line" transform="rotate(144)" points="0 4,0 16" />
+                                    <polyline class="rating__star-line" transform="rotate(216)" points="0 4,0 16" />
+                                    <polyline class="rating__star-line" transform="rotate(288)" points="0 4,0 16" />
+                                </g>
+                            </g>
+                        </svg>
+                        <span class="rating__sr">1 звезда-Ужасно</span>
+                    </label>
+                    <label class="rating__label" for="rating-2">
+                        <svg class="rating__star" width="32" height="32" viewBox="0 0 32 32" aria-hidden="true">
+                            <g transform="translate(16,16)">
+                                <circle class="rating__star-ring" fill="none" stroke="#000" stroke-width="16" r="8"
+                                    transform="scale(0)" />
+                            </g>
+                            <g stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <g transform="translate(16,16) rotate(180)">
+                                    <polygon class="rating__star-stroke"
+                                        points="0,15 4.41,6.07 14.27,4.64 7.13,-2.32 8.82,-12.14 0,-7.5 -8.82,-12.14 -7.13,-2.32 -14.27,4.64 -4.41,6.07"
+                                        fill="none" />
+                                    <polygon class="rating__star-fill"
+                                        points="0,15 4.41,6.07 14.27,4.64 7.13,-2.32 8.82,-12.14 0,-7.5 -8.82,-12.14 -7.13,-2.32 -14.27,4.64 -4.41,6.07"
+                                        fill="#000" />
+                                </g>
+                                <g transform="translate(16,16)" stroke-dasharray="12 12" stroke-dashoffset="12">
+                                    <polyline class="rating__star-line" transform="rotate(0)" points="0 4,0 16" />
+                                    <polyline class="rating__star-line" transform="rotate(72)" points="0 4,0 16" />
+                                    <polyline class="rating__star-line" transform="rotate(144)" points="0 4,0 16" />
+                                    <polyline class="rating__star-line" transform="rotate(216)" points="0 4,0 16" />
+                                    <polyline class="rating__star-line" transform="rotate(288)" points="0 4,0 16" />
+                                </g>
+                            </g>
+                        </svg>
+                        <span class="rating__sr">2 звезды-Плохо</span>
+                    </label>
+                    <label class="rating__label" for="rating-3">
+                        <svg class="rating__star" width="32" height="32" viewBox="0 0 32 32" aria-hidden="true">
+                            <g transform="translate(16,16)">
+                                <circle class="rating__star-ring" fill="none" stroke="#000" stroke-width="16" r="8"
+                                    transform="scale(0)" />
+                            </g>
+                            <g stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <g transform="translate(16,16) rotate(180)">
+                                    <polygon class="rating__star-stroke"
+                                        points="0,15 4.41,6.07 14.27,4.64 7.13,-2.32 8.82,-12.14 0,-7.5 -8.82,-12.14 -7.13,-2.32 -14.27,4.64 -4.41,6.07"
+                                        fill="none" />
+                                    <polygon class="rating__star-fill"
+                                        points="0,15 4.41,6.07 14.27,4.64 7.13,-2.32 8.82,-12.14 0,-7.5 -8.82,-12.14 -7.13,-2.32 -14.27,4.64 -4.41,6.07"
+                                        fill="#000" />
+                                </g>
+                                <g transform="translate(16,16)" stroke-dasharray="12 12" stroke-dashoffset="12">
+                                    <polyline class="rating__star-line" transform="rotate(0)" points="0 4,0 16" />
+                                    <polyline class="rating__star-line" transform="rotate(72)" points="0 4,0 16" />
+                                    <polyline class="rating__star-line" transform="rotate(144)" points="0 4,0 16" />
+                                    <polyline class="rating__star-line" transform="rotate(216)" points="0 4,0 16" />
+                                    <polyline class="rating__star-line" transform="rotate(288)" points="0 4,0 16" />
+                                </g>
+                            </g>
+                        </svg>
+                        <span class="rating__sr">3 звезды-Нормально</span>
+                    </label>
+                    <label class="rating__label" for="rating-4">
+                        <svg class="rating__star" width="32" height="32" viewBox="0 0 32 32" aria-hidden="true">
+                            <g transform="translate(16,16)">
+                                <circle class="rating__star-ring" fill="none" stroke="#000" stroke-width="16" r="8"
+                                    transform="scale(0)" />
+                            </g>
+                            <g stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <g transform="translate(16,16) rotate(180)">
+                                    <polygon class="rating__star-stroke"
+                                        points="0,15 4.41,6.07 14.27,4.64 7.13,-2.32 8.82,-12.14 0,-7.5 -8.82,-12.14 -7.13,-2.32 -14.27,4.64 -4.41,6.07"
+                                        fill="none" />
+                                    <polygon class="rating__star-fill"
+                                        points="0,15 4.41,6.07 14.27,4.64 7.13,-2.32 8.82,-12.14 0,-7.5 -8.82,-12.14 -7.13,-2.32 -14.27,4.64 -4.41,6.07"
+                                        fill="#000" />
+                                </g>
+                                <g transform="translate(16,16)" stroke-dasharray="12 12" stroke-dashoffset="12">
+                                    <polyline class="rating__star-line" transform="rotate(0)" points="0 4,0 16" />
+                                    <polyline class="rating__star-line" transform="rotate(72)" points="0 4,0 16" />
+                                    <polyline class="rating__star-line" transform="rotate(144)" points="0 4,0 16" />
+                                    <polyline class="rating__star-line" transform="rotate(216)" points="0 4,0 16" />
+                                    <polyline class="rating__star-line" transform="rotate(288)" points="0 4,0 16" />
+                                </g>
+                            </g>
+                        </svg>
+                        <span class="rating__sr">4 звезды-Хорошо</span>
+                    </label>
+                    <label class="rating__label" for="rating-5">
+                        <svg class="rating__star" width="32" height="32" viewBox="0 0 32 32" aria-hidden="true">
+                            <g transform="translate(16,16)">
+                                <circle class="rating__star-ring" fill="none" stroke="#000" stroke-width="16" r="8"
+                                    transform="scale(0)" />
+                            </g>
+                            <g stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <g transform="translate(16,16) rotate(180)">
+                                    <polygon class="rating__star-stroke"
+                                        points="0,15 4.41,6.07 14.27,4.64 7.13,-2.32 8.82,-12.14 0,-7.5 -8.82,-12.14 -7.13,-2.32 -14.27,4.64 -4.41,6.07"
+                                        fill="none" />
+                                    <polygon class="rating__star-fill"
+                                        points="0,15 4.41,6.07 14.27,4.64 7.13,-2.32 8.82,-12.14 0,-7.5 -8.82,-12.14 -7.13,-2.32 -14.27,4.64 -4.41,6.07"
+                                        fill="#000" />
+                                </g>
+                                <g transform="translate(16,16)" stroke-dasharray="12 12" stroke-dashoffset="12">
+                                    <polyline class="rating__star-line" transform="rotate(0)" points="0 4,0 16" />
+                                    <polyline class="rating__star-line" transform="rotate(72)" points="0 4,0 16" />
+                                    <polyline class="rating__star-line" transform="rotate(144)" points="0 4,0 16" />
+                                    <polyline class="rating__star-line" transform="rotate(216)" points="0 4,0 16" />
+                                    <polyline class="rating__star-line" transform="rotate(288)" points="0 4,0 16" />
+                                </g>
+                            </g>
+                        </svg>
+                        <span class="rating__sr">5 звезд-Прекрасно</span>
+                    </label>
+                    <p class="rating__display" data-rating="1" hidden>Очень плохо</p>
+                    <p class="rating__display" data-rating="2" hidden>Плохо</p>
+                    <p class="rating__display" data-rating="3" hidden>Нормально</p>
+                    <p class="rating__display" data-rating="4" hidden>Хорошо</p>
+                    <p class="rating__display" data-rating="5" hidden>Прекрасно</p>
+                </div>
+                <button id="submit-rating" type="submit">Подтвердить</button>
+            </form>
+        </div>
+    </div>
+    <!-- Модальное окно "Спасибо за оценку" -->
+    <div id="thank-you-modal" class="thank-you-modal">
+        <div class="thank-you-modal-content">
+            <span class="close-thank-you-modal">&times;</span>
+            <p>Спасибо за вашу оценку и выбор нашего такси!</p>
+        </div>
+    </div>
 
     <script>
         const darkModeToggle = document.getElementById('darkModeToggle');
