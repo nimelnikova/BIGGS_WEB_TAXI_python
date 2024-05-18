@@ -63,9 +63,11 @@ def create_order():
 
     waiting_time = random.randint(5, 30)
     driver_id = driver[0]
+    car_number = driver[5]
     driver_average_raiting = driver[7]
     driver_name = driver[1]
     car = driver[2]
+    car_image = driver[3]
 
     new_order = Order(
         user_id,
@@ -122,8 +124,10 @@ def create_order():
                 "driver": {
                     "name": driver_name,
                     "car": car,
+                    "car_number": car_number,
                     "average_rating": driver_average_raiting,
                     "waiting_time": waiting_time,
+                    "image": car_image,
                 },
             }
         ),
