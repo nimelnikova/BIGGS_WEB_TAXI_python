@@ -226,6 +226,33 @@ paths:
           $ref: "#/components/responses/BadRequest"
 
   /orders:
+    get:
+      operationId: "src.controllers.orders_controller.get_all_trips"
+      tags:
+        - "Orders"
+      summary: "Read the list of people"
+      responses:
+        "200":
+          description: "Successfully read people list"
+
+  /orders/{id_person}:
+    get:
+      operationId: "src.controllers.orders_controller.get_user_trip_history"
+      tags:
+        - "Orders"
+      summary: "Get orders by person ID"
+      parameters:
+        - $ref: "#/components/parameters/userIdParam"
+      responses:
+        "200":
+          description: "Successful operation"
+          content:
+            application/json:
+              schema:
+                type: "array"
+                items:
+                  $ref: "#/components/schemas/Order"
+
     post:
       operationId: "src.controllers.orders_controller.create_order"
       tags:
