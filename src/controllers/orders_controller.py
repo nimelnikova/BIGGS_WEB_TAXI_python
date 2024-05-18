@@ -165,7 +165,8 @@ def get_user_trip_history(user_id):
     try:
         conn = sqlite3.connect(DATA_ORDERS_PATH)
         cur = conn.cursor()
-        cur.execute("SELECT * FROM orders WHERE user_id = ?", (user_id,))
+        cur.execute("SELECT pickup_location, destination, order_amount, start_time FROM orders WHERE user_id = ?",
+                    (user_id,))
         orders = cur.fetchall()
         cur.close()
         conn.close()
@@ -173,7 +174,15 @@ def get_user_trip_history(user_id):
         if not orders:
             return jsonify({"message": "История поездок не найдена для данного пользователя."}), HTTPStatus.NOT_FOUND
 
-        trip_history = [Order(*order).get_order_details() for order in orders]
+        trip_history = [
+            {
+                "pickup_location": order[0],
+                "destination": order[1],
+                "order_amount": order[2],
+                "start_time": order[3]
+            }
+            for order in orders
+        ]
         return jsonify(trip_history), HTTPStatus.OK
 
     except sqlite3.Error as e:
