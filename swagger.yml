@@ -235,6 +235,22 @@ paths:
         "200":
           description: "Successfully read people list"
 
+    post:
+      operationId: "src.controllers.orders_controller.create_order"
+      tags:
+        - "Orders"
+      summary: "Getting order information"
+      requestBody:
+        description: "Order to create"
+        required: True
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Order"
+      responses:
+        "201":
+          description: "The order data has been successfully received"
+
   /orders/{id_person}:
     get:
       operationId: "src.controllers.orders_controller.get_user_trip_history"
@@ -252,22 +268,6 @@ paths:
                 type: "array"
                 items:
                   $ref: "#/components/schemas/Order"
-
-    post:
-      operationId: "src.controllers.orders_controller.create_order"
-      tags:
-        - "Orders"
-      summary: "Getting order information"
-      requestBody:
-        description: "Order to create"
-        required: True
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/Order"
-      responses:
-        "201":
-          description: "The order data has been successfully received"
 
   /orders/complete:
     post:
