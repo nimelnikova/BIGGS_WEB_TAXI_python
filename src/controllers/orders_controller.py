@@ -36,21 +36,17 @@ def select_random_driver(car_category):
 
 def create_order():
     conn = sqlite3.connect(DATA_ORDERS_PATH)
-    conn = sqlite3.connect(DATA_ORDERS_PATH)
     cur = conn.cursor()
     cur.execute(sqlite_query.create_table_orders)
-    conn.commit()
     conn.commit()
 
     order_data = request.get_json()
 
     user_id = order_data["user_id"]
-    user_id = order_data["user_id"]
     pickup_location = order_data["pickup_location"]
     destination = order_data["destination"]
     distance = order_data["distance"]
     car_category = order_data["car_category"]
-    start_time = order_data["start_time"]
     start_time = order_data["start_time"]
     end_time = order_data["end_time"]
     total_ride_time = order_data["total_ride_time"]
@@ -220,7 +216,8 @@ def get_all_person(id_person: str) -> str:
     conn = sqlite3.connect(DATA_ORDERS_PATH)
     cur = conn.cursor()
 
-    cur.execute("SELECT * FROM orders WHERE user_id=?", (id_person,))
+    cur.execute("SELECT user_id, driver_id, driver_name, driver_average_raiting, pickup_location, destination, distance, car_category, car, start_time, end_time, total_ride_time, order_amount, payment_method, waiting_time, status FROM orders WHERE user_id=?", (id_person,))
+    
     orders = cur.fetchall()
 
     trips = []
