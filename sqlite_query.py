@@ -121,6 +121,11 @@ checking_existence_table = (
 )
 
 
-get_user_order = "SELECT order_id, driver_id FROM orders WHERE user_id=? AND status = 'active';"
+# get_user_order = """SELECT order_id, driver_id FROM orders WHERE user_id=? AND status = 'active' ORDER BY start_time DESC LIMIT 1;"""
+get_user_order = (
+    "SELECT order_id, driver_id FROM orders WHERE user_id=? AND status = 'active';"
+)
 
-update_order_status_completed = "UPDATE orders SET status = 'completed' WHERE order_id = ?;"
+update_order_status_completed = (
+    "UPDATE orders SET status = 'completed' WHERE order_id = ?;"
+)

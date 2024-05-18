@@ -103,7 +103,7 @@ car_models = {
 
 def generate_table():
     drivers_data = []
-    driver_statuses = ["busy"] * 30 + ["free"] * 70
+    driver_statuses = ["busy"] * 15 + ["free"] * 85
     for _ in range(200):
         full_name = generate_male_full_name()
         car_category = random.choice(["Standart", "Premium", "VIP"])

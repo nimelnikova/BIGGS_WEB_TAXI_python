@@ -49,7 +49,7 @@ function onLoginClick(event) {
     }
 
     if (!isValidPassword(password)) {
-        loginError.textContent = 'Некорректный пароль. Пароль должен содержать минимум 8 символов, включая хотя бы одну заглавную и одну строчную букву, а также одну цифру';
+        loginError.textContent = 'Неверный пароль. Попробуйте еще раз';
         return;
     }
 
@@ -61,9 +61,10 @@ function onLoginClick(event) {
         .catch(error => {
             // Проверка содержимого сообщения об ошибке
             if (error.message.includes('не зарегистрирован')) {
-                loginError.textContent = 'Такой пользователь не зарегистрирован. Пожалуйста, проверьте данные или зарегистрируйтесь.';
+                loginError.textContent = 'Этот логин не зарегистрирован. Пожалуйста, проверьте данные или зарегистрируйтесь.';
             } else {
-                loginError.textContent = 'Ошибка входа: ' + error.message; // Уточнен текст ошибки
+                // loginError.textContent = 'Ошибка входа: ' + error.message; // Уточнен текст ошибки
+                loginError.textContent = 'Этот логин не зарегистрирован. Пожалуйста, проверьте данные или зарегистрируйтесь.';
             }
             document.getElementById('login-password').value = ''; // Сброс поля пароля
         });
