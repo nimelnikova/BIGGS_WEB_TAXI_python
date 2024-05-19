@@ -162,7 +162,7 @@ components:
             $ref: '#/components/schemas/Error'
   parameters:
     userIdParam:
-      name: "id_person"
+      name: "user_id"
       in: "path"
       required: true
       schema:
@@ -251,7 +251,7 @@ paths:
         "201":
           description: "The order data has been successfully received"
 
-  /orders/{id_person}:
+  /orders/{user_id}:
     get:
       operationId: "src.controllers.orders_controller.get_user_trip_history"
       tags:

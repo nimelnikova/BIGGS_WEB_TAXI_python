@@ -750,6 +750,8 @@ function init() {
 
     myMap.geoObjects.add(carOrderPlacemark);
 
+
+
     function getUserId() {
         const userId = Number(localStorage.getItem('userId'));
         if (!userId || isNaN(userId)) {
@@ -1343,79 +1345,11 @@ function init() {
     // Предполагается, что эта функция вызывается при открытии модального окна способа оплаты
     document.getElementById('payment-method-button').addEventListener('click', fetchCardInfo);
 
-    // история заказов 
-    function fetchTripHistory(userId) {
-        if (!userId) {
-            console.error("User ID не определен или недействителен:", userId);
-            alert('Пожалуйста, войдите в систему перед запросом истории поездок.');
-            return;
-        }
 
-        const url = `/api/orders/${userId}`;
-        console.log("Запрос истории поездок на URL:", url);
 
-        fetch(url)
-            .then(response => {
-                if (!response.ok) {
-                    console.error("Ошибка ответа сервера:", response.status, response.statusText);
-                    alert(`Ошибка получения истории поездок: ${response.statusText}`);
-                    return [];
-                }
-                return response.json();
-            })
-            .then(data => {
-                console.log("История поездок получена:", data);
-                updateTripHistoryUI(data);
-            })
-            .catch(error => {
-                console.error("Ошибка при получении истории поездок:", error);
-                alert('Ошибка при получении истории поездок. Попробуйте снова.');
-            });
-    }
 
-    function updateTripHistoryUI(trips) {
-        const historyElement = document.getElementById('trip-history');
-        historyElement.innerHTML = ''; // Очищаем предыдущие данные
 
-        if (!Array.isArray(trips) || trips.length === 0) {
-            historyElement.innerHTML = '<p>Поездок не найдено.</p>';
-            return;
-        }
 
-        const list = document.createElement('ul');
-        trips.forEach(trip => {
-            const item = document.createElement('li');
-            const statusText = trip.status === 'completed' ? '' : 'Отменено';
-            const time = new Date(trip.start_time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-            const date = new Date(trip.start_time).toLocaleDateString();
-            item.textContent = `Поездка ${date}, в ${time}: ${trip.order_amount}₽, ${trip.pickup_location} -> ${trip.destination} ${statusText}`;
-            list.appendChild(item);
-        });
-        historyElement.appendChild(list);
-    }
-
-    // Открытие модального окна с историей поездок
-    document.getElementById('history-button').addEventListener('click', function (event) {
-        event.preventDefault();
-        const userId = getUserId();
-        if (!userId) return;
-
-        fetchTripHistory(userId);
-        document.getElementById('trip-history-modal').style.display = 'block';
-    });
-
-    // Закрытие модального окна
-    document.querySelector('.history-close-btn').addEventListener('click', function () {
-        document.getElementById('trip-history-modal').style.display = 'none';
-    });
-
-    // Закрытие модального окна при клике за его пределами
-    window.onclick = function (event) {
-        const modal = document.getElementById('trip-history-modal');
-        if (event.target === modal) {
-            modal.style.display = 'none';
-        }
-    };
 
 
 }
