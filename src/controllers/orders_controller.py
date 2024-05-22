@@ -36,7 +36,6 @@ def select_random_driver(car_category):
 
 def create_order():
     conn = sqlite3.connect(DATA_ORDERS_PATH)
-    conn = sqlite3.connect(DATA_ORDERS_PATH)
     cur = conn.cursor()
     cur.execute(sqlite_query.create_table_orders)
     conn.commit()
@@ -45,12 +44,10 @@ def create_order():
     order_data = request.get_json()
 
     user_id = order_data["user_id"]
-    user_id = order_data["user_id"]
     pickup_location = order_data["pickup_location"]
     destination = order_data["destination"]
     distance = order_data["distance"]
     car_category = order_data["car_category"]
-    start_time = order_data["start_time"]
     start_time = order_data["start_time"]
     end_time = order_data["end_time"]
     total_ride_time = order_data["total_ride_time"]
@@ -66,9 +63,11 @@ def create_order():
 
     waiting_time = random.randint(5, 30)
     driver_id = driver[0]
-    driver_average_raiting = driver[7]
+    car_number = driver[5]
+    driver_average_raiting = driver[8]
     driver_name = driver[1]
     car = driver[2]
+    car_image = driver[3]
 
     new_order = Order(
         user_id,
@@ -85,28 +84,31 @@ def create_order():
         total_ride_time,
         order_amount,
         payment_method,
-        waiting_time
+        waiting_time,
+        "active",
     )
 
-    cur.execute(sqlite_query.insert_orders,
-                (
-                    new_order.user_id,
-                    new_order.driver_id,
-                    new_order.driver_name,
-                    new_order.driver_average_raiting,
-                    new_order.pickup_location,
-                    new_order.destination,
-                    new_order.distance,
-                    new_order.car_category,
-                    new_order.car,
-                    new_order.start_time,
-                    new_order.end_time,
-                    new_order.total_ride_time,
-                    new_order.order_amount,
-                    new_order.payment_method,
-                    new_order.waiting_time,
-                ),
-                )
+    cur.execute(
+        sqlite_query.insert_orders,
+        (
+            new_order.user_id,
+            new_order.driver_id,
+            new_order.driver_name,
+            new_order.driver_average_raiting,
+            new_order.pickup_location,
+            new_order.destination,
+            new_order.distance,
+            new_order.car_category,
+            new_order.car,
+            new_order.start_time,
+            new_order.end_time,
+            new_order.total_ride_time,
+            new_order.order_amount,
+            new_order.payment_method,
+            new_order.waiting_time,
+            new_order.status,
+        ),
+    )
 
     cur.execute(sqlite_query.update_driver_status_busy, (driver_id,))
 
@@ -145,7 +147,7 @@ def get_order_id():
     if orders is None:
         return (
             jsonify({"message": "Заказ не найден для данного user_id"}),
-            HTTPStatus.NOT_FOUND,
+            HTTPStatus.BAD_REQUEST,
         )
 
     order_id = orders[0]
@@ -154,7 +156,12 @@ def get_order_id():
     cur.close()
     conn.close()
 
-
+    return jsonify(
+        {
+            "order_id": order_id,
+            "driver_id": driver_id,
+        }
+    )
 
 
 def complete_order():
@@ -169,13 +176,12 @@ def complete_order():
     # Получаем информацию о заказе
     cur.execute(sqlite_query.select_id_order, (order_id,))
     order_info = cur.fetchone()
+
     if order_info is None:
-        cur.close()
-        conn.close()
         return (
-            jsonify({"message": "Заказ с указанным ID не найден."}), HTTPStatus.NOT_FOUND,
+            jsonify({"message": "Заказ с указанным ID не найден."}),
+            HTTPStatus.NOT_FOUND,
         )
-    driver_name = order_info[3]
 
     # Обновляем статус водителя
     cur.execute(sqlite_query.update_driver_status_free, (driver_id,))
@@ -185,10 +191,7 @@ def complete_order():
     cur.execute(sqlite_query.select_driver_id, (driver_id,))
     driver = cur.fetchone()
 
-
     if driver is None:
-        cur.close()
-        conn.close()
         return (
             jsonify({"message": "Водитель с указанным ID не найден."}),
             HTTPStatus.NOT_FOUND,
@@ -210,8 +213,6 @@ def complete_order():
     )
 
     conn.commit()
-    conn.close()
-
 
     # Меняем статус заказа на завершенный
     cur.execute(sqlite_query.update_order_status_completed, (order_id,))
@@ -223,35 +224,44 @@ def complete_order():
     return jsonify({"message": "Заказ успешно завершен"}), HTTPStatus.OK
 
 
-
 def get_user_trip_history(user_id):
     # Функция для получения истории поездок пользователя.
 
     try:
         conn = sqlite3.connect(DATA_ORDERS_PATH)
         cur = conn.cursor()
-        cur.execute("SELECT pickup_location, destination, order_amount, start_time FROM orders WHERE user_id = ?",
-                    (user_id,))
+        cur.execute(
+            "SELECT pickup_location, destination, order_amount, start_time FROM orders WHERE user_id = ?",
+            (user_id,),
+        )
         orders = cur.fetchall()
         cur.close()
         conn.close()
 
         if not orders:
-            return jsonify({"message": "История поездок не найдена для данного пользователя."}), HTTPStatus.NOT_FOUND
+            return (
+                jsonify(
+                    {"message": "История поездок не найдена для данного пользователя."}
+                ),
+                HTTPStatus.NOT_FOUND,
+            )
 
         trip_history = [
             {
                 "pickup_location": order[0],
                 "destination": order[1],
                 "order_amount": order[2],
-                "start_time": order[3]
+                "start_time": order[3],
             }
             for order in orders
         ]
         return jsonify(trip_history), HTTPStatus.OK
 
     except sqlite3.Error as e:
-        return jsonify({"message": f"Ошибка базы данных: {e}"}), HTTPStatus.INTERNAL_SERVER_ERROR
+        return (
+            jsonify({"message": f"Ошибка базы данных: {e}"}),
+            HTTPStatus.INTERNAL_SERVER_ERROR,
+        )
 
 
 def delete_trip_by_id(trip_id):
@@ -268,7 +278,10 @@ def delete_trip_by_id(trip_id):
         return jsonify({"message": "Поездка успешно удалена."}), HTTPStatus.OK
 
     except sqlite3.Error as e:
-        return jsonify({"message": f"Ошибка базы данных: {e}"}), HTTPStatus.INTERNAL_SERVER_ERROR
+        return (
+            jsonify({"message": f"Ошибка базы данных: {e}"}),
+            HTTPStatus.INTERNAL_SERVER_ERROR,
+        )
 
 
 def get_all_trips():
@@ -286,10 +299,16 @@ def get_all_trips():
         conn.close()
 
         if not orders:
-            return jsonify({"message": "Нет поездок в базе данных."}), HTTPStatus.NOT_FOUND
+            return (
+                jsonify({"message": "Нет поездок в базе данных."}),
+                HTTPStatus.NOT_FOUND,
+            )
 
         all_trips = [Order(*order).get_order_details() for order in orders]
         return jsonify(all_trips), HTTPStatus.OK
 
     except sqlite3.Error as e:
-        return jsonify({"message": f"Ошибка базы данных: {e}"}), HTTPStatus.INTERNAL_SERVER_ERROR
+        return (
+            jsonify({"message": f"Ошибка базы данных: {e}"}),
+            HTTPStatus.INTERNAL_SERVER_ERROR,
+        )

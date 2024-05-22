@@ -162,7 +162,7 @@ components:
             $ref: '#/components/schemas/Error'
   parameters:
     userIdParam:
-      name: "id_person"
+      name: "user_id"
       in: "path"
       required: true
       schema:
@@ -227,13 +227,14 @@ paths:
 
   /orders:
     get:
-      operationId: "src.controllers.orders_controller.get_all"
+      operationId: "src.controllers.orders_controller.get_all_trips"
       tags:
         - "Orders"
       summary: "Read the list of people"
       responses:
         "200":
           description: "Successfully read people list"
+
     post:
       operationId: "src.controllers.orders_controller.create_order"
       tags:
@@ -250,9 +251,9 @@ paths:
         "201":
           description: "The order data has been successfully received"
 
-  /orders/{id_person}:
+  /orders/{user_id}:
     get:
-      operationId: "src.controllers.orders_controller.get_all_person"
+      operationId: "src.controllers.orders_controller.get_user_trip_history"
       tags:
         - "Orders"
       summary: "Get orders by person ID"

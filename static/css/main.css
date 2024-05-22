@@ -366,6 +366,60 @@ li a:hover {
     color: #fff;
 }
 
+/* тест */
+
+.dark-mode .history-modal,
+.dark-mode .modal-content-driver,
+.dark-mode .rating-modal {
+    background-color: var(--modal-dark);
+    color: var(--text-color);
+}
+
+.dark-mode .history-modal-content,
+.dark-mode .modal-content-driver .modal-body,
+.dark-mode .rating-modal-content {
+    background-color: var(--primary-dark);
+}
+
+.dark-mode .history-close-btn,
+.dark-mode .close-driver-info-modal,
+.dark-mode .rating-modal-content .close-rating-modal {
+    color: var(--text-color);
+}
+
+.dark-mode .history-modal-content h2,
+.dark-mode .modal-content-driver .modal-title,
+.dark-mode .rating-modal-content h3 {
+    color: var(--text-color);
+}
+
+.dark-mode #trip-history li,
+.dark-mode #car-info {
+    background-color: var(--secondary-dark);
+    color: var(--text-color);
+    border-color: var(--accent-color);
+}
+
+.dark-mode .trip-icon {
+    background-color: var(--accent-color);
+}
+
+.dark-mode .trip-details,
+.dark-mode .trip-info,
+.dark-mode #car-number-box {
+    color: var(--text-color);
+}
+
+.dark-mode #close-modal-btn {
+    background-color: var(--primary-dark);
+    color: var(--text-color);
+}
+
+.dark-mode .rating-modal-overlay {
+    background-color: rgba(0, 0, 0, 0.7);
+}
+
+
 /* конец темной темы */
 /* ------------------------------------ */
 
@@ -408,6 +462,8 @@ button {
     border-radius: 6px;
     box-sizing: border-box;
     background-color: #eeeeee;
+    font-family: 'Jost', sans-serif;
+    font-weight: 600;
 }
 
 .address-form input::placeholder {
@@ -1714,30 +1770,50 @@ button {
 /* история заказов */
 .history-modal {
     display: none;
+    /* Скрыто по умолчанию */
     position: fixed;
-    right: 0;
+    z-index: 1000;
     top: 0;
-    width: 100%;
+    right: 0;
     height: 100%;
     overflow: auto;
-    background-color: rgba(0, 0, 0, 0.4);
-    z-index: 9999;
+    background-color: rgb(255, 255, 255);
+    /* Белый фон */
+    box-shadow: -2px 0 5px rgba(0, 0, 0, 0.5);
+    border-radius: 30px;
+    width: 700px;
+}
+
+.history-modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    top: 0;
+    right: 0;
+    width: 400px;
+    height: 100%;
+    overflow: auto;
+    background-color: rgb(255, 255, 255);
+    box-shadow: -2px 0 5px rgba(0, 0, 0, 0.5);
 }
 
 .history-modal-content {
     background-color: #fefefe;
-    margin: 5% auto;
     padding: 20px;
-    border: 1px solid #888;
-    width: 20%;
-    transform: translateX(100%);
+    height: 100%;
+    overflow-y: auto;
+    font-family: 'Jost', sans-serif;
+    font-weight: 500;
 }
 
 .history-close-btn {
     color: #aaa;
-    float: right;
     font-size: 28px;
     font-weight: bold;
+    cursor: pointer;
+    position: absolute;
+    top: 10px;
+    right: 20px;
 }
 
 .history-close-btn:hover,
@@ -1745,4 +1821,78 @@ button {
     color: black;
     text-decoration: none;
     cursor: pointer;
+}
+
+.history-modal-content h2 {
+    margin: 0 0 20px;
+    font-family: 'Jost', sans-serif;
+    font-weight: 300;
+}
+
+#trip-history {
+    list-style: none;
+    padding: 0;
+}
+
+#trip-history li {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    border-bottom: 1px solid #ccc;
+    /* Разделитель */
+    background-color: #f0f0f0;
+    /* Фон элемента */
+    margin-bottom: 10px;
+    border-radius: 8px;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.5);
+}
+
+#trip-history li:last-child {
+    border-bottom: none;
+}
+
+.trip-icon {
+    width: 40px;
+    height: 40px;
+    margin-right: 10px;
+    background-color: #eee;
+    /* Цвет фона иконки */
+    border-radius: 50%;
+    /* Круглая иконка */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.trip-icon img {
+    max-width: 200%;
+    max-height: 200%;
+}
+
+.trip-details {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.trip-info {
+    display: flex;
+    justify-content: space-between;
+    font-size: 14px;
+    color: #666;
+}
+
+.trip-info .trip-time {
+    font-style: italic;
+}
+
+.trip-info .trip-amount {
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+}
+
+.trip-info .trip-amount::before {
+    content: "₽";
+    margin-right: 2px;
 }

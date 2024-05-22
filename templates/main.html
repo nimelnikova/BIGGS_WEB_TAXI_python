@@ -49,8 +49,9 @@
                         <a href="VIP.html">VIP</a> <!-- ЗАМЕНИТЬ -->
                     </div>
                 </li>
-                <li><button id="history-button" class="history-btn" style="--navAni:2">История заказов</button></li>
                 <!-- <li><a href="#" style="--navAni:2">История заказов</a></li> -->
+                <!-- <li><a href="#" style="--navAni:2" onclick="openTripHistoryModal()">История заказов</a></li> -->
+                <li><a href="#" style="--navAni:2" id="open-history-link">История заказов</a></li>
                 <li><a href="#" style="--navAni:3">Q & A</a></li>
                 <li><a href="#" style="--navAni:4">Тех. Поддержка</a></li>
 
@@ -182,7 +183,7 @@
         <div class="history-modal-content">
             <span class="history-close-btn">&times;</span>
             <h2>История поездок</h2>
-            <div id="trip-history"></div>
+            <div id="trip-history">Здесь будет история ваших поездок!</div>
         </div>
     </div>
 
@@ -396,8 +397,127 @@
                 localStorage.setItem('darkMode', 'disabled');
             }
         });
+
+        document.addEventListener('DOMContentLoaded', function () {
+            console.log('DOM полностью загружен и обработан');
+
+            const modal = document.getElementById('trip-history-modal');
+            const closeButton = document.querySelector('.history-close-btn');
+            const openHistoryLink = document.getElementById('open-history-link');
+            const tripList = document.getElementById('trip-history');
+
+            if (!modal) {
+                console.error('Модальное окно не найдено.');
+                return;
+            }
+
+            if (!closeButton) {
+                console.error('Кнопка закрытия модального окна не найдена.');
+                return;
+            }
+
+            if (!openHistoryLink) {
+                console.error('Ссылка для открытия истории заказов не найдена.');
+                return;
+            }
+
+            function openTripHistoryModal() {
+                console.log('Попытка открыть модальное окно');
+                modal.style.display = 'block';
+                fetchUserTrips();
+            }
+
+            function closeTripHistoryModal() {
+                console.log('Попытка закрыть модальное окно');
+                modal.style.display = 'none';
+            }
+
+            function fetchUserTrips() {
+                console.log('Попытка получить историю поездок');
+                const userId = getUserId(); // Получаем ID пользователя из вашей функции
+                if (!userId) {
+                    console.error("User ID не определен или недействителен.");
+                    alert('Пожалуйста, войдите в систему перед запросом истории поездок.');
+                    return;
+                }
+
+                const url = `/api/orders/${userId}`;
+                console.log('Fetching from URL:', url);
+
+                fetch(url)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Ошибка при загрузке истории поездок: ' + response.statusText);
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        renderTripHistory(data);
+                    })
+                    .catch(error => {
+                        console.error('Ошибка при получении истории поездок:', error);
+                        alert('Ошибка при загрузке данных: ' + error.message);
+                    });
+            }
+
+            function formatDateTime(dateTime) {
+                const date = new Date(dateTime);
+                const options = { day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' };
+                return date.toLocaleString('ru-RU', options);
+            }
+
+            function renderTripHistory(data) {
+                tripList.innerHTML = '';
+                data.forEach(trip => {
+                    const li = document.createElement('li');
+
+                    const tripIcon = document.createElement('div');
+                    tripIcon.className = 'trip-icon';
+                    tripIcon.innerHTML = '<img src="../static/icons/history_car.png" alt="Car">'; // Замените путь к иконке
+
+                    const tripDetails = document.createElement('div');
+                    tripDetails.className = 'trip-details';
+                    tripDetails.innerHTML = `
+                        <div>Откуда: ${trip.pickup_location}</div>
+                        <div>Куда: ${trip.destination}</div>
+                        <div class="trip-info">
+                            <span class="trip-amount">${trip.order_amount}</span>
+                            <span class="trip-time">${formatDateTime(trip.start_time)}</span>
+                        </div>
+                    `;
+
+                    li.appendChild(tripIcon);
+                    li.appendChild(tripDetails);
+                    tripList.appendChild(li);
+                });
+            }
+
+            openHistoryLink.addEventListener('click', function (event) {
+                event.preventDefault(); // Предотвратить стандартное поведение ссылки
+                openTripHistoryModal();
+            });
+
+            closeButton.addEventListener('click', closeTripHistoryModal);
+
+            window.addEventListener('click', function (event) {
+                if (event.target === modal) {
+                    closeTripHistoryModal();
+                }
+            });
+        });
+
+        function getUserId() {
+            const userId = Number(localStorage.getItem('userId'));
+            if (!userId || isNaN(userId)) {
+                console.error("User ID не определен или недействителен:", userId);
+                alert('Пожалуйста, войдите в систему перед завершением поездки.');
+                return null;
+            }
+            return userId;
+        }
     </script>
-    <script src="{{ url_for('static', filename='js/main.js') }}" async></script>
+    <!-- <script src="{{ url_for('static', filename='js/main.js') }}" async></script> -->
+    <script src="{{ url_for('static', filename='js/main.js') }}" defer></script>
 </body>
 
 </html>
