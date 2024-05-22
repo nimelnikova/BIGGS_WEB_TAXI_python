@@ -1,10 +1,10 @@
 # BIGGS_WEB_TAXI_python
 
 ## Состав команды:
-1. **Мельникова Нина**
-2. **Пермяков Герман**
-3. **Суров Иван**
-4. **Бельский Глеб**
+1. **Мельникова Нина** - <span style="color:red">*Frontend Developer & Team Lead*</span>
+2. **Пермяков Герман** - <span style="color:red">*Backend Developer*</span>
+3. **Суров Иван** - <span style="color:red">*Backend Developer*</span>
+4. **Бельский Глеб** - <span style="color:red">*Backend Developer*</span>
 
 ## Описание проекта:
   
