@@ -32,7 +32,7 @@
   Часто задаваемые вопросы и ответы для комфортной поездки:
   - **Как выбрать тариф?** 
   - **Как добавить платежную карту?**
-  - - **Что делать, если забыл личные вещи в автомобиле?**
+  - **Что делать, если забыл личные вещи в автомобиле?**
       и многие другие...
 
 ## Технологический стек
@@ -41,8 +41,8 @@
 
 
 ## Ссылки на ресурсы:
-- [Ссылка на Notion](https://www.notion.so/017c395844324956ab7328ff112ed29e?v=5f43e7ec868747ea97d6133f9e46269c&pvs=4)
-- [Ссылка на Miro](https://miro.com/app/board/uXjVKaRqYCQ=/)
+- ![иконка ноушен](https://github.com/nimelnikova/BIGGS_WEB_TAXI_python/blob/main/static/icons/Notion-3.png?raw=true)[Ссылка на Notion](https://www.notion.so/017c395844324956ab7328ff112ed29e?v=5f43e7ec868747ea97d6133f9e46269c&pvs=4)
+- ![иконка миро](https://github.com/nimelnikova/BIGGS_WEB_TAXI_python/blob/main/static/icons/miro-2.png?raw=true)[Ссылка на Miro](https://miro.com/app/board/uXjVKaRqYCQ=/)
 
 ## Запуск проекта 
 
