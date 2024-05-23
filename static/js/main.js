@@ -244,6 +244,8 @@ function init() {
     myMap.geoObjects.add(myPlacemark);
     myMap.geoObjects.add(myPlacemarkTo);
 
+
+
     var fromInput = document.getElementById('from-input');
     var toInput = document.getElementById('to-input');
 
@@ -503,16 +505,6 @@ function init() {
         }
     });
 
-    function parseRouteInfo(routeInfo) {
-        const timeAndDistance = routeInfo.split(' и ');
-        const travelTime = parseInt(timeAndDistance[0].match(/\d+/)[0]); // Извлекаем время в минутах
-        const distance = parseFloat(timeAndDistance[1].match(/\d+\.\d+/)[0]); // Извлекаем расстояние в километрах
-        return {
-            travelTime, // время в пути в минутах
-            distance // расстояние в километрах
-        };
-    }
-
     // Инициализация переменных для модального окна и кнопки способа оплаты
     const paymentModal = document.getElementById('payment-modal');
     const paymentMethodButton = document.getElementById('payment-method-button');
@@ -520,12 +512,10 @@ function init() {
 
     let paymentMethod;
 
-    // Обработчик клика для кнопки способа оплаты
     paymentMethodButton.addEventListener('click', function () {
         paymentModal.style.display = 'block';
     });
 
-    // Обработчики для закрытия модального окна
     const closeModalElements = document.querySelectorAll('.close-modal');
     closeModalElements.forEach(function (element) {
         element.addEventListener('click', function () {
@@ -737,19 +727,23 @@ function init() {
 
     }
     // метка для машинки
+    var carOrderLayout = ymaps.templateLayoutFactory.createClass('<div style="transform: rotate($[properties.rotate]deg);">' +
+        '<img src="../static/icons/ordercar.png" style="width: 22.6px; height:  51.4px;" /></div>');
+
+    // метка для машинки
     var carOrderPlacemark = new ymaps.Placemark(myMap.getCenter(), {
         rotate: 0
     }, {
-        iconLayout: carLayout1,
+        iconLayout: carOrderLayout,
         iconShape: {
             type: 'Rectangle',
-            coordinates: [[-15, -30], [15, 30]] // Это ограничивающая рамка для кликабельной области, если нужно.
+            coordinates: [[-556.5, -128.5], [-200, 128.5]] // Размер иконки / 2
         },
-        iconImageOffset: [-80, -160] // Обновлённое смещение для корректного отображения
+        iconImageSize: [22.6, 51.4], // Размер иконки
+        iconImageOffset: [-756.5, -1128.5] // Смещение иконки для центрирования
     });
 
     myMap.geoObjects.add(carOrderPlacemark);
-
 
 
     function getUserId() {
@@ -788,7 +782,7 @@ function init() {
     }
 
     document.getElementById('rating-form').addEventListener('submit', function (event) {
-        event.preventDefault();  // Предотвращаем обновление страницы
+        event.preventDefault();
 
         const userId = getUserId();
         if (!userId) {
@@ -797,9 +791,7 @@ function init() {
 
         const userRating = parseInt(document.querySelector('input[name="rating"]:checked').value, 10);
 
-
-        // Далее используем userRating для выполнения дальнейших действий
-        console.log('Выбранная оценка:', userRating); // Выводим в консоль для отладки
+        console.log('Выбранная оценка:', userRating);
 
         fetchOrderDetails(userId, function (orderId, driverId) {
             completeOrder(orderId, driverId, userRating);
@@ -918,22 +910,6 @@ function init() {
         }, route, 1000); // Продолжительность анимации уменьшена до 1000 мс (1 секунда)
     }
 
-    // Анимация по маршруту
-    function animateUserRoute(route, placemark, onComplete) {
-        var paths = route.getPaths();
-        var points = [];
-
-        paths.each(function (path) {
-            points = points.concat(path.getSegments().reduce(function (acc, segment) {
-                return acc.concat(segment.getCoordinates());
-            }, []));
-        });
-
-        console.log("Total points for animation:", points.length);
-
-        animateAlongRouteUser(points, 0, placemark, onComplete, route);
-    }
-
     // Анимация между двумя точками маршрута
     function animateAlongRouteUser(points, index, placemark, onComplete, route) {
         if (index < points.length - 1) {
@@ -1015,15 +991,6 @@ function init() {
         });
     }
 
-    function showRatingModal(orderId, driverId) {
-        const ratingModal = document.getElementById('rating-modal');
-        ratingModal.style.display = 'block';
-
-        // Убедитесь, что значения orderId и driverId сохраняются для дальнейшего использования
-        ratingModal.setAttribute('data-order-id', orderId);
-        ratingModal.setAttribute('data-driver-id', driverId);
-    }
-
     document.addEventListener("DOMContentLoaded", function () {
         const ratingModal = document.getElementById('rating-modal');
         const closeButton = document.querySelector('.rating-modal-content .close-rating-modal');
@@ -1074,8 +1041,8 @@ function init() {
     function closeModal() {
         const ratingModal = document.getElementById('rating-modal');
         const overlay = document.getElementById('rating-modal-overlay');
-        overlay.style.display = 'none'; // Скрытие оверлея
-        ratingModal.style.display = 'none'; // Скрытие модального окна
+        overlay.style.display = 'none';
+        ratingModal.style.display = 'none';
     }
 
     function showThankYouModal() {
@@ -1122,13 +1089,10 @@ function init() {
     function updateUserProfile() {
         console.log('Попытка обновить данные пользователя.');
 
-        // Пытаемся получить полное имя из localStorage
         const fullname = localStorage.getItem('fullname');
         console.log('Полученное полное имя:', fullname);
-
-        // Проверяем, существует ли имя пользователя
         if (fullname) {
-            // Обновляем DOM, если имя пользователя существует
+
             const userNameElement = document.querySelector('.user-name');
             if (userNameElement) {
                 console.log('Элемент с именем пользователя найден, обновляем его содержимое.');
@@ -1149,7 +1113,6 @@ function init() {
             console.error('Не удалось найти модальное окно с ID "edit-user-modal".');
         }
     }
-    // Установка обработчика событий
     document.querySelector('.user-name').addEventListener('click', openEditModal);
     document.querySelector('.close-edit-modal').addEventListener('click', closeEditModal);
 
@@ -1163,8 +1126,8 @@ function init() {
         if (modal) {
             modal.style.display = 'block';
             fullnameInput.value = localStorage.getItem('fullname') || '';  // Загрузка сохранённого ФИО
-            currentPasswordInput.value = '';  // Поля пароля должны быть пустыми
-            newPasswordInput.value = '';  // Поля пароля должны быть пустыми
+            currentPasswordInput.value = '';
+            newPasswordInput.value = '';
         } else {
             console.error('Не удалось найти модальное окно для редактирования профиля.');
         }
@@ -1227,7 +1190,6 @@ function init() {
 
 
     function updateFullname(userId, fullname, currentPassword) {
-        // Проверка, что пароль введен
         if (!currentPassword) {
             showNotification('Ошибка: необходимо ввести текущий пароль для подтверждения изменений!', false);
             return;

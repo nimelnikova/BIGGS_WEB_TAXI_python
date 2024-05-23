@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Советы для пассажиров такси</title>
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js'></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/ScrollTrigger.min.js'></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,100..900;1,100..900&display=swap');
+
+        body {
+            font-family: 'Jost', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: #f4f4f4;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: auto;
+            padding: 20px;
+            position: relative;
+            z-index: 10;
+        }
+
+        .qa-section {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+        }
+
+        .qa-item {
+            background: white;
+            border: 1px solid #ccc;
+            border-radius: 15px;
+            padding: 20px;
+            flex: 1 1 48%;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+        }
+
+        .icon {
+            font-size: 24px;
+            color: #333;
+            width: 40px;
+            margin-right: 20px;
+        }
+
+        .text {
+            font-size: 16px;
+            color: #333;
+        }
+
+        .back-button {
+            display: inline-block;
+            padding: 10px 20px;
+            margin: 20px 0;
+            background-color: #007BFF;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            text-align: center;
+        }
+
+        .phone-number {
+            font-size: 24px;
+            color: #007BFF;
+            text-align: center;
+            margin-top: 30px;
+            font-weight: bold;
+        }
+
+        .background-text {
+            position: absolute;
+            top: 50%;
+            left: 0;
+            width: 100%;
+            transform: translateY(-50%);
+            z-index: 0;
+            pointer-events: none;
+            overflow: hidden;
+            white-space: nowrap;
+        }
+
+        .background-text span {
+            font-size: clamp(200px, 40vh, 500px);
+            font-weight: bold;
+            color: rgba(47, 85, 151, 0.1);
+            display: inline-block;
+            margin: 0 20px;
+            white-space: nowrap;
+        }
+
+        h1 {
+            font-size: 64px;
+            font-weight: bold;
+            color: #333;
+            text-align: center;
+            margin-bottom: 40px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="background-text">
+        <span class="scrolling-text">PRIME CAR</span>
+        <span class="scrolling-text">PRIME CAR</span>
+        <span class="scrolling-text">PRIME CAR</span>
+        <span class="scrolling-text">PRIME CAR</span>
+        <span class="scrolling-text">PRIME CAR</span>
+        <span class="scrolling-text">PRIME CAR</span>
+    </div>
+
+    <div class="container">
+        <h1>Наши советы</h1>
+        <a href="main.html" class="back-button">Назад</a>
+
+        <h2>До поездки</h2>
+        <div class="qa-section">
+            <div class="qa-item">
+                <div class="icon"><i class='bx bx-map'></i></div>
+                <div class="text">Пожалуйста, проверяйте начальный и конечный адрес до поездки.</div>
+            </div>
+            <div class="qa-item">
+                <div class="icon"><i class='bx bx-car'></i></div>
+                <div class="text">Если вы находитесь на закрытой территории, убедитесь, что такси может туда свободно
+                    проехать. Или отметьте точку подачи на карте перед шлагбаумом.</div>
+            </div>
+            <div class="qa-item">
+                <div class="icon"><i class='bx bx-credit-card'></i></div>
+                <div class="text">Выберите удобный способ оплаты в приложении. Во время поездки вы не сможете поменять
+                    выбранный способ.</div>
+            </div>
+            <div class="qa-item">
+                <div class="icon"><i class='bx bx-time-five'></i></div>
+                <div class="text">Планируйте время заранее. Заказывайте такси с учетом возможных задержек, особенно в
+                    часы пик и неблагоприятных погодных условиях.</div>
+            </div>
+        </div>
+
+        <h2>Во время поездки</h2>
+        <div class="qa-section">
+            <div class="qa-item">
+                <div class="icon"><i class='bx bx-message-detail'></i></div>
+                <div class="text">Помните, что ваши пожелания учитываются во время поездки. Мы делаем всё возможное,
+                    чтобы позаботиться о вашем комфорте и оставить приятное впечатление о поездке.</div>
+            </div>
+            <div class="qa-item">
+                <div class="icon"><i class='bx bx-user-circle'></i></div>
+                <div class="text">Вежливость и уважение важны. Ведите себя уважительно с вашим водителем для лучшего
+                    опыта поездки.</div>
+            </div>
+            <div class="qa-item">
+                <div class="icon"><i class='bx bx-shield'></i></div>
+                <div class="text">Будьте внимательны. Проверяйте идентификацию и лицензию водителя, а также номер
+                    автомобиля перед посадкой в
+                    автомобиль.</div>
+            </div>
+            <div class="qa-item">
+                <div class="icon"><i class='bx bx-gps'></i></div>
+                <div class="text">Следите за маршрутом на карте в приложении, чтобы убедиться, что водитель следует
+                    правильному маршруту.</div>
+            </div>
+            <div class="qa-item">
+                <div class="icon"><i class='bx bx-lock'></i></div>
+                <div class="text">Не забывайте свои личные вещи в автомобиле. Проверяйте сиденье перед выходом.</div>
+            </div>
+        </div>
+
+        <h2>После поездки</h2>
+        <div class="qa-section">
+            <div class="qa-item">
+                <div class="icon"><i class='bx bx-star'></i></div>
+                <div class="text">Оставьте отзыв о поездке в приложении, чтобы помочь улучшить сервис.</div>
+            </div>
+            <div class="qa-item">
+                <div class="icon"><i class='bx bx-time'></i></div>
+                <div class="text">Если у вас возникли проблемы или недоразумения, обратитесь в службу поддержки для их
+                    разрешения.</div>
+            </div>
+            <div class="qa-item">
+                <div class="icon"><i class='bx bx-refresh'></i></div>
+                <div class="text">Если у вас есть какие-либо предложения по улучшению сервиса, не стесняйтесь делиться
+                    ими через приложение.</div>
+            </div>
+        </div>
+
+        <h2>Информация о тарифах</h2>
+        <div class="qa-section">
+            <div class="qa-item">
+                <div class="icon"><i class='bx bx-suitcase'></i></div>
+                <div class="text">Не переживайте, если вы с чемоданом или тяжелыми сумками. Водители помогут вам с
+                    багажом.</div>
+            </div>
+            <div class="qa-item">
+                <div class="icon"><i class='bx bx-charging'></i></div>
+                <div class="text">В наших автомобилях вы найдете зарядные устройства для ваших гаджетов.</div>
+            </div>
+            <div class="qa-item">
+                <div class="icon"><i class='bx bx-water'></i></div>
+                <div class="text">Для вашего комфорта в машинах есть вода.</div>
+            </div>
+            <div class="qa-item">
+                <div class="icon"><i class='bx bx-wifi'></i></div>
+                <div class="text">Некоторые тарифы включают в себя доступ к Wi-Fi в автомобиле.</div>
+            </div>
+        </div>
+
+        <div class="phone-number">
+            Телефон поддержки: +7 (999) 999-99-99
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', (event) => {
+            const titles = document.querySelectorAll('.scrolling-text');
+
+            titles.forEach((title, i) => {
+                const duration = 30 * (i + 1);
+                gsap.to(title, {
+                    duration: duration,
+                    ease: "none",
+                    xPercent: -100,
+                    repeat: -1
+                });
+            });
+        });
+    </script>
+</body>
+
+</html>
