@@ -49,13 +49,8 @@
                         <a href="VIP.html">VIP</a> <!-- ЗАМЕНИТЬ -->
                     </div>
                 </li>
-                <!-- <li><a href="#" style="--navAni:2">История заказов</a></li> -->
-                <!-- <li><a href="#" style="--navAni:2" onclick="openTripHistoryModal()">История заказов</a></li> -->
                 <li><a href="#" style="--navAni:2" id="open-history-link">История заказов</a></li>
-                <li><a href="#" style="--navAni:3">Q & A</a></li>
-                <li><a href="#" style="--navAni:4">Тех. Поддержка</a></li>
-
-                <!-- Другие пункты меню, если они у вас есть -->
+                <li><a href="QA.html" style="--navAni:3">Q & A</a></li>
             </ul>
             <label class="mode">
                 <input type="checkbox" id="darkModeToggle">
@@ -452,11 +447,17 @@
                         return response.json();
                     })
                     .then(data => {
-                        renderTripHistory(data);
+                        if (data.length === 0) {
+                            console.log('Нет данных о поездках.');
+                            tripList.innerHTML = '<li>У вас еще нет поездок.</li>';
+                        } else {
+                            renderTripHistory(data);
+                        }
                     })
                     .catch(error => {
-                        console.error('Ошибка при получении истории поездок:', error);
-                        alert('Ошибка при загрузке данных: ' + error.message);
+                        // console.error('Ошибка при получении истории поездок:', error);
+                        // alert('Ошибка при загрузке данных: ' + error.message);
+                        tripList.innerHTML = '<li>У вас еще нет поездок.</li>';
                     });
             }
 
@@ -478,13 +479,13 @@
                     const tripDetails = document.createElement('div');
                     tripDetails.className = 'trip-details';
                     tripDetails.innerHTML = `
-                        <div>Откуда: ${trip.pickup_location}</div>
-                        <div>Куда: ${trip.destination}</div>
-                        <div class="trip-info">
-                            <span class="trip-amount">${trip.order_amount}</span>
-                            <span class="trip-time">${formatDateTime(trip.start_time)}</span>
-                        </div>
-                    `;
+                <div>Откуда: ${trip.pickup_location}</div>
+                <div>Куда: ${trip.destination}</div>
+                <div class="trip-info">
+                    <span class="trip-amount">${trip.order_amount}</span>
+                    <span class="trip-time">${formatDateTime(trip.start_time)}</span>
+                </div>
+            `;
 
                     li.appendChild(tripIcon);
                     li.appendChild(tripDetails);

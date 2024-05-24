@@ -59,6 +59,11 @@ def vip():
     return render_template("VIP.html")
 
 
+@app.route("/QA.html")
+def qa():
+    return render_template("QA.html")
+
+
 @app.route("/credit_card.html")
 def credit_card():
     return render_template("credit_card.html")
