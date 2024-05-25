@@ -1,8 +1,5 @@
-from typing import Any
-import pandas as pd
 from ..models.models import Order
 from .drivers_controller import generate_table
-import json
 from pathlib import Path
 from flask import request, jsonify
 import sqlite3
