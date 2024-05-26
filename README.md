@@ -57,13 +57,12 @@
     ```
 
 ## Демонстрация нашего проекта: 
-![qr YouTube](https://github.com/nimelnikova/BIGGS_WEB_TAXI_python/blob/main/static/icons/youtube.png)
+<img src="https://github.com/nimelnikova/BIGGS_WEB_TAXI_python/blob/main/static/icons/youtube.png" alt="qr YouTube" width="150">
+YouTube
 
 ## ...а так же платформы, где представлены наши результаты 
 
-<img src="https://github.com/nimelnikova/BIGGS_WEB_TAXI_python/blob/main/static/icons/notion.png" alt="qr notion" width="100">
-
-<img src="https://github.com/nimelnikova/BIGGS_WEB_TAXI_python/blob/main/static/icons/miro.png" alt="qr miro" width="100">
+<img src="https://github.com/nimelnikova/BIGGS_WEB_TAXI_python/blob/main/static/icons/notion.png" alt="qr notion" width="100"> <img src="https://github.com/nimelnikova/BIGGS_WEB_TAXI_python/blob/main/static/icons/miro.png" alt="qr miro" width="100">
 
 
 ## PRIME CAR 
