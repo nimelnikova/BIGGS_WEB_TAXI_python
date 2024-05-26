@@ -12,7 +12,6 @@ function init() {
         controls: []
     });
     // попробую машинки 
-    // Создаем макет метки с возможностью вращения изображения
     var carLayout1 = ymaps.templateLayoutFactory.createClass('<div style="transform: rotate($[properties.rotate]deg);">' +
         '<img src="../static/icons/blackCar.png" style="width: 30px; height: 60px;" /></div>');
 
@@ -24,7 +23,7 @@ function init() {
         rotate: 0 // начальный угол вращения
     }, {
         iconLayout: carLayout1,
-        iconShape: {   // Определяем форму иконки, чтобы она корректно реагировала на события мыши
+        iconShape: {
             type: 'Rectangle',
             coordinates: [
                 [-15, -30], [15, 30]
@@ -35,36 +34,35 @@ function init() {
 
     // Вторая машинка
     var car2Placemark = new ymaps.Placemark(myMap.getCenter(), {
-        rotate: 0 // начальный угол вращения
+        rotate: 0
     }, {
         iconLayout: carLayout1
     });
 
     // Третья машинка
     var car3Placemark = new ymaps.Placemark(myMap.getCenter(), {
-        rotate: 0 // начальный угол вращения
+        rotate: 0
     }, {
         iconLayout: carLayout2
     });
 
     // Четвертая машинка
     var car4Placemark = new ymaps.Placemark(myMap.getCenter(), {
-        rotate: 0 // начальный угол вращения
+        rotate: 0
     }, {
         iconLayout: carLayout2
     });
 
     // Пятая машинка
     var car5Placemark = new ymaps.Placemark(myMap.getCenter(), {
-        rotate: 0 // начальный угол вращения
+        rotate: 0
     }, {
         iconLayout: carLayout2
     });
 
     //шестая 
-    // Вторая машинка
     var car6Placemark = new ymaps.Placemark(myMap.getCenter(), {
-        rotate: 0 // начальный угол вращения
+        rotate: 0
     }, {
         iconLayout: carLayout1
     });
@@ -84,7 +82,6 @@ function init() {
         'Москва, метро Сокол'
 
     ]).then(function (route) {
-        // Создание маршрута и анимация машинки
         animateRoute(route, carPlacemark);
     }, function (error) {
         alert('Возникла ошибка при построении маршрута: ' + error.message);
@@ -92,10 +89,9 @@ function init() {
 
     // Маршрут для второй машинки
     ymaps.route([
-        'Москва, Дубосековская улица, 5', // Стартовая точка маршрута - МАИ
-        'Москва, метро Тверская' // Конечная точка маршрута - метро Тверская
+        'Москва, Дубосековская улица, 5',
+        'Москва, метро Тверская'
     ]).then(function (route) {
-        // Создание маршрута и анимация машинки
         animateRoute(route, car2Placemark);
     }, function (error) {
         alert('Возникла ошибка при построении маршрута: ' + error.message);
@@ -103,10 +99,9 @@ function init() {
 
     //третья машинка
     ymaps.route([
-        'Москва, Волоколамское шоссе, 24', // Стартовая точка маршрута - МАИ
-        'Москва, Дубосековская, 5' // Конечная точка маршрута - метро Тверская
+        'Москва, Волоколамское шоссе, 24',
+        'Москва, Дубосековская, 5'
     ]).then(function (route) {
-        // Создание маршрута и анимация машинки
         animateRoute(route, car3Placemark);
     }, function (error) {
         alert('Возникла ошибка при построении маршрута: ' + error.message);
@@ -118,7 +113,6 @@ function init() {
         'Москва, Часовая улица, 30'
 
     ]).then(function (route) {
-        // Создание маршрута и анимация машинки
         animateRoute(route, car4Placemark);
     }, function (error) {
         alert('Возникла ошибка при построении маршрута: ' + error.message);
@@ -130,7 +124,6 @@ function init() {
         'Москва, метро Сокол'
 
     ]).then(function (route) {
-        // Создание маршрута и анимация машинки
         animateRoute(route, car5Placemark);
     }, function (error) {
         alert('Возникла ошибка при построении маршрута: ' + error.message);
@@ -142,7 +135,6 @@ function init() {
         'Москва, метро Аэропорт'
 
     ]).then(function (route) {
-        // Создание маршрута и анимация машинки
         animateRoute(route, car6Placemark);
     }, function (error) {
         alert('Возникла ошибка при построении маршрута: ' + error.message);
@@ -214,18 +206,17 @@ function init() {
 
     var myPlacemark = new ymaps.Placemark(myMap.getCenter(), {}, {
         iconLayout: 'default#image',
-        iconImageHref: '../static/icons/ballon.svg', // Сюда вставьте ваш URL
-        iconImageSize: [100, 100], // Укажите размер иконки
-        iconImageOffset: [-48, -73], // Смещение иконки
-        draggable: true // Делаем метку перетаскиваемой
+        iconImageHref: '../static/icons/ballon.svg',
+        iconImageSize: [100, 100],
+        iconImageOffset: [-48, -73],
+        draggable: true
     });
 
-    // Тут добавляем обработчик события окончания перетаскивания метки
     myPlacemark.events.add('dragend', function () {
         var coords = myPlacemark.geometry.getCoordinates();
         getAddress(coords, function (address) {
             fromInput.value = address;
-            updateRoute(address, toInput.value); // Обновляем маршрут с новыми координатами метки "Откуда"
+            updateRoute(address, toInput.value);
         });
     });
 
@@ -260,7 +251,7 @@ function init() {
     myMap.events.add('click', function (e) {
         var coords = e.get('coords');
         myPlacemark.geometry.setCoordinates(coords);
-        myPlacemarkTo.options.set('visible', false); // Скрываем myPlacemarkTo после клика по карте
+        myPlacemarkTo.options.set('visible', false);
         getAddress(coords);
     });
 
@@ -298,11 +289,8 @@ function init() {
                 geocodeRequest.then(function (res) {
                     var firstGeoObject = res.geoObjects.get(0);
                     var coords = firstGeoObject.geometry.getCoordinates();
-                    // Установить координаты для метки.
                     myPlacemark.geometry.setCoordinates(coords);
-                    // Центрировать карту по координатам.
                     myMap.setCenter(coords, 16);
-                    // Обновить маршрут с новым адресом.
                     updateRoute(val, toInput.value);
                 }).finally(function () {
                     window.lastGeocodeRequest = null;
@@ -316,7 +304,7 @@ function init() {
         var coords = e.get('coords');
         myPlacemark.geometry.setCoordinates(coords);
         getAddress(coords, function (address) {
-            fromInput.value = address; // Убедитесь, что здесь используется правильное поле ввода
+            fromInput.value = address;
             updateRoute(address, toInput.value);
         });
     });
@@ -338,36 +326,34 @@ function init() {
         }
     }, {
         boundsAutoApply: false,
-        wayPointVisible: false, // скрыть стандартные метки на маршруте
-        routeMarkerVisible: false // если вы также хотите скрыть маршрутные маркеры
+        wayPointVisible: false, // скрываю стандартные метки на маршруте
+        routeMarkerVisible: false // скрываю маршрутные маркеры
     });
 
 
     myMap.geoObjects.add(multiRoute);
 
     fromInput.addEventListener('input', function () {
-        clearTimeout(searchTimeout); // Очищаем предыдущий таймер, если он был установлен
+        clearTimeout(searchTimeout);
         searchTimeout = setTimeout(function () {
             updateRoute(fromInput.value, toInput.value);
-            // Скрываем конечную иконку, если адрес начальной точки изменился
             if (fromInput.value && !toInput.value) {
                 myPlacemarkTo.options.set('visible', false);
             }
-        }, 1000); // Задержка в 1 секунду
+        }, 1000); // задержка в 1 секунду
     });
 
     // Обработчик ввода для конечной точки маршрута
     toInput.addEventListener('input', function () {
-        clearTimeout(searchTimeout); // Очищаем предыдущий таймер, если он был установлен
+        clearTimeout(searchTimeout);
         searchTimeout = setTimeout(function () {
             updateRoute(fromInput.value, toInput.value);
-            // Отображаем конечную иконку, только если введён конечный адрес
             if (toInput.value) {
                 myPlacemarkTo.options.set('visible', true);
             } else {
                 myPlacemarkTo.options.set('visible', false);
             }
-        }, 1000); // Задержка в 1 секунду
+        }, 1000); // задержка в 1 секунду
     });
 
     function getAddress(coords, callback) {
@@ -419,14 +405,12 @@ function init() {
 
     document.querySelectorAll('.tariff').forEach(function (tariff) {
         tariff.addEventListener('click', function () {
-            // Убираем класс .active у всех тарифов
             document.querySelectorAll('.tariff').forEach(function (item) {
                 item.classList.remove('active');
             });
-            // Добавляем класс .active к выбранному тарифу
             this.classList.add('active');
 
-            // Вызываем обновление цены
+            // обновление цены
             updatePriceForCurrentTariff();
         });
     });
@@ -436,8 +420,7 @@ function init() {
         if (selectedTariff) {
             const tariffType = selectedTariff.getAttribute('data-tariff-type');
             const calculatedPrice = calculatePrice(tariffType, currentDistance);
-            // Предположим, что у вас есть элемент для отображения общей стоимости поездки
-            const priceDisplay = document.querySelector('#total-price'); // Убедитесь, что добавили такой элемент в HTML
+            const priceDisplay = document.querySelector('#total-price');
             if (priceDisplay) {
                 priceDisplay.textContent = `Стоимость поездки: ${calculatedPrice}₽`;
             }
@@ -446,7 +429,6 @@ function init() {
 
     // рассчет цены поездки
     function calculatePrice(tariffType, distance) {
-        // Здесь коэффициенты для расчета стоимости можно настроить под вашу бизнес-модель
         let pricePerKm;
         let basePrice;
 
@@ -483,21 +465,19 @@ function init() {
         }
     }
 
-    // Предполагается, что эта функция вызывается каждый раз, когда успешно построен маршрут
     multiRoute.model.events.add('requestsuccess', function () {
         let activeRoute = multiRoute.getActiveRoute();
         if (activeRoute) {
-            currentDistance = activeRoute.properties.get('distance').value / 1000; // Получаем расстояние в км
-            let totalMinutes = Math.round(activeRoute.properties.get('duration').value / 60); // Получаем время в минутах
+            currentDistance = activeRoute.properties.get('distance').value / 1000; // расстояние в км
+            let totalMinutes = Math.round(activeRoute.properties.get('duration').value / 60); // время в минутах
 
-            // Вычисляем часы и минуты
+            // часы и минуты
             let hours = Math.floor(totalMinutes / 60);
             let minutes = totalMinutes % 60;
 
-            // Формируем строку с информацией о времени в пути
+            // информация о времени в пути
             let timeString = hours > 0 ? `${hours} ч. ${minutes} мин.` : `${minutes} мин.`;
 
-            // Обновляем поле ввода с информацией о маршруте
             let routeInfoText = `Время в пути: ${timeString} и ${currentDistance.toFixed(1)} км.`;
             document.getElementById('route-info').value = routeInfoText;
 
@@ -535,13 +515,10 @@ function init() {
         option.addEventListener('click', function () {
             // Извлекаем информацию о выбранном способе оплаты
             const paymentMethodText = this.querySelector('.payment-option-text').textContent;
-            const paymentMethodIcon = this.querySelector('.payment-option-icon').outerHTML; // Получаем HTML иконки
-            paymentMethod = this.getAttribute('data-value'); // Получаем метод оплаты из атрибута
+            const paymentMethodIcon = this.querySelector('.payment-option-icon').outerHTML;
+            paymentMethod = this.getAttribute('data-value'); // метод оплаты из атрибута
 
-            // %Обновляем кнопку способа оплаты новым текстом и иконкой
             paymentMethodValue.innerHTML = `${paymentMethodIcon} ${paymentMethodText}`;
-
-            // Закрываем модальное окно
             paymentModal.style.display = 'none';
         });
     });
@@ -555,14 +532,13 @@ function init() {
         }
 
         const routeInfoText = document.getElementById('route-info').value;
-        const { travelTime, distance } = parseRouteInfo(routeInfoText); // Извлечение времени и расстояния
+        const { travelTime, distance } = parseRouteInfo(routeInfoText); // временя и расстояние
 
         if (!currentDistance || currentDistance === 0 || !travelTime) {
             alert('Пожалуйста, уточните маршрут перед оформлением заказа.');
             return;
         }
 
-        // Проверим, что переменная paymentMethod определена, чтобы избежать ошибок
         if (!paymentMethod) {
             alert('Ошибка: не выбран метод оплаты.');
             return;
@@ -726,7 +702,7 @@ function init() {
         }
 
     }
-    // метка для машинки
+    // скин для машинки
     var carOrderLayout = ymaps.templateLayoutFactory.createClass('<div style="transform: rotate($[properties.rotate]deg);">' +
         '<img src="../static/icons/ordercar.png" style="width: 22.6px; height:  51.4px;" /></div>');
 
@@ -737,7 +713,7 @@ function init() {
         iconLayout: carOrderLayout,
         iconShape: {
             type: 'Rectangle',
-            coordinates: [[-556.5, -128.5], [-200, 128.5]] // Размер иконки / 2
+            coordinates: [[-556.5, -128.5], [-200, 128.5]]
         },
         iconImageSize: [22.6, 51.4], // Размер иконки
         iconImageOffset: [-756.5, -1128.5] // Смещение иконки для центрирования
@@ -834,7 +810,6 @@ function init() {
                 alert('Ошибка при получении данных заказа.');
             });
     }
-    // console.log('Попытка завершения заказа', { orderId, driverId, userRating });
 
     function completeOrder(orderId, driverId, userRating) {
         console.log('Начало завершения заказа', { orderId, driverId, userRating });
@@ -874,8 +849,6 @@ function init() {
     }
 
     function updateUIAfterOrderCompletion(orderId) {
-        // Здесь можно обновить интерфейс, чтобы отразить завершение заказа
-        // Например, убрать элементы маршрута с карты или обновить информацию о заказе
         console.log(`Заказ ${orderId} завершен. Обновление интерфейса.`);
     }
 
@@ -907,7 +880,7 @@ function init() {
         animateAlongRouteUser(points, 0, placemark, function () {
             console.log("Анимация завершена");
             onComplete && onComplete();
-        }, route, 1000); // Продолжительность анимации уменьшена до 1000 мс (1 секунда)
+        }, route, 1000); // Продолжительность анимации уменьшена до 1с 
     }
 
     // Анимация между двумя точками маршрута
@@ -918,10 +891,10 @@ function init() {
 
             // Рассчитываем продолжительность анимации в зависимости от расстояния
             var distance = Math.sqrt(Math.pow(endPos[0] - startPos[0], 2) + Math.pow(endPos[1] - startPos[1], 2));
-            var duration = distance * 105000; // Пример расчета продолжительности
+            var duration = distance * 105000;
 
             animateUserCar(startPos, endPos, duration, function () {
-                if (index === 0) {  // Обновляем стиль маршрута при начале движения
+                if (index === 0) {
                     updateRouteSegmentStyle(route);
                 }
                 animateAlongRouteUser(points, index + 1, placemark, onComplete, route);
@@ -1047,7 +1020,7 @@ function init() {
 
     function showThankYouModal() {
         const thankYouModal = document.getElementById('thank-you-modal');
-        thankYouModal.style.display = 'block'; // Показываем модальное окно
+        thankYouModal.style.display = 'block';
     }
 
     document.addEventListener("DOMContentLoaded", function () {
@@ -1076,13 +1049,6 @@ function init() {
             }
         });
     });
-
-
-
-
-
-    //КОНЕЦ 
-
 
     //здесь все про изменение аккаунта 
 
@@ -1141,13 +1107,11 @@ function init() {
         const newPassword = document.getElementById('modal-new-password').value;
         const userId = Number(localStorage.getItem('userId'));
 
-        // Проверяем наличие ID пользователя
         if (!userId) {
             showNotification('Ошибка: ID пользователя не найден. Попробуйте перелогиниться.', false);
             return;
         }
 
-        // Проверка, что имя и текущий пароль введены для обновления ФИО
         if (fullname && currentPassword) {
             updateFullname(userId, fullname, currentPassword);
         } else if (!currentPassword) {
@@ -1243,7 +1207,6 @@ function init() {
         if (response.ok) {
             return response.json();
         } else {
-            // Преобразование неудачного ответа в JSON для получения деталей ошибки и выброс исключения
             return response.json().then(errorData => {
                 throw new Error(`HTTP error! status: ${response.status}, message: ${errorData.message}`);
             });
@@ -1302,18 +1265,7 @@ function init() {
                 alert('Ошибка при получении информации о карте. Пожалуйста, попробуйте снова.');
             });
     }
-
-
-    // Предполагается, что эта функция вызывается при открытии модального окна способа оплаты
     document.getElementById('payment-method-button').addEventListener('click', fetchCardInfo);
-
-
-
-
-
-
-
-
 }
 
 

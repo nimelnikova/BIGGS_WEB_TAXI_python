@@ -1,4 +1,3 @@
-/* VARIABLES */
 const page = document.getElementById('page'),
     loading = document.getElementById('loading'),
     slider = document.querySelector('.swiper'),
@@ -25,7 +24,6 @@ const innerAnimationHidden = {
     yPercent: -20,
 };
 
-/* VERTICAL SLIDER */
 const swiper = new Swiper(slider, {
     direction: 'vertical',
     speed: 1500,
@@ -41,7 +39,6 @@ const swiper = new Swiper(slider, {
     },
     on: {
         init: () => {
-            /* SLIDER & TITLE FADE IN */
             gsap.to(slider, {
                 duration: 1,
                 ease: Power4.easeOut,
@@ -49,7 +46,6 @@ const swiper = new Swiper(slider, {
             });
             gsap.to(title, innerAnimationActive);
 
-            /* TITLE INFINITE LOOP */
             title.forEach(function (e, i) {
                 let row_width = e.getBoundingClientRect().width;
                 let row_item_width = e.children[0].getBoundingClientRect().width;
@@ -71,23 +67,18 @@ const swiper = new Swiper(slider, {
     },
 });
 
-/* ON LOAD */
 car.addEventListener('load', (event) => {
-    /* FADE OUT LOADING SCREEN */
     gsap.to(loading, {
         duration: 1,
         ease: Power4.easeOut,
         autoAlpha: 0,
     });
 
-    /* 3D CHARACTERISTICS */
     const materials = car.model.materials,
         paint = materials[10];
 
-    /* CHANGE CAR PAINT */
     paint.pbrMetallicRoughness.setBaseColorFactor('#CBD5E1');
 
-    /* CAR POSITION */
     const exposure1 = '1',
         orbit1 = '180deg 30deg 50%',
         exposure2 = '0.4',
@@ -100,16 +91,10 @@ car.addEventListener('load', (event) => {
 
     const setCarPosition = () => {
         if (window.innerWidth <= 900) {
-            /* target1 = '-9.5m -11.9m 4.2m'; 
-            target2 = '-8.8m -12.7m 4.8m';
-            target3 = '-9.8m -10m 3.8m'; */
             target1 = '9.5m 11.9m 4.2m';
             target2 = '8.8m 12.7m 4.8m';
             target3 = '9.8m 10m 3.8m';
         } else {
-            /* target1 = '-9.5m -12.9m 2.2m';
-            target2 = '-5.8m -12.5m 3.8m';
-            target3 = '-12m -10.7m 1.7m';*/
             target1 = '0.0008m 0.001m -0.0019m';
             target2 = '0m 0.001m -0.002m';
             target3 = '-0.002m 0.0015m -0.001m';
@@ -131,10 +116,8 @@ car.addEventListener('load', (event) => {
         );
     };
 
-    /* ANIMATION ON LOAD */
     gsap.to(car, carPosition(exposure1, orbit1, target1));
 
-    /* SLIDE CHANGE */
     swiper.on('slideChange', function () {
         if (swiper.activeIndex === 0) {
             gsap.to(car, carPosition(exposure1, orbit1, target1));
@@ -184,7 +167,6 @@ car.addEventListener('load', (event) => {
         }
     });
 
-    /* WINDOW RESIZE CAR POSITION */
     swiper.on('resize', function () {
         setCarPosition();
 
@@ -197,7 +179,6 @@ car.addEventListener('load', (event) => {
         }
     });
 
-    /* SLIDE TO */
     slideToButtons.forEach((button) => {
         button.addEventListener('click', (e) => {
             const index = e.target.dataset.slideTo;
@@ -208,16 +189,13 @@ car.addEventListener('load', (event) => {
         });
     });
 
-    /* PAINT */
     colorButtons.forEach((button) => {
         button.addEventListener('click', (e) => {
-            /* CHANGE COLOR */
             const color = e.target.dataset.color;
             if (color !== undefined) {
                 paint.pbrMetallicRoughness.setBaseColorFactor(color);
             }
 
-            /* BUTTON ACTIVE */
             colorButtons.forEach((otherButton) => {
                 otherButton.classList.remove('active');
             });
@@ -232,7 +210,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
     const backButton = document.querySelector('.button-back');
 
     backButton.addEventListener('click', (e) => {
-        e.preventDefault(); // Предотвращаем действие по умолчанию для ссылки
+        e.preventDefault();
         history.back(); // Используем history API для возврата на предыдущую страницу
     });
 });

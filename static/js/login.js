@@ -10,7 +10,6 @@ function sendPostRequest(url, data) {
         .then(response => {
             return response.json().then(body => {
                 if (!response.ok) {
-                    // Добавлено более специфическое сообщение об ошибке
                     throw new Error(body.message || 'Произошла неизвестная ошибка');
                 }
                 return body;
@@ -18,23 +17,21 @@ function sendPostRequest(url, data) {
         })
         .catch(error => {
             console.error('Network error:', error.message);
-            throw error; // Проброс ошибки для дальнейшей обработки
+            throw error;
         });
 }
-
-// Функция для проверки правильности формата электронной почты
+// валидация введенных данных 
 function isValidEmail(email) {
     const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailPattern.test(email);
 }
 
-// Функция для проверки правильности формата пароля
+
 function isValidPassword(password) {
     const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
     return passwordPattern.test(password);
 }
 
-// Функция, вызываемая при нажатии на кнопку входа
 function onLoginClick(event) {
     event.preventDefault();
     const login_or_email = document.getElementById('login-or-email').value;
@@ -59,21 +56,18 @@ function onLoginClick(event) {
             onSuccessfulLogin(data);  // Передача данных для дальнейшей обработки
         })
         .catch(error => {
-            // Проверка содержимого сообщения об ошибке
             if (error.message.includes('не зарегистрирован')) {
                 loginError.textContent = 'Этот логин не зарегистрирован. Пожалуйста, проверьте данные или зарегистрируйтесь.';
             } else {
-                // loginError.textContent = 'Ошибка входа: ' + error.message; // Уточнен текст ошибки
                 loginError.textContent = 'Этот логин не зарегистрирован. Пожалуйста, проверьте данные или зарегистрируйтесь.';
             }
-            document.getElementById('login-password').value = ''; // Сброс поля пароля
+            document.getElementById('login-password').value = '';
         });
 }
 
 
-// Функция вызывается после успешного входа в систему.
 function onSuccessfulLogin(data) {
-    console.log(data); // Для отладки
+    console.log(data);
 
     if (data.user_id && data.fullname) {
         localStorage.setItem('userId', data.user_id);
@@ -88,7 +82,6 @@ function onSuccessfulLogin(data) {
     }
 }
 
-// Функция для обработки регистрации
 function onRegisterClick(event) {
     event.preventDefault();
     const fullname = document.getElementById('register-name').value;
@@ -97,7 +90,7 @@ function onRegisterClick(event) {
     const password = document.getElementById('register-password').value;
     const registerError = document.getElementById('register-error');
 
-    registerError.textContent = ''; // Сброс предыдущего сообщения об ошибке
+    registerError.textContent = '';
 
     if (!fullname || !username || !email || !password) {
         registerError.textContent = 'Пожалуйста, заполните все поля';
@@ -116,9 +109,7 @@ function onRegisterClick(event) {
 
     sendPostRequest('/api/registration', { fullname, username, email, password })
         .then(data => {
-            // Проверяем, что в ответе есть user_id
             if (data.id !== undefined && data.fullname) {
-                // Вызываем функцию для успешной регистрации
                 onSuccessfulRegistration(data);
             } else {
                 registerError.textContent = 'Ошибка регистрации: необходимые данные пользователя не получены.';
@@ -147,21 +138,17 @@ function onSuccessfulRegistration(data) {
 }
 
 document.addEventListener('DOMContentLoaded', function () {
-    // Получаем элементы для входа и регистрации
     const loginLabel = document.querySelector('.login-spacing');
     const registrationLabel = document.querySelector('.registration-spacing');
 
-    // Функция переключения на форму входа
     const toggleToLogin = () => {
         document.getElementById('reg-log').checked = false;
     };
 
-    // Функция переключения на форму регистрации
     const toggleToRegistration = () => {
         document.getElementById('reg-log').checked = true;
     };
 
-    // Добавляем обработчики событий для переключения форм
     loginLabel.addEventListener('click', toggleToLogin);
     registrationLabel.addEventListener('click', toggleToRegistration);
 
@@ -171,7 +158,6 @@ document.addEventListener('DOMContentLoaded', function () {
     loginButton.addEventListener('click', onLoginClick);
     registerButton.addEventListener('click', onRegisterClick);
 
-    // Обработчик событий для полей формы входа
     const loginInputFields = document.querySelectorAll('.card-front input');
     loginInputFields.forEach((field, index) => {
         field.addEventListener('keydown', function (event) {
@@ -180,7 +166,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 if (index < loginInputFields.length - 1) {
                     loginInputFields[index + 1].focus();
                 } else {
-                    // Имитация клика на кнопку входа, если все поля заполнены
                     if (document.getElementById('login-or-email').value && document.getElementById('login-password').value) {
                         onLoginClick(event);
                     }
@@ -189,7 +174,6 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 
-    // Обработчик событий для полей формы регистрации
     const registerInputFields = document.querySelectorAll('.card-back input');
     registerInputFields.forEach((field, index) => {
         field.addEventListener('keydown', function (event) {
@@ -198,7 +182,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 if (index < registerInputFields.length - 1) {
                     registerInputFields[index + 1].focus();
                 } else {
-                    // Имитация клика на кнопку регистрации, если все поля заполнены
                     if (document.getElementById('register-name').value &&
                         document.getElementById('register-login').value &&
                         document.getElementById('register-email').value &&

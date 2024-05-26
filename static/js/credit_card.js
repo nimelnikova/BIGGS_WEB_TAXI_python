@@ -2,7 +2,7 @@ new Vue({
     el: "#app",
     data() {
         return {
-            currentCardBackground: Math.floor(Math.random() * 15 + 1), // just for fun :D
+            currentCardBackground: Math.floor(Math.random() * 15 + 1),
             cardName: "",
             cardNumber: "",
             cardMonth: "",
@@ -40,10 +40,8 @@ new Vue({
         },
 
         validateCardName() {
-            // Фильтрация ввода, оставляя только английские буквы и преобразуя их в верхний регистр
             this.cardName = this.cardName.replace(/[^a-zA-Z\s]/g, '').toUpperCase();
 
-            // Разделение имени на слова для возможного ограничения их количества до двух
             let words = this.cardName.split(/\s+/);
             if (words.length > 2) {
                 // Если слов более двух, оставляем только первые два слова
@@ -74,18 +72,18 @@ new Vue({
     methods: {
         handleEnter(nextInputId, event) {
             if (event.key === "Enter") {
-                event.preventDefault(); // Отменяем стандартное поведение Enter
+                event.preventDefault();
                 const nextInput = this.$refs[nextInputId];
                 if (nextInput) {
-                    nextInput.focus(); // Перемещаем фокус на следующий элемент
+                    nextInput.focus();
                 }
             }
         },
 
         formatCardNumber() {
-            let value = this.cardNumber.replace(/[^\d]/g, ''); // Удаляет все кроме цифр
+            let value = this.cardNumber.replace(/[^\d]/g, ''); // удаляет все кроме цифр
             if (value.length > 16) {
-                value = value.substring(0, 16); // Обрезает до 16 цифр
+                value = value.substring(0, 16); // обрезает до 16 цифр
             }
             this.cardNumber = value
                 .replace(/(.{4})/g, '$1 ') // Добавляет пробелы после каждых 4 цифр
@@ -123,12 +121,11 @@ new Vue({
                 let cardData = JSON.parse(storedCardData);
                 this.lastFourDigits = cardData.cardNumber.slice(-4);
             }
-        }, // <— Добавлена запятая для корректного разделения методов
+        },
 
         saveCardData() {
-            // Получаем user_id из localStorage и преобразуем в число
-            const userId = parseInt(localStorage.getItem('userId'), 10);  // Добавлен parseInt для преобразования в число
-            if (isNaN(userId)) {  // Проверка на корректность преобразования
+            const userId = parseInt(localStorage.getItem('userId'), 10);
+            if (isNaN(userId)) {
                 alert('Пожалуйста, войдите в систему для выполнения этой операции');
                 return;
             }
@@ -136,7 +133,7 @@ new Vue({
             if (this.cardNumber && this.cardCvv && this.cardMonth && this.cardYear && this.cardName) {
                 const cardData = {
                     id: userId,
-                    card_number: this.cardNumber.replace(/\s/g, ''),  // Удаление пробелов и отправка как 'card_number'
+                    card_number: this.cardNumber.replace(/\s/g, ''),
                     card_holder: this.cardName,
                     month: this.cardMonth.toString(),
                     year: this.cardYear.toString(),
@@ -150,7 +147,7 @@ new Vue({
                 })
                     .then(response => {
                         alert('Карта успешно добавлена: ' + response.data.message);
-                        window.location.href = '/main.html';  // Переадресация на главную страницу
+                        window.location.href = '/main.html';
                     })
                     .catch(error => {
                         console.error('Ошибка при добавлении карты:', error);
