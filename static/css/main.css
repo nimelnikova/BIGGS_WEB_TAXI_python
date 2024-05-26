@@ -537,7 +537,6 @@ button {
     background: #ededed;
 }
 
-/* Медиа-запрос для мобильных устройств*/
 @media (max-width: 768px) {
     .tariff {
         flex: 1 1 100%;
@@ -841,9 +840,7 @@ button {
     background: #fff;
     box-shadow: 0 5px 9px rgba(0, 0, 0, 0.5);
     font-weight: normal;
-    /* Сделаем текст нежирным */
     border: none;
-    /* Уберем границу, если она не нужна */
     width: 460px;
 }
 
@@ -935,9 +932,7 @@ button {
 .payment-option {
     display: flex;
     align-items: center;
-    /* Выравнивание элементов по вертикали */
     justify-content: space-between;
-    /* Распределение пространства между элементами */
     width: 100%;
     padding: 10px;
     margin: 5px 0;
@@ -951,9 +946,7 @@ button {
 .payment-option-last-four {
     font-size: 20px;
     font-family: 'Jost', sans-serif;
-    /* Поддерживаем единообразие шрифта */
     text-align: right;
-    /* Выравнивание текста по правой стороне */
 }
 
 
@@ -965,12 +958,10 @@ button {
     width: 30px;
     height: 30px;
     margin-right: 10px;
-    /* Добавление отступа справа от иконки */
 }
 
 .payment-option-text {
     flex-grow: 1;
-    /* Элемент займет все доступное пространство */
     vertical-align: middle;
     font-size: 20px;
     font-family: 'Jost', sans-serif;
@@ -1089,49 +1080,35 @@ button {
     display: flex;
     align-items: center;
     cursor: pointer;
-    /* делает весь блок кликабельным */
     background-color: #fff;
-    /* цвет фона, возможно, понадобится изменить */
     padding: 10px;
     border-radius: 20px;
-    /* закругление углов */
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
-    /* тень под блоком */
     transition: box-shadow 0.3s ease;
-    /* анимация тени */
     max-width: calc(100% - 100px);
-    /* максимальная ширина блока */
     margin-left: 50px;
     justify-content: start;
 }
 
 .user-profile:hover {
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
-    /* увеличение тени при наведении */
 }
 
 .user-icon {
     width: 40px;
-    /* размер иконки пользователя */
     height: 40px;
     border-radius: 50%;
-    /* круглая форма иконки */
     margin-right: 10px;
-    /* отступ иконки от текста */
 }
 
 .user-name {
     font-size: 16px;
-    /* размер шрифта имени пользователя */
     color: #333;
-    /* цвет шрифта */
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
     flex-grow: 1;
-    /* Заставляет имя пользователя занимать все доступное пространство */
     margin-right: 10px;
-    /* добавление троеточия, если текст не умещается */
 }
 
 /* Основной стиль для модального окна редактирования пользователя */
@@ -1217,11 +1194,8 @@ button {
 @media (max-width: 768px) {
     .edit-user-modal-content {
         width: 90%;
-        /* Подстройка ширины под мобильные устройства */
         margin-top: 50px;
-        /* Меньше места сверху на маленьких экранах */
         padding: 20px;
-        /* Меньше отступов на маленьких экранах */
     }
 }
 
@@ -1251,9 +1225,7 @@ button {
 
 .dark-mode #route-info {
     color: #fff;
-    /* Светлый цвет текста для лучшей видимости на тёмном фоне */
     background-color: transparent;
-    /* Прозрачный фон подходит и для тёмного режима */
 }
 
 .notification {
@@ -1270,12 +1242,10 @@ button {
 
 .notification.success {
     background-color: #4CAF50;
-    /* Зеленый для успеха */
 }
 
 .notification.error {
     background-color: #f44336;
-    /* Красный для ошибок */
 }
 
 @keyframes slideIn {
@@ -1309,7 +1279,6 @@ button {
     justify-content: center;
     align-items: center;
     z-index: 30;
-    /* Убедитесь, что модальное окно будет на переднем плане */
 }
 
 .loading-content {
@@ -1374,7 +1343,6 @@ button {
     display: flex;
     justify-content: space-between;
     align-items: start;
-    /* Выровнять элементы по верхнему краю */
 }
 
 
@@ -1476,16 +1444,13 @@ button {
 
 .rating-modal-overlay {
     display: none;
-    /* Скрыт по умолчанию */
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
     background-color: rgba(0, 0, 0, 0.5);
-    /* Полупрозрачный черный цвет */
     z-index: 99;
-    /* Значение меньше, чем у модального окна, чтобы оверлей был под ним */
 }
 
 
@@ -1570,12 +1535,10 @@ button {
 .rating__star-fill,
 .rating__star-line {
     stroke: #FFD700;
-    /* Золотой цвет */
 }
 
 .rating__star-fill {
     fill: #FFD700;
-    /* Золотой цвет */
     transform: scale(0);
     transition: fill var(--trans-dur) var(--bezier), transform var(--trans-dur) var(--bezier);
 }
@@ -1620,7 +1583,6 @@ button {
 .rating__input-4:hover~.rating__label:nth-of-type(-n + 4) .rating__star-stroke,
 .rating__input-5:hover~.rating__label:nth-of-type(-n + 5) .rating__star-stroke {
     stroke: #FFD700;
-    /* Золотой цвет */
     transform: scale(1);
 }
 
@@ -1753,7 +1715,6 @@ button {
 
 #submit-rating {
     background-color: #FFD700;
-    /* Золотой цвет */
     border: none;
     color: black;
     padding: 10px 20px;
@@ -1770,7 +1731,6 @@ button {
 /* история заказов */
 .history-modal {
     display: none;
-    /* Скрыто по умолчанию */
     position: fixed;
     z-index: 1000;
     top: 0;
@@ -1839,9 +1799,7 @@ button {
     align-items: center;
     padding: 10px;
     border-bottom: 1px solid #ccc;
-    /* Разделитель */
     background-color: #f0f0f0;
-    /* Фон элемента */
     margin-bottom: 10px;
     border-radius: 8px;
     box-shadow: 2px 0 5px rgba(0, 0, 0, 0.5);
@@ -1856,9 +1814,7 @@ button {
     height: 40px;
     margin-right: 10px;
     background-color: #eee;
-    /* Цвет фона иконки */
     border-radius: 50%;
-    /* Круглая иконка */
     display: flex;
     align-items: center;
     justify-content: center;

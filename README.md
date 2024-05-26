@@ -41,7 +41,7 @@
 
 
 ## Ссылки на ресурсы:
-![иконка ноушен](https://github.com/nimelnikova/BIGGS_WEB_TAXI_python/blob/main/static/icons/Notion-3.png?raw=true)[Ссылка на Notion](https://www.notion.so/017c395844324956ab7328ff112ed29e?v=5f43e7ec868747ea97d6133f9e46269c&pvs=4)
+![иконка ноушен](https://github.com/nimelnikova/BIGGS_WEB_TAXI_python/blob/main/static/icons/Notion-3.png?raw=true)[Ссылка на Notion](https://useful-anglerfish-a49.notion.site/9e2f1ee6bf074eaa9858bff348959143?v=2587cb1beff741818c22f4f6eb655cb3&pvs=4)
 ![иконка миро](https://github.com/nimelnikova/BIGGS_WEB_TAXI_python/blob/main/static/icons/miro-2.png?raw=true)[Ссылка на Miro](https://miro.com/app/board/uXjVKaRqYCQ=/)
 
 ## Запуск проекта 
