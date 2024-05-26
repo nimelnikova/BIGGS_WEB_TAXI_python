@@ -58,20 +58,21 @@
 
 ## Демонстрация нашего проекта:
 <figure>
-  <img src="https://github.com/nimelnikova/BIGGS_WEB_TAXI_python/blob/main/static/icons/youtube.png" alt="qr YouTube" width="150">
-  <figcaption>YouTube</figcaption>
+  <img src="https://github.com/nimelnikova/BIGGS_WEB_TAXI_python/blob/main/static/icons/youtube.png" alt="qr YouTube" width="150" style="display: block; margin: 0 auto;">
+  <figcaption style="text-align: center;">YouTube</figcaption>
 </figure>
 
 ## ...а также платформы, где представлены наши результаты
-<figure>
-  <img src="https://github.com/nimelnikova/BIGGS_WEB_TAXI_python/blob/main/static/icons/notion.png" alt="qr notion" width="100">
-  <figcaption>Notion</figcaption>
-</figure>
-<figure>
-  <img src="https://github.com/nimelnikova/BIGGS_WEB_TAXI_python/blob/main/static/icons/miro.png" alt="qr miro" width="100">
-  <figcaption>Miro</figcaption>
-</figure>
-
+<div style="display: flex; justify-content: space-around;">
+  <figure>
+    <img src="https://github.com/nimelnikova/BIGGS_WEB_TAXI_python/blob/main/static/icons/notion.png" alt="qr notion" width="100">
+    <figcaption style="text-align: center;">Notion</figcaption>
+  </figure>
+  <figure>
+    <img src="https://github.com/nimelnikova/BIGGS_WEB_TAXI_python/blob/main/static/icons/miro.png" alt="qr miro" width="100">
+    <figcaption style="text-align: center;">Miro</figcaption>
+  </figure>
+</div>
 
 ## PRIME CAR 
 
