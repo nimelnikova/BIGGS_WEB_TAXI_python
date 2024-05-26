@@ -60,11 +60,13 @@
 ![qr YouTube](https://github.com/nimelnikova/BIGGS_WEB_TAXI_python/blob/main/static/icons/youtube.png)
 
 ## ...а так же платформы, где представлены наши результаты 
-![qr notion](https://github.com/nimelnikova/BIGGS_WEB_TAXI_python/blob/main/static/icons/notion.png )
-![qr miro](https://github.com/nimelnikova/BIGGS_WEB_TAXI_python/blob/main/static/icons/miro.png)
+
+<img src="https://github.com/nimelnikova/BIGGS_WEB_TAXI_python/blob/main/static/icons/notion.png" alt="qr notion" width="100">
+
+<img src="https://github.com/nimelnikova/BIGGS_WEB_TAXI_python/blob/main/static/icons/miro.png" alt="qr miro" width="100">
 
 
-## PRIME CAR ##
+## PRIME CAR 
 
 ![gpj icon](https://github.com/nimelnikova/BIGGS_WEB_TAXI_python/blob/main/static/icons/mix.jpg)
 
