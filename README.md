@@ -55,3 +55,18 @@
     ```bash
     python3 main.py
     ```
+
+## Демонстрация нашего проекта: 
+![qr YouTube](https://github.com/nimelnikova/BIGGS_WEB_TAXI_python/blob/main/static/icons/youtube.png)
+
+## ...а так же платформы, где представлены наши результаты 
+![qr notion](https://github.com/nimelnikova/BIGGS_WEB_TAXI_python/blob/main/static/icons/notion.png )
+![qr miro](https://github.com/nimelnikova/BIGGS_WEB_TAXI_python/blob/main/static/icons/miro.png)
+
+
+## PRIME CAR ##
+
+![gpj icon](https://github.com/nimelnikova/BIGGS_WEB_TAXI_python/blob/main/static/icons/mix.jpg)
+
+
+
